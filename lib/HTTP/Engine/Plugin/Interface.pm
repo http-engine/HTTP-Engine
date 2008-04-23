@@ -20,8 +20,8 @@ sub initialize :Hook {
     delete $self->{_prepared_write};
 }
 				       
-sub prepare_connection :Method {
-    my($self, $e, $c) = @_;
+sub prepare_connection :InterfaceMethod {
+    my($self, $c) = @_;
 
     $c->req->address($c->env->{REMOTE_ADDR});
 
@@ -51,8 +51,8 @@ sub prepare_connection :Method {
     $c->req->secure(1) if $c->env->{SERVER_PORT} == 443;
 }
 
-sub prepare_query_parameters :Method {
-    my($self, $e, $c) = @_;
+sub prepare_query_parameters :InterfaceMethod {
+    my($self, $c) = @_;
     my $query_string = $c->env->{QUERY_STRING};
 
     # replace semi-colons
@@ -66,8 +66,8 @@ sub prepare_query_parameters :Method {
     }
 }
 
-sub prepare_headers :Method {
-    my($self, $e, $c) = @_;
+sub prepare_headers :InterfaceMethod {
+    my($self, $c) = @_;
 
     # Read headers from env
     for my $header (keys %{ $c->env }) {
@@ -77,16 +77,16 @@ sub prepare_headers :Method {
     }
 }
 
-sub prepare_cookie :Method {
-    my($self, $e, $c) = @_;
+sub prepare_cookie :InterfaceMethod {
+    my($self, $c) = @_;
 
     if (my $header = $c->req->header('Cookie')) {
         $c->req->cookies( { CGI::Simple::Cookie->parse($header) } );
     }
 }
 
-sub prepare_path :Method {
-    my($self, $e, $c) = @_;
+sub prepare_path :InterfaceMethod {
+    my($self, $c) = @_;
 
     my $scheme = $c->req->secure ? 'https' : 'http';
     my $host   = $c->env->{HTTP_HOST}   || $c->env->{SERVER_NAME};
@@ -141,8 +141,8 @@ sub prepare_path :Method {
     $c->req->base($base);
 }
 
-sub prepare_body :Method {
-    my($self, $e, $c) = @_;
+sub prepare_body :InterfaceMethod {
+    my($self, $c) = @_;
 
     # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
     $self->read_length($c->req->header('Content-Length') || 0);
@@ -173,13 +173,13 @@ sub prepare_body_chunk {
     $c->req->{_body}->add($chunk);
 }
 
-sub prepare_body_parameters :Method {
-    my($self, $e, $c) = @_;
+sub prepare_body_parameters :InterfaceMethod {
+    my($self, $c) = @_;
     $c->req->body_parameters($c->req->{_body}->param);
 }
 
-sub prepare_parameters :Method {
-    my($self, $e, $c) = @_;
+sub prepare_parameters :InterfaceMethod {
+    my($self, $c) = @_;
 
     # We copy, no references
     for my $name (keys %{ $c->req->query_parameters }) {
@@ -205,8 +205,8 @@ sub prepare_parameters :Method {
     }
 }
 
-sub prepare_uploads :Method {
-    my($self, $e, $c) = @_;
+sub prepare_uploads :InterfaceMethod {
+    my($self, $c) = @_;
 
     my $uploads = $c->req->{_body}->upload;
     for my $name (keys %{ $uploads }) {
@@ -233,8 +233,8 @@ sub prepare_uploads :Method {
 
 
 # output
-sub finalize_cookies :Method {
-    my($self, $e, $c) = @_;
+sub finalize_cookies :InterfaceMethod {
+    my($self, $c) = @_;
 
     for my $name (keys %{ $c->res->cookies }) {
         my $val = $c->res->cookies->{$name};
@@ -255,16 +255,16 @@ sub finalize_cookies :Method {
     }
 }
 
-sub finalize_output_headers :Method {
-    my($self, $e, $c) = @_;
+sub finalize_output_headers :InterfaceMethod {
+    my($self, $c) = @_;
 
     $c->res->header(Status => $c->res->status);
     $self->write($c->res->headers->as_string("\015\012"));
     $self->write("\015\012");
 }
 
-sub finalize_output_body :Method {
-    my($self, $e, $c) = @_;
+sub finalize_output_body :InterfaceMethod {
+    my($self, $c) = @_;
     my $body = $c->res->body;
 
     no warnings 'uninitialized';
@@ -365,7 +365,7 @@ sub write {
 }
 
 
-sub finalize_output_headers :Method {
+sub finalize_output_headers :InterfaceMethod {
     my $self = shift;
 
     for my $name ( $self->c->res->headers->header_field_names ) {
@@ -402,7 +402,7 @@ sub finalize_output_headers :Method {
 }
 
 
-sub finalize_output_body :Method {
+sub finalize_output_body :InterfaceMethod {
     my $self = shift;
 
     $self->SUPER::dispatcher_output_body;

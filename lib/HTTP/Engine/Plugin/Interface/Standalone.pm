@@ -35,8 +35,8 @@ sub prepare_read {
     $self->SUPER::prepare_read(@_);
 }
 
-sub finalize_output_headers :Method {
-    my($self, $e, $c) = @_;
+sub finalize_output_headers :InterfaceMethod {
+    my($self, $c) = @_;
 
     my $protocol = $c->req->protocol;
     my $status   = $c->res->status;
@@ -49,7 +49,7 @@ sub finalize_output_headers :Method {
         Connection => $self->_keep_alive ? 'keep-alive' : 'close'
     );
 
-    $self->SUPER::finalize_output_headers($e, $c);
+    $self->SUPER::finalize_output_headers($c);
 }
 
 sub run :Method {

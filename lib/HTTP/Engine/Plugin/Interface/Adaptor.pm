@@ -9,7 +9,7 @@ __PACKAGE__->mk_accessors(qw/ adaptee /);
 
 sub init {
     my($self, $c) = @_;
-    $self->config->{class}->require or di $@;
+    $self->config->{class}->require or die $@;
     $self->adaptee( $self->config->{class}->new( $self->config->{args} || {} ) );
 }
 

@@ -64,9 +64,12 @@ sub prepare_parameters {}
 sub prepare_uploads {}
 sub errors { shift->{errors} }
 sub push_errors { push @{ shift->{errors} }, @_ }
+sub clear_errors { shift->{errors} = [] }
 
 sub handle_request {
     my $self = shift;
+
+    $self->clear_errors();
 
     $self->run_hook( 'initialize' );
 

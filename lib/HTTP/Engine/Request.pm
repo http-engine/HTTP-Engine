@@ -9,7 +9,7 @@ use IO::Socket qw[AF_INET inet_aton];
 
 __PACKAGE__->mk_accessors(
     qw/action address arguments context cookies match method
-      protocol query_parameters secure captures uri user/
+      protocol query_parameters secure captures uri user raw_body/
 );
 
 *args         = \&arguments;
@@ -32,6 +32,7 @@ sub new {
     $self->{secure}           = 0;
     $self->{captures}         = [];
     $self->{uploads}          = {};
+    $self->{raw_body}         = '';
 
     $self;
 }

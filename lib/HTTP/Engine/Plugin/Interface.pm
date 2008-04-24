@@ -170,6 +170,7 @@ sub prepare_body :InterfaceMethod {
 
 sub prepare_body_chunk {
     my($self, $c, $chunk) = @_;
+    $c->req->raw_body($c->req->raw_body.$chunk);
     $c->req->{_body}->add($chunk);
 }
 

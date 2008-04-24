@@ -11,11 +11,13 @@ sub handle_request {
     my $c = shift;
     warn Dumper(\@_);
     my $req_dump = Dumper($c->req);
+    my $raw = $c->req->raw_body;
     my $body = <<"...";
     <form method="post">
         <input type="text" name="foo" />
         <input type="submit" />
     </form>
+    <pre>$raw</pre>
     <pre>$req_dump</pre>
 ...
 

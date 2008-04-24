@@ -5,7 +5,7 @@ use base 'HTTP::Engine::Plugin::Interface';
 
 __PACKAGE__->mk_accessors(qw/ adaptee /);
 
-sub run : InterfaceMethod { $_[0]->adaptee->run(@_) }
+sub run : Method { $_[0]->adaptee->run(@_) }
 
 sub prepare_request : InterfaceMethod { $_[0]->adaptee->prepare_request(@_) }
 sub prepare_connection : InterfaceMethod { $_[0]->adaptee->prepare_connection(@_) }

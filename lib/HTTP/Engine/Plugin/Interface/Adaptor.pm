@@ -7,10 +7,22 @@ use UNIVERSAL::require;
 
 __PACKAGE__->mk_accessors(qw/ adaptee /);
 
+BEGIN {
+    # HTTP::Engine hack
+    no strict 'refs';
+    *{"HTTP::Engine::_new_orig"} = \&{"HTTP::Engine::new"};
+}
+
+my $adaptee;
+sub httpe_new :Method('new') {
+    my($class, %opts) = @_;
+    $adaptee = delete $opts{adaptee};
+    $class->_new_orig(%opts);
+}
+
 sub init {
     my($self, $c) = @_;
-    $self->config->{class}->require or die $@;
-    $self->adaptee( $self->config->{class}->new( $self->config->{args} || {} ) );
+    $self->adaptee( $adaptee );
 }
 
 sub run : Method { $_[0]->adaptee->run(@_) }

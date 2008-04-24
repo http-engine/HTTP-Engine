@@ -5,7 +5,6 @@ use base 'HTTP::Engine::Plugin::Interface';
 
 use HTTP::Request::AsCGI;
 
-
 sub run {
     my($senf, $c, $request, $env) = @_;
     $env ||= \%ENV;
@@ -30,7 +29,7 @@ HTTP::Engine::Plugin::Interface::Test - HTTP::Engine Test Engine
 =head1 SYNOPSIS
 
   use HTTP::Engine;
-  my $response HTTP::Engine->new(
+  my $response = HTTP::Engine->new(
       config         => { plugins => [ { module => 'Interface::Engine' } ] },
       handle_request => sub {
           my $c = shift;

@@ -31,7 +31,7 @@ use HTTP::Engine::Context;
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 
-__PACKAGE__->load_components(qw/Plaggerize Autocall::InjectMethod DisableDynamicPlugin/);
+__PACKAGE__->load_components(qw/Plaggerize Autocall::InjectMethod/);
 
 sub new {
     my ($class, %opts) = @_;

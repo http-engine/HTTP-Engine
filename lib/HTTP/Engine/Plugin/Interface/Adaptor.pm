@@ -3,7 +3,15 @@ use strict;
 use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 
+use UNIVERSAL::require;
+
 __PACKAGE__->mk_accessors(qw/ adaptee /);
+
+sub init {
+    my($self, $c) = @_;
+    $self->config->{class}->require or di $@;
+    $self->adaptee( $self->config->{class}->new( $self->config->{args} || {} ) );
+}
 
 sub run : Method { $_[0]->adaptee->run(@_) }
 

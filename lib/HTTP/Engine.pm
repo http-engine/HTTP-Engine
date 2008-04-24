@@ -161,14 +161,17 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
         config         => 'config.yaml',
         handle_request => sub {
             my $c = shift;
-            $c->env('DUMY');
+            $c->env('DUMMY');
             $c->res->body( Dumper($e) );
         }
     )->run;
 
 =head1 DESCRIPTION
 
-HTTP::Engine is
+HTTP::Engine is a bare-bones, extensible HTTP engine. Not, it's not a 
+socket binding server. Its purpose is to be an adaptor to various HTTP
+based logic layers and the actual implementation of an HTTP server,
+for example, mod_perl and FastCGI
 
 =head1 AUTHOR
 

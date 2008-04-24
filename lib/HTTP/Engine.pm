@@ -1,7 +1,26 @@
+package HTTPEx;
+use strict;
+use warnings;
+
+=head1 NAME
+
+HTTPEx - extension base class for  HTTP::Engine
+
+=head1 DESCRIPTION
+
+HTTP::Engine entension namespace
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+
+=cut
+
 package HTTP::Engine;
 
 use strict;
 use warnings;
+use base 'HTTPEx';
 use Class::Component;
 our $VERSION = '0.01';
 

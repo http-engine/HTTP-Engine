@@ -15,7 +15,7 @@ BEGIN {
 
 my $adaptee;
 sub httpe_new :Method('new') {
-    my($class, %opts) = @_;
+    my($self, $class, %opts) = @_;
     $adaptee = delete $opts{adaptee};
     $class->_new_orig(%opts);
 }

@@ -62,6 +62,8 @@ sub prepare_body {}
 sub prepare_body_parameters {}
 sub prepare_parameters {}
 sub prepare_uploads {}
+sub errors { shift->{errors} }
+sub push_errors { push @{ shift->{errors} }, @_ }
 
 sub handle_request {
     my $self = shift;
@@ -84,7 +86,12 @@ sub handle_request {
         $self->$method($context);
     }
 
-    my $ret = $self->{handle_request}->($context);
+    my $ret = eval {
+        $self->{handle_request}->($context);
+    };
+    if (my $e = $@) {
+        $self->push_errors($e);
+    }
     $self->finalize($context);
 
     $ret;

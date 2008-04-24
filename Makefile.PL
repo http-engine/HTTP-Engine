@@ -5,7 +5,7 @@ all_from 'lib/HTTP/Engine.pm';
 requires $_ for (qw/
     Class::Accessor::Fast
     Class::Component
-    Scalar::Util;
+    Scalar::Util
 /);
 
 build_requires 'Test::More';

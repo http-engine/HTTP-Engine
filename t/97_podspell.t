@@ -7,3 +7,8 @@ all_pod_files_spelling_ok('lib');
 __DATA__
 Kazuhiro Osawa
 HTTP::Engine
+FastCGI
+HTTPEx
+PLUGINS
+namespace
+plugins

@@ -23,24 +23,7 @@ sub initialize :Hook {
 sub prepare_connection :InterfaceMethod {
     my($self, $c) = @_;
 
-    $c->req->address($c->env->{REMOTE_ADDR});
-
-    PROXY_CHECK:
-    {   
-        unless ( $c->conf->{using_frontend_proxy} ) {
-            last PROXY_CHECK if $c->env->{REMOTE_ADDR} ne '127.0.0.1';
-            last PROXY_CHECK if $c->conf->{ignore_frontend_proxy};
-        }
-        # in apache httpd.conf (RequestHeader set X-Forwarded-HTTPS %{HTTPS}s)
-        $c->env->{HTTPS} = $c->env->{HTTP_X_FORWARDED_HTTPS} if $c->env->{HTTP_X_FORWARDED_HTTPS};
-        $c->env->{HTTPS} = 'ON' if $c->env->{HTTP_X_FORWARDED_PROTO}; # Pound
-        last PROXY_CHECK unless $c->env->{HTTP_X_FORWARDED_FOR};
-
-        # If we are running as a backend server, the user will always appear
-        # as 127.0.0.1. Select the most recent upstream IP (last in the list)
-        my($ip) = $c->env->{HTTP_X_FORWARDED_FOR} =~ /([^,\s]+)$/;
-        $c->req->address($ip);
-    }
+    $c->req->address($c->env->{REMOTE_ADDR}) unless $c->req->address;
 
     $c->req->hostname($c->env->{REMOTE_HOST});
     $c->req->protocol($c->env->{SERVER_PROTOCOL});
@@ -90,7 +73,7 @@ sub prepare_path :InterfaceMethod {
 
     my $scheme = $c->req->secure ? 'https' : 'http';
     my $host   = $c->env->{HTTP_HOST}   || $c->env->{SERVER_NAME};
-    my $port   = $c->env->{SERVER_PORT} || 80;
+    my $port   = $c->env->{SERVER_PORT} || ( $c->req->secure ? 443 : 80 );
 
     my $base_path;
     if (exists $c->env->{REDIRECT_URL}) {
@@ -98,25 +81,6 @@ sub prepare_path :InterfaceMethod {
         $base_path =~ s/$c->env->{PATH_INFO}$//;
     } else {
         $base_path = $c->env->{SCRIPT_NAME} || '/';
-    }
-
-    # If we are running as a backend proxy, get the true hostname
-    PROXY_CHECK:
-    {
-        unless ($c->conf->{using_frontend_proxy}) {
-            last PROXY_CHECK if $host !~ /localhost|127.0.0.1/;
-            last PROXY_CHECK if $c->conf->{ignore_frontend_proxy};
-        }
-        last PROXY_CHECK unless $c->env->{HTTP_X_FORWARDED_HOST};
-
-        $host = $c->env->{HTTP_X_FORWARDED_HOST};
-
-        # backend could be on any port, so
-        # assume frontend is on the default port
-        $port = $c->req->secure ? 443 : 80;
-
-        # in apache httpd.conf (RequestHeader set X-Forwarded-Port 8443)
-        $port = $c->env->{HTTP_X_FORWARDED_PORT} if $c->env->{HTTP_X_FORWARDED_PORT};
     }
 
     my $path = $base_path . ($c->env->{PATH_INFO} || '');

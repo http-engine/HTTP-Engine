@@ -8,7 +8,7 @@ HTTPEx - extension base class for  HTTP::Engine
 
 =head1 DESCRIPTION
 
-HTTP::Engine entension namespace
+HTTP::Engine extension namespace
 
 =head1 SEE ALSO
 

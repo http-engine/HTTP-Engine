@@ -1,4 +1,4 @@
-package HTTP::Server::Wrapper::Request::Upload;
+package HTTP::Enginer::Request::Upload;
 
 use strict;
 use base qw( Class::Accessor::Fast );

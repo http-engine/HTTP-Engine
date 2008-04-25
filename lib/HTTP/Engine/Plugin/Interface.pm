@@ -13,6 +13,7 @@ use Scalar::Util;
 use URI;
 use URI::QueryParam;
 
+use HTTP::Engine::Request::Upload;
 
 sub initialize :Hook {
     my($self, $c) = @_;
@@ -180,7 +181,7 @@ sub prepare_uploads :InterfaceMethod {
 
         my @uploads;
         for my $upload (@{ $files }) {
-            my $u = HTTP::Server::Wrapper::Request::Upload->new;
+            my $u = HTTP::Engine::Request::Upload->new;
             $u->headers(HTTP::Headers->new(%{ $upload->{headers} }));
             $u->type($u->headers->content_type);
             $u->tempname($upload->{tempname});

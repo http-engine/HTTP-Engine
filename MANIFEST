@@ -1,4 +1,6 @@
 Changes
+examples/dumper.pl
+examples/plusplus.pl
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -16,6 +18,17 @@ inc/Test/Builder.pm
 inc/Test/Builder/Module.pm
 inc/Test/More.pm
 lib/HTTP/Engine.pm
+lib/HTTP/Engine/Attribute/InterfaceMethod.pm
+lib/HTTP/Engine/Context.pm
+lib/HTTP/Engine/Plugin.pm
+lib/HTTP/Engine/Plugin/Interface.pm
+lib/HTTP/Engine/Plugin/Interface/Adaptor.pm
+lib/HTTP/Engine/Plugin/Interface/Standalone.pm
+lib/HTTP/Engine/Plugin/Interface/Test.pm
+lib/HTTP/Engine/Plugin/Request/ReverseProxy.pm
+lib/HTTP/Engine/Request.pm
+lib/HTTP/Engine/Request/Upload.pm
+lib/HTTP/Engine/Response.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml

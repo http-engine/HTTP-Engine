@@ -198,7 +198,7 @@ you should load it as
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 
-=head1 COMMITERS
+=head1 COMMITTERS
 
 lestrrat
 

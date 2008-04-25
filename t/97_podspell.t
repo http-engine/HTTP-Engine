@@ -12,3 +12,7 @@ HTTPEx
 PLUGINS
 namespace
 plugins
+COMMITTERS
+adaptor
+lestrrat
+tokuhirom

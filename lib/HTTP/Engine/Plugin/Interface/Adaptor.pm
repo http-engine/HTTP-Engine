@@ -23,7 +23,7 @@ sub prepare_path : InterfaceMethod { $_[0]->adaptee->prepare_path(@_) }
 sub prepare_body : InterfaceMethod { $_[0]->adaptee->prepare_body(@_) }
 sub prepare_body_parameters : InterfaceMethod { $_[0]->adaptee->prepare_body_parameters(@_) }
 sub prepare_parameters : InterfaceMethod { $_[0]->adaptee->prepare_parameters(@_) }
-sub prepare_uploads : InterfaceMethod { $_[0]->adaptee->prepare_upload(@_) }
+sub prepare_uploads : InterfaceMethod { $_[0]->adaptee->prepare_uploads(@_) }
 
 sub finalize_cookies : InterfaceMethod { $_[0]->adaptee->finalize_cookies(@_) }
 sub finalize_output_headers : InterfaceMethod { $_[0]->adaptee->finalize_output_headers(@_) }

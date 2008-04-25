@@ -22,7 +22,7 @@ use strict;
 use warnings;
 use base 'HTTPEx';
 use Class::Component;
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 use Carp;
 use Scalar::Util;

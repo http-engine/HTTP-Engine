@@ -3,8 +3,6 @@ use strict;
 use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 
-use UNIVERSAL::require;
-
 __PACKAGE__->mk_accessors(qw/ adaptee /);
 
 sub set_adaptee :Method {

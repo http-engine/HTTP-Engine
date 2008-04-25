@@ -17,7 +17,7 @@ sub read_chunk {
 
     READ:
     {
-        select($rin, undef, undef, undef); # no critic.
+        select($rin, undef, undef, undef); ## no critic.
         my $rc = *STDIN->sysread(@_);
         if (defined $rc) {
            return $rc;

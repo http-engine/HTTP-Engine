@@ -169,10 +169,14 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
     config         => 'config.yaml',
     handle_request => sub {
       my $c = shift;
-      $c->env('DUMMY');
-      $c->res->body( Dumper($e) );
+      $c->res->body( Dumper($e->req) );
     }
   )->run;
+
+=head1 CONCEPT RELEASE
+
+Version 0.0.x is Concept release, An internal interface is chiefly fluid. 
+It is chiefly based on the code of Catalyst::Engine.
 
 =head1 DESCRIPTION
 
@@ -193,6 +197,12 @@ you should load it as
 =head1 AUTHOR
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
+
+=head1 COMMITERS
+
+lestrrat
+
+tokuhirom
 
 =head1 SEE ALSO
 

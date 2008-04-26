@@ -16,3 +16,5 @@ COMMITTERS
 adaptor
 lestrrat
 tokuhirom
+Tokuhiro
+Matsuno

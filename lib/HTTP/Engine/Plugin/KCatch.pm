@@ -2,6 +2,7 @@ package HTTP::Engine::Plugin::KCatch;
 use strict;
 use warnings;
 use base qw( HTTP::Engine::Plugin );
+use Carp::Always;
 
 sub handle_error:Hook {
     my ( $self, $engine, $context) = @_;

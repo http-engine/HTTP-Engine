@@ -75,6 +75,7 @@ sub handle_request {
     };
     if (my $e = $@) {
         $self->push_errors($e);
+        $self->run_hook('handle_error', $context);
     }
     $self->finalize($context);
 

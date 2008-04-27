@@ -36,6 +36,11 @@ features(
         -default => 0,
         recommends('Module::Reload'),
     ],
+
+    'DebugScreen' => [
+        -default => 0,
+        recommends('Carp::Always'),
+    ],
 );
 
 build_requires 'Test::More';

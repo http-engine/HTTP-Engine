@@ -169,7 +169,7 @@ for example, mod_perl and FastCGI
 =head1 PLUGINS
 
 For all non-core plugins (consult at #codrepos first), use the HTTPEx::
-namespace. For example, if you have a plugin module named "HTTPEx::Plguin::Foo",
+namespace. For example, if you have a plugin module named "HTTPEx::Plugin::Foo",
 you should load it as
 
   use HTTP::Engine;

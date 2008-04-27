@@ -1,6 +1,7 @@
 package HTTP::Engine;
 use strict;
 use warnings;
+BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
 use base 'HTTPEx';
 use Class::Component;
 our $VERSION = '0.0.1';

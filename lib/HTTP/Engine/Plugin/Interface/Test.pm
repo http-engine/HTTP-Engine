@@ -1,11 +1,11 @@
-package HTTP::Engine::Plugin::Interface::Standalone;
+package HTTP::Engine::Plugin::Interface::Test;
 use strict;
 use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 
 use HTTP::Request::AsCGI;
 
-sub run :InterfaceMethod {
+sub run :Method {
     my($senf, $c, $request, $env) = @_;
     $env ||= \%ENV;
 
@@ -24,16 +24,16 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Plugin::Interface::Test - HTTP::Engine Test Engine
+HTTP::Engine::Plugin::Interface::Test - HTTP::Engine Test Interface
 
 =head1 SYNOPSIS
 
   use HTTP::Engine;
   my $response = HTTP::Engine->new(
-      config         => { plugins => [ { module => 'Interface::Engine' } ] },
+      config         => { plugins => [ { module => 'Interface::Test' } ] },
       handle_request => sub {
           my $c = shift;
-          $c->env('DUMY');
+          $c->env('DUMMY');
           $c->res->body( Dumper($e) );
       }
   )->run(HTTP::Request->new( GET => 'http://localhost/'), \%ENV);

@@ -1,5 +1,7 @@
 Revision history for Perl extension HTTP::Engine
 
+         - fix Interface::Test dosent work bug
+
 0.0.2    2008-04-27T13:50:44+09:00
          - add Plugin::Interface::FCGI
          - add Plugin::ModuleReload

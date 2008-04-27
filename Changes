@@ -1,4 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
-0.0.1    Wed Apr 23 20:54:07 2008
-        - first release
+0.0.2    2008-04-27T13:50:44+09:00
+         - add Plugin::Interface::FCGI
+         - add Plugin::ModuleReload
+         - add Plugin::DebugScreen
+         - fix $c->res->redirect dosent work bug
+
+0.0.1    2008-04-23T20:44:07+09:00
+         - first release

@@ -1,7 +1,10 @@
 Changes
+examples/basic-lighty.conf
 examples/dumper.pl
 examples/plusplus.pl
+inc/Module/AutoInstall.pm
 inc/Module/Install.pm
+inc/Module/Install/AutoInstall.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
@@ -21,10 +24,13 @@ lib/HTTP/Engine.pm
 lib/HTTP/Engine/Attribute/InterfaceMethod.pm
 lib/HTTP/Engine/Context.pm
 lib/HTTP/Engine/Plugin.pm
+lib/HTTP/Engine/Plugin/DebugScreen.pm
 lib/HTTP/Engine/Plugin/Interface.pm
 lib/HTTP/Engine/Plugin/Interface/Adaptor.pm
+lib/HTTP/Engine/Plugin/Interface/FCGI.pm
 lib/HTTP/Engine/Plugin/Interface/Standalone.pm
 lib/HTTP/Engine/Plugin/Interface/Test.pm
+lib/HTTP/Engine/Plugin/ModuleReload.pm
 lib/HTTP/Engine/Plugin/Request/ReverseProxy.pm
 lib/HTTP/Engine/Request.pm
 lib/HTTP/Engine/Request/Upload.pm
@@ -34,3 +40,4 @@ MANIFEST			This list of files
 META.yml
 README
 t/00_compile.t
+t/optional_lighttpd-fastcgi.t

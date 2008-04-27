@@ -7,7 +7,7 @@ __END__
 
 =head1 NAME
 
-HTTPEx - extension base class for  HTTP::Engine
+HTTPEx - extension base class for HTTP::Engine
 
 =head1 DESCRIPTION
 

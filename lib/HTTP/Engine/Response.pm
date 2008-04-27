@@ -28,23 +28,10 @@ sub redirect {
     my $self = shift;
 
     if (@_) {
-        my $location = shift;
-        my $status   = shift || 302;
-
-        unless ($location =~ m!^https?://!) {
-            my $base = $self->context->req->base;
-            my $url = sprintf '%s://%s', $base->scheme, $base->host;
-            unless (($base->scheme eq 'http' && $base->port eq '80') ||
-                    ($base->scheme eq 'https' && $base->port eq '443')) {
-                $url .= ':' . $base->port;
-            }
-            $url .= $base->path;
-            $location = URI->new_abs($location, $url);
-        }
-
-        $self->location($location);
-        $self->status($status);
+        $self->location( shift );
+        $self->status( shift || 302 );
     }
+
     $self->location;
 }
 

@@ -7,6 +7,7 @@ our $VERSION = '0.0.1';
 
 use Carp;
 use Scalar::Util;
+use URI;
 
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;
@@ -96,8 +97,8 @@ sub finalize_headers {
 
     # Handle redirects
     if (my $location = $c->res->redirect ) {
-        $self->log->( debug => qq/Redirecting to "$location"/ );
-        $c->res->header( Location => $location );
+        $self->log( debug => qq/Redirecting to "$location"/ );
+        $c->res->header( Location => $self->absolute_url($c, $location) );
     }
 
     # Content-Length
@@ -134,6 +135,23 @@ sub finalize_body {
     $self->finalize_output_body(@_);
 }
 sub finalize_output_body {}
+
+
+sub absolute_url {
+    my($self, $c, $location) = @_;
+
+    unless ($location =~ m!^https?://!) {
+        my $base = $c->req->base;
+        my $url = sprintf '%s://%s', $base->scheme, $base->host;
+        unless (($base->scheme eq 'http' && $base->port eq '80') ||
+               ($base->scheme eq 'https' && $base->port eq '443')) {
+            $url .= ':' . $base->port;
+        }
+        $url .= $base->path;
+        $location = URI->new_abs($location, $url);
+    }
+    $location;
+}
 
 1;
 __END__

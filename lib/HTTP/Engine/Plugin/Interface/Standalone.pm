@@ -194,7 +194,7 @@ sub _handler {
         last unless ($method, $uri, $protocol) = $self->_parse_request_line(\*STDIN, 1);
     }
 
-    sysread(Remote, my $buf, 4096); # IE bk
+    sysread(Remote, my $buf, 4096) if $sel->can_read(0); # IE bk
     close Remote;
 }
 

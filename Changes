@@ -1,5 +1,6 @@
 Revision history for Perl extension HTTP::Engine
 
+         - fix content-length 0 if undefined response body bug
          - fix Interface::Test dosent work bug
 
 0.0.2    2008-04-27T13:50:44+09:00

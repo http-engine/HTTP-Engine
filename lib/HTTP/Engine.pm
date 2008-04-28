@@ -103,6 +103,7 @@ sub finalize_headers {
     }
 
     # Content-Length
+    $c->res->content_length(0);
     if ($c->res->body && !$c->res->content_length) {
         # get the length from a filehandle
 	if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {

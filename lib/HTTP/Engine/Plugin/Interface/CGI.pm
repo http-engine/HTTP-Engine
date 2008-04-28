@@ -3,6 +3,8 @@ use strict;use warnings;use base 'HTTP::Engine::Plugin::Interface';
 sub run :Method{$_[1]->handle_request}1;
 __END__
 
+=for stopwords CGI Naoki Nyarla Okamura yaml
+
 =head1 NAME
 
 HTTP::Engine::Plugin::Interface::CGI - CGI interface for HTTP::Engine

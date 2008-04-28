@@ -211,7 +211,7 @@ sub uri_with {
 
 sub as_http_request {
     my $self = shift;
-    HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->body );
+    HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->raw_body );
 }
 
 1;

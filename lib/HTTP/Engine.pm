@@ -100,6 +100,7 @@ sub finalize_headers {
     if (my $location = $c->res->redirect ) {
         $self->log( debug => qq/Redirecting to "$location"/ );
         $c->res->header( Location => $self->absolute_url($c, $location) );
+        $c->res->body($c->res->status . ': Redirect') unless $c->res->body;
     }
 
     # Content-Length

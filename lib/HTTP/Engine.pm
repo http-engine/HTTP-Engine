@@ -118,6 +118,8 @@ sub finalize_headers {
         }
     }
 
+    $c->res->content_type('text/html') unless $c->res->content_type;
+
     # Errors
     if ($c->res->status =~ /^(1\d\d|[23]04)$/) {
         $c->res->headers->remove_header("Content-Length");

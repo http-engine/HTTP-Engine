@@ -1,5 +1,6 @@
 Revision history for Perl extension HTTP::Engine
 
+         - add Plugin::Interface::CGI
          - fix content-length 0 if undefined response body bug
          - fix Interface::Test dosent work bug
 

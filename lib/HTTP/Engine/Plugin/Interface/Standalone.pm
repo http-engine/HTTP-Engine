@@ -191,7 +191,7 @@ sub _handler {
           && index($connection, 'te') == -1          # opera stuff
           && $sel->can_read(5);
 
-        last unless ($method, $uri, $protocol) = $self->_parse_request_line(\*STDIN);
+        last unless ($method, $uri, $protocol) = $self->_parse_request_line(\*STDIN, 1);
     }
 
     sysread(Remote, my $buf, 4096); # IE bk
@@ -208,10 +208,13 @@ sub _keep_alive {
 }
 
 sub _parse_request_line {
-    my($self, $handle) = @_;
+    my($self, $handle, $is_keepalive) = @_;
 
     # Parse request line
     my $line = $self->_get_line($handle);
+    if ($is_keepalive && ($line eq '' || $line eq "\015")) {
+        $line = $self->_get_line($handle);
+    }
     return ()
       unless my($method, $uri, $protocol) =
       $line =~ m/\A(\w+)\s+(\S+)(?:\s+HTTP\/(\d+(?:\.\d+)?))?\z/;

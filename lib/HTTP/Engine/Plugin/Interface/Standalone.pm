@@ -5,7 +5,7 @@ use base 'HTTP::Engine::Plugin::Interface';
 
 use Errno 'EWOULDBLOCK';
 use HTTP::Status;
-use Socket;
+use Socket qw(:all);
 use IO::Socket::INET ();
 use IO::Select       ();
 
@@ -194,6 +194,7 @@ sub _handler {
         last unless ($method, $uri, $protocol) = $self->_parse_request_line(\*STDIN);
     }
 
+    sysread(Remote, my $buf, 4096); # IE bk
     close Remote;
 }
 

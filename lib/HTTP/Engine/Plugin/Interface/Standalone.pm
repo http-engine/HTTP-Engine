@@ -4,7 +4,6 @@ use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 
 use Errno 'EWOULDBLOCK';
-use HTTP::Status;
 use Socket qw(:all);
 use IO::Socket::INET ();
 use IO::Select       ();
@@ -38,11 +37,7 @@ sub prepare_read {
 sub finalize_output_headers :InterfaceMethod {
     my($self, $c) = @_;
 
-    my $protocol = $c->req->protocol;
-    my $status   = $c->res->status;
-    my $message  = status_message($status);
-
-    $self->write("$protocol $status $message\015\012");
+    $self->write_response_line($c);
 
     $c->res->headers->date(time);
     $c->res->headers->header(

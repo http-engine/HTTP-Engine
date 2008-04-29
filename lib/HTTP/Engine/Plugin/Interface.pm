@@ -12,6 +12,7 @@ use HTTP::Headers;
 use Scalar::Util;
 use URI;
 use URI::QueryParam;
+use HTTP::Status ();
 
 use HTTP::Engine::Request::Upload;
 
@@ -302,6 +303,16 @@ sub write {
     }
 
     print STDOUT $buffer unless $self->{_sigpipe};
+}
+
+sub write_response_line {
+    my ( $self, $c ) = @_;
+
+    my $protocol = $c->req->protocol;
+    my $status   = $c->res->status;
+    my $message  = HTTP::Status::status_message($status);
+
+    $self->write( "$protocol $status $message\015\012" );
 }
 
 1;

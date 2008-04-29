@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 use HTTP::Server::Simple 0.33;
-use HTTP::Status qw/status_message/;
 
 sub run: Method {
     my ($self, $c) = @_;
@@ -17,12 +16,7 @@ sub run: Method {
 sub finalize_output_headers : InterfaceMethod {
     my ( $self, $c ) = @_;
 
-    my $protocol = $c->req->protocol;
-    my $status   = $c->res->status;
-    my $message  = status_message($status);
-
-    $self->write("$protocol $status $message\015\012");
-
+    $self->write_response_line($c);
     $self->SUPER::finalize_output_headers($c);
 }
 

@@ -72,9 +72,14 @@ sub handle_request {
         $self->$method($context);
     }
 
+    $self->run_hook( before_handle_request => $context );
     my $ret = eval {
         $self->{handle_request}->($context);
     };
+    {
+        local $@;
+        $self->run_hook( after_handle_request => $context );
+    }
     if (my $e = $@) {
         $self->push_errors($e);
         $self->run_hook('handle_error', $context);

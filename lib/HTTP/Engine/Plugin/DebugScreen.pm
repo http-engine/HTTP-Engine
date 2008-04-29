@@ -1,4 +1,4 @@
-package HTTP::Engine::Plugin::KCatch;
+package HTTP::Engine::Plugin::DebugScreen;
 use strict;
 use warnings;
 use base qw( HTTP::Engine::Plugin );

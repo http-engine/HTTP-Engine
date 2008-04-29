@@ -208,13 +208,11 @@ you could load it as
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 
-=head1 COMMITTERS
-
 lestrrat
 
 tokuhirom
 
-=head1 THANKS TO
+nyarla
 
 marcus
 

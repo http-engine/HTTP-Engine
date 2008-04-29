@@ -27,7 +27,7 @@ sub new {
     return $self;
 }
 
-sub run { die "404 Engine not found!" }
+sub run { croak ref($_[0] || $_[0] ) ." did not override HTTP::Engine::run" }
 
 sub set_handle_request {
     my($self, $callback) = @_;
@@ -213,6 +213,10 @@ Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 lestrrat
 
 tokuhirom
+
+=head1 THANKS TO
+
+marcus
 
 =head1 SEE ALSO
 

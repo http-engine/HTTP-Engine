@@ -218,6 +218,10 @@ marcus
 
 =head1 SEE ALSO
 
+wiki page L<http://coderepos.org/share/wiki/HTTP%3A%3AEngine>
+
+L<Class::Component>
+
 =head1 REPOSITORY
 
   svn co http://svn.coderepos.org/share/lang/perl/HTTP-Engine/trunk HTTP-Engine

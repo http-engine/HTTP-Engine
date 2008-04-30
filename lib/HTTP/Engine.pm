@@ -21,15 +21,8 @@ has interface => (
     required => 1,
 );
 
-# TODO: HTTP::Engine::Role::ErrorHandler
-sub errors       { shift->{errors} }
-sub push_errors  { push @{ shift->{errors} }, @_ }
-sub clear_errors { shift->{errors} = [] }
-
 sub handle_request {
     my $self = shift;
-
-    $self->clear_errors();
 
     $self->interface->initialize();
 
@@ -53,8 +46,7 @@ sub handle_request {
 #       $self->run_hook( after_handle_request => $context );
 #   }
     if (my $e = $@) {
-        $self->push_errors($e);
-#       $self->run_hook('handle_error', $context);
+#       $self->run_hook('handle_error', $context, $e);
     }
     $self->interface->finalize( $context );
 

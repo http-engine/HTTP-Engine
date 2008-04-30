@@ -19,7 +19,7 @@ sub finalize {
 
 sub finalize_headers {
     my($self, $c) = @_;
-    return if $c->res->{_finalized_headers};
+    return if $c->res->finalized_headers();
 
     # Handle redirects
     if (my $location = $c->res->redirect ) {
@@ -32,14 +32,14 @@ sub finalize_headers {
     $c->res->content_length(0);
     if ($c->res->body && !$c->res->content_length) {
         # get the length from a filehandle
-	if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
-	    if (my $stat = stat $c->res->body) {
+        if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
+            if (my $stat = stat $c->res->body) {
                 $c->res->content_length($stat->size);
             } else {
                 $self->log( warn => 'Serving filehandle without a content-length' );
             }
-	} else {
-	    $c->res->content_length(bytes::length($c->res->body));
+        } else {
+            $c->res->content_length(bytes::length($c->res->body));
         }
     }
 
@@ -55,7 +55,7 @@ sub finalize_headers {
     $self->finalize_output_headers($c);
 
     # Done
-    $c->res->{_finalized_headers} = 1;
+    $c->res->finalized_headers(1);
 }
 
 

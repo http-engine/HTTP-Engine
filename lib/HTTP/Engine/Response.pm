@@ -37,6 +37,11 @@ has headers => (
     handles => [ qw(content_encoding content_length content_type header) ],
 );
 
+has finalized_headers => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0
+);
 
 *output = \&body;
 

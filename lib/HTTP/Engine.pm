@@ -164,7 +164,7 @@ you could load it as
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 
-lestrrat
+Daisuke Maki
 
 tokuhirom
 

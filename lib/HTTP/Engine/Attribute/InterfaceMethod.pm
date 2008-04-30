@@ -13,9 +13,7 @@ sub register {
     *{"$pkg\::$method"} = sub {
         my $self = shift;
         my $c    = shift;
-        $self->run_hook( "before_$method", $c, @_ );
         my @ret = $plugin->$method($c, @_);
-        $self->run_hook( "after_$method", $c, @_ );
         @ret;
     };
 }

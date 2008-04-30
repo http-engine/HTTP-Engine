@@ -3,12 +3,6 @@ use Moose;
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 
-has action => (
-    is => 'rw',
-
-    # XXX what's this?
-);
-
 has address => (
     is => 'rw',
 

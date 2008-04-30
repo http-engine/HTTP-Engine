@@ -21,6 +21,24 @@ has interface => (
     required => 1,
 );
 
+has context_class => (
+    is => 'rw',
+    isa => 'Str',
+    default => 'HTTP::Engine::Context',
+);
+
+has request_class => (
+    is => 'rw',
+    isa => 'Str',
+    default => 'HTTP::Engine::Request',
+);
+
+has response_class => (
+    is => 'rw',
+    isa => 'Str',
+    default => 'HTTP::Engine::Response',
+);
+
 sub handle_request {
     my $self = shift;
 
@@ -29,24 +47,20 @@ sub handle_request {
     my %env = @_;
        %env = %ENV unless %env;
 
-    my $context = HTTP::Engine::Context->new(
+    my $context = $self->context_class->new(
         engine => $self,
-        req    => HTTP::Engine::Request->new(),
-        res    => HTTP::Engine::Response->new(),
+        req    => $self->request_class->new(),
+        res    => $self->response_class->new(),
         env    => \%env,
     );
 
     $self->interface->prepare( $context );
 
     my $ret = eval {
-        $self->handler->($context);
+        $self->call_handler($context);
     };
-#   {
-#       local $@;
-#       $self->run_hook( after_handle_request => $context );
-#   }
     if (my $e = $@) {
-#       $self->run_hook('handle_error', $context, $e);
+        $self->handle_error( $context, $e);
     }
     $self->interface->finalize( $context );
 
@@ -56,6 +70,18 @@ sub handle_request {
 sub run {
     my $self = shift;
     $self->interface->run($self);
+}
+
+# hook me!
+sub handle_error {
+    my ($self, $context, $error) = @_;
+    print STDERR $error;
+}
+
+# hook me!
+sub call_handler {
+    my ($self, $context) = @_;
+    $self->handler->($context);
 }
 
 1;

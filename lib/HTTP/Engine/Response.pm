@@ -1,5 +1,6 @@
 package HTTP::Engine::Response;
 use Moose;
+use HTTP::Headers;
 
 has body => (
     is      => 'rw',
@@ -30,8 +31,8 @@ has status => (
 );
 
 has headers => (
-    is => 'rw',
-    isa => 'HTTP::Headers',
+    is      => 'rw',
+    isa     => 'HTTP::Headers',
     default => sub { HTTP::Headers->new },
 );
 

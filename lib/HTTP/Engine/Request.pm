@@ -4,38 +4,73 @@ use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 use HTTP::Headers;
 
-__PACKAGE__->mk_accessors(
-    qw/address context cookies method
-      protocol query_parameters secure  uri user raw_body/
+# the IP address of the client
+has address => (
+    is  => 'rw',
+    isa => 'Str',
 );
 
+has context => (
+    is      => 'rw',
+    isa     => 'HTTP::Engine::Context',
+    weakref => 1,
+);
+
+has cookies => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+has method => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has protocol => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has query_parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+# https or not?
+has secure => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has uri => (
+    is  => 'rw',
+    # isa => 'URI',
+);
+
+has user => ( is => 'rw', );
+
+has raw_body => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
+
+has headers => (
+    is => 'rw',
+    isa => 'HTTP::Headers',
+    default => sub { HTTP::Headers->new },
+    handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
+);
+
+# aliases
 *body_params  = \&body_parameters;
 *input        = \&body;
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    $self->{body_parameters}  = {};
-    $self->{cookies}          = {};
-    $self->{parameters}       = {};
-    $self->{query_parameters} = {};
-    $self->{secure}           = 0;
-    $self->{uploads}          = {};
-    $self->{raw_body}         = '';
-
-    $self;
-}
-
-sub content_encoding { shift->headers->content_encoding(@_) }
-sub content_length   { shift->headers->content_length(@_) }
-sub content_type     { shift->headers->content_type(@_) }
-sub header           { shift->headers->header(@_) }
-sub referer          { shift->headers->referer(@_) }
-sub user_agent       { shift->headers->user_agent(@_) }
 
 sub base {
     my($self, $base) = @_;
@@ -152,11 +187,11 @@ sub upload {
         if (ref $self->uploads->{$upload} eq 'ARRAY') {
             return (wantarray)
               ? @{ $self->uploads->{$upload} }
-              : $self->uploads->{$upload}->[0];
+          : $self->uploads->{$upload}->[0];
         } else {
             return (wantarray)
               ? ( $self->uploads->{$upload} )
-              : $self->uploads->{$upload};
+          : $self->uploads->{$upload};
         }
     }
 

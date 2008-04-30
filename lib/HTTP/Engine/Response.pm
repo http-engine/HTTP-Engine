@@ -34,14 +34,11 @@ has headers => (
     is      => 'rw',
     isa     => 'HTTP::Headers',
     default => sub { HTTP::Headers->new },
+    handles => [ qw(content_encoding content_length content_type header) ],
 );
 
-*output = \&body;
 
-sub content_encoding { shift->headers->content_encoding(@_) }
-sub content_length   { shift->headers->content_length(@_) }
-sub content_type     { shift->headers->content_type(@_) }
-sub header           { shift->headers->header(@_) }
+*output = \&body;
 
 sub redirect {
     my $self = shift;

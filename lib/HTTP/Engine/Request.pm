@@ -8,7 +8,7 @@ use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 
 __PACKAGE__->mk_accessors(
-    qw/action address arguments context cookies match method
+    qw/address arguments context cookies match method
       protocol query_parameters secure captures uri user raw_body/
 );
 

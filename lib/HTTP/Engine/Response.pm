@@ -56,7 +56,7 @@ sub redirect {
 
 sub set_http_response {
     my ($self, $res) = @_;
-    $self->status( $res->code );
+    $self->status( $res->status );
     $self->{_headers} = $res->headers; # ad hoc
     $self->body( $res->content );
     $self;

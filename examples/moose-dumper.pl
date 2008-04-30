@@ -3,12 +3,15 @@ use warnings;
 use Data::Dumper;
 use HTTP::Engine;
 use HTTP::Engine::Interface::ServerSimple;
+use Moose::Util 'apply_all_roles';
+use HTTP::Engine::Plugin::DebugScreen;
+
+apply_all_roles('HTTP::Engine', 'HTTP::Engine::Plugin::DebugScreen');
 
 HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new(port => 9999),
     handler => sub {
         my $c = shift;
-        warn "HANDLER";
         my $req_dump = Dumper($c->req);
         my $raw = $c->req->raw_body;
         my $body = <<"...";

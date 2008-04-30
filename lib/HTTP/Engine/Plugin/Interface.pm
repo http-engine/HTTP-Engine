@@ -21,7 +21,7 @@ sub initialize :Hook {
     delete $self->{_prepared_read};
     delete $self->{_prepared_write};
 }
-				       
+
 sub prepare_connection :InterfaceMethod {
     my($self, $c) = @_;
 

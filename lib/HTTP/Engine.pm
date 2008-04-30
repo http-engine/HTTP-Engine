@@ -112,14 +112,14 @@ sub finalize_headers {
     $c->res->content_length(0);
     if ($c->res->body && !$c->res->content_length) {
         # get the length from a filehandle
-	if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
-	    if (my $stat = stat $c->res->body) {
+        if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
+            if (my $stat = stat $c->res->body) {
                 $c->res->content_length($stat->size);
             } else {
                 $self->log( warn => 'Serving filehandle without a content-length' );
             }
-	} else {
-	    $c->res->content_length(bytes::length($c->res->body));
+        } else {
+            $c->res->content_length(bytes::length($c->res->body));
         }
     }
 

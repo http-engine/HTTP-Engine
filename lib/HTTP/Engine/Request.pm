@@ -158,11 +158,11 @@ sub upload {
         if (ref $self->uploads->{$upload} eq 'ARRAY') {
             return (wantarray)
               ? @{ $self->uploads->{$upload} }
-		  : $self->uploads->{$upload}->[0];
+              : $self->uploads->{$upload}->[0];
         } else {
             return (wantarray)
               ? ( $self->uploads->{$upload} )
-		  : $self->uploads->{$upload};
+              : $self->uploads->{$upload};
         }
     }
 
@@ -196,7 +196,7 @@ sub uri_with {
         next unless defined $value;
         for ( ref $value eq 'ARRAY' ? @{ $value } : $value ) {
             $_ = "$_";
-	    utf8::encode( $_ );
+            utf8::encode( $_ );
         }
     };
     

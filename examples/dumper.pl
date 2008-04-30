@@ -9,7 +9,6 @@ HTTP::Engine->new( config => 'config.yaml', handle_request => \&handle_request )
 
 sub handle_request {
     my $c = shift;
-    warn Dumper(\@_);
     my $req_dump = Dumper($c->req);
     my $raw = $c->req->raw_body;
     my $body = <<"...";

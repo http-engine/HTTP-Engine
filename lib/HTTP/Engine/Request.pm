@@ -1,17 +1,94 @@
 package HTTP::Engine::Request;
-
-use strict;
-use warnings;
-use base qw( HTTP::Request Class::Accessor::Fast );
-
+use Moose;
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 
-__PACKAGE__->mk_accessors(
-    qw/action address arguments context cookies match method
-      protocol query_parameters secure captures uri user raw_body/
+has action => (
+    is => 'rw',
+
+    # XXX what's this?
 );
 
+has address => (
+    is => 'rw',
+
+    # XXX what's this?
+);
+
+has arguments => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [] },
+);
+
+has context => (
+    is      => 'rw',
+    isa     => 'HTTP::Engine',    # or HTTP::Engine::Context?
+    weakref => 1,
+);
+
+has cookies => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+has match => (
+    is => 'rw',
+
+    # XXX what's this?
+);
+
+has method => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has protocol => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has query_parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+# https or not?
+has secure => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has captures => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [] },
+);
+
+# why override HTTP::Request->uri?
+has uri => (
+    is  => 'rw',
+    # isa => 'URI',
+);
+
+has user => ( is => 'rw', );
+
+has raw_body => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
+
+has headers => (
+    is => 'rw',
+    isa => 'HTTP::Headers',
+    default => sub { HTTP::Headers->new },
+);
+
+# aliases
 *args         = \&arguments;
 *body_params  = \&body_parameters;
 *input        = \&body;
@@ -20,29 +97,14 @@ __PACKAGE__->mk_accessors(
 *path_info    = \&path;
 *snippets     = \&captures;
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    $self->{arguments}        = [];
-    $self->{body_parameters}  = {};
-    $self->{cookies}          = {};
-    $self->{parameters}       = {};
-    $self->{query_parameters} = {};
-    $self->{secure}           = 0;
-    $self->{captures}         = [];
-    $self->{uploads}          = {};
-    $self->{raw_body}         = '';
-
-    $self;
-}
-
+# shortcut.
 sub content_encoding { shift->headers->content_encoding(@_) }
 sub content_length   { shift->headers->content_length(@_) }
 sub content_type     { shift->headers->content_type(@_) }
 sub header           { shift->headers->header(@_) }
 sub referer          { shift->headers->referer(@_) }
 sub user_agent       { shift->headers->user_agent(@_) }
+
 sub base {
     my($self, $base) = @_;
 
@@ -213,5 +275,22 @@ sub as_http_request {
     my $self = shift;
     HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->raw_body );
 }
+
+sub absolute_url {
+    my ($self, $location) = @_;
+
+    unless ($location =~ m!^https?://!) {
+        my $base = $self->req->base;
+        my $url = sprintf '%s://%s', $base->scheme, $base->host;
+        unless (($base->scheme eq 'http' && $base->port eq '80') ||
+               ($base->scheme eq 'https' && $base->port eq '443')) {
+            $url .= ':' . $base->port;
+        }
+        $url .= $base->path;
+        $location = URI->new_abs($location, $url);
+    }
+    $location;
+}
+
 
 1;

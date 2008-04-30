@@ -1,36 +1,40 @@
-package HTTP::Engine::Plugin::Interface::ServerSimple;
-use strict;
-use warnings;
-use base 'HTTP::Engine::Plugin::Interface';
+package HTTP::Engine::Interface::ServerSimple;
+use Moose;
+extends 'HTTP::Engine::Interface::CGI';
+
+has port => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 80,
+);
+
 use HTTP::Server::Simple 0.33;
+use HTTP::Server::Simple::CGI;
 
-sub run: Method {
-    my ($self, $c) = @_;
-    my $port = $self->config->{port} || '80';
+sub run {
+    my ($self, $engine) = @_;
 
-    my $server = HTTP::Engine::Plugin::Interface::ServerSimple::Server->new( $port );
-    $server->{http_engine} = $c;
-    $server->run;
+    my $simple_meta = Class::MOP::Class->create_anon_class(
+        superclasses => ['HTTP::Server::Simple::CGI'],
+        methods => {
+            handler => sub {
+                $engine->handle_request;
+            }
+        },
+    );
+    my $simple = $simple_meta->new_object();
+    $simple->new( $self->port )->run;
 }
 
-sub finalize_output_headers : InterfaceMethod {
-    my ( $self, $c ) = @_;
+sub finalize_output_headers {
+    my ( $self, $engine ) = @_;
 
-    $self->write_response_line($c);
-    $self->SUPER::finalize_output_headers($c);
+    $self->write_response_line($engine);
+    $self->SUPER::finalize_output_headers($engine);
 }
 
 sub prepare_write {
     # nop. do not *STDOUT->autoflush(1);
-}
-
-package HTTP::Engine::Plugin::Interface::ServerSimple::Server;
-use base qw/HTTP::Server::Simple::CGI/;
-
-sub handler {
-    my $self = shift;
-
-    $self->{http_engine}->handle_request;
 }
 
 1;

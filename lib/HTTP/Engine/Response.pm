@@ -1,23 +1,41 @@
 package HTTP::Engine::Response;
+use Moose;
 
-use strict;
-use warnings;
-use base qw( HTTP::Response Class::Accessor::Fast );
+has body => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
 
-__PACKAGE__->mk_accessors(qw/body context cookies location status/);
+has context => (
+    is  => 'rw',
+    isa => 'HTTP::Engine::Context',
+);
+
+has cookies => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+has location => (
+    is  => 'rw',
+    isa => 'Str',
+);
+
+has status => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 200,
+);
+
+has headers => (
+    is => 'rw',
+    isa => 'HTTP::Headers',
+    default => sub { HTTP::Headers->new },
+);
 
 *output = \&body;
-
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    $self->{body}    = '';
-    $self->{cookies} = {};
-    $self->{status}  = 200;
-
-    $self;
-}
 
 sub content_encoding { shift->headers->content_encoding(@_) }
 sub content_length   { shift->headers->content_length(@_) }

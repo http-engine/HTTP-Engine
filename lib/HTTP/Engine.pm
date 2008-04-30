@@ -1,52 +1,29 @@
 package HTTP::Engine;
-use strict;
-use warnings;
+use Moose;
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
 use base 'HTTPEx';
-use Class::Component;
 our $VERSION = '0.0.2';
-
-use Carp;
-use Scalar::Util;
-use URI;
 
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;
+use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
 
-__PACKAGE__->load_components(qw/Plaggerize Autocall::InjectMethod/);
+has handler => (
+    is       => 'rw',
+    isa      => 'CodeRef',
+    required => 1,
+);
 
-sub new {
-    my ($class, %opts) = @_;
+has interface => (
+    is  => 'rw',
+    does => 'HTTP::Engine::Role::Interface',
+    required => 1,
+);
 
-    my $self = $class->NEXT( 'new' => { config => delete $opts{config} } );
-    $self->set_handle_request(delete $opts{handle_request}) if $opts{handle_request};
-
-    $self->conf->{global}->{log}->{fh} ||= \*STDERR;
-
-    return $self;
-}
-
-sub run { croak ref($_[0] || $_[0] ) ." did not override HTTP::Engine::run" }
-
-sub set_handle_request {
-    my($self, $callback) = @_;
-    croak 'please CODE refarence' unless $callback && ref($callback) eq 'CODE';
-    $self->{handle_request} = $callback;
-}
-
-sub prepare_request {}
-sub prepare_connection {}
-sub prepare_query_parameters {}
-sub prepare_headers {}
-sub prepare_cookie {}
-sub prepare_path {}
-sub prepare_body {}
-sub prepare_body_parameters {}
-sub prepare_parameters {}
-sub prepare_uploads {}
-sub errors { shift->{errors} }
-sub push_errors { push @{ shift->{errors} }, @_ }
+# TODO: HTTP::Engine::Role::ErrorHandler
+sub errors       { shift->{errors} }
+sub push_errors  { push @{ shift->{errors} }, @_ }
 sub clear_errors { shift->{errors} = [] }
 
 sub handle_request {
@@ -54,113 +31,39 @@ sub handle_request {
 
     $self->clear_errors();
 
-    $self->run_hook( 'initialize' );
+    $self->interface->initialize();
 
-    my $context = HTTP::Engine::Context->new({
+    my %env = @_;
+       %env = %ENV unless %env;
+
+    my $context = HTTP::Engine::Context->new(
         engine => $self,
-        req    => HTTP::Engine::Request->new,
-        res    => HTTP::Engine::Response->new,
-        conf   => $self->conf,
-    });
-    if (my %env = @_) {
-        $context->env(\%env);
-    } else {
-        $context->env(\%ENV);
-    }
-    for my $method (qw/ request connection query_parameters headers cookie path body body_parameters parameters uploads /) {
-        my $method = "prepare_$method";
-        $self->$method($context);
-    }
+        req    => HTTP::Engine::Request->new(),
+        res    => HTTP::Engine::Response->new(),
+        env    => \%env,
+    );
 
-    $self->run_hook( before_handle_request => $context );
+    $self->interface->prepare( $context );
+
     my $ret = eval {
-        $self->{handle_request}->($context);
+        $self->handler->($context);
     };
-    {
-        local $@;
-        $self->run_hook( after_handle_request => $context );
-    }
+#   {
+#       local $@;
+#       $self->run_hook( after_handle_request => $context );
+#   }
     if (my $e = $@) {
         $self->push_errors($e);
-        $self->run_hook('handle_error', $context);
+#       $self->run_hook('handle_error', $context);
     }
-    $self->finalize($context);
+    $self->interface->finalize( $context );
 
     $ret;
 }
 
-sub finalize {
-    my($self, $c) = @_;
-
-    $self->finalize_headers($c); # finalize_headers
-    $c->res->body('') if $c->req->method eq 'HEAD';
-    $self->finalize_body($c); # finalize_body
-}
-
-sub finalize_headers {
-    my($self, $c) = @_;
-    return if $c->res->{_finalized_headers};
-
-    # Handle redirects
-    if (my $location = $c->res->redirect ) {
-        $self->log( debug => qq/Redirecting to "$location"/ );
-        $c->res->header( Location => $self->absolute_url($c, $location) );
-        $c->res->body($c->res->status . ': Redirect') unless $c->res->body;
-    }
-
-    # Content-Length
-    $c->res->content_length(0);
-    if ($c->res->body && !$c->res->content_length) {
-        # get the length from a filehandle
-	if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
-	    if (my $stat = stat $c->res->body) {
-                $c->res->content_length($stat->size);
-            } else {
-                $self->log( warn => 'Serving filehandle without a content-length' );
-            }
-	} else {
-	    $c->res->content_length(bytes::length($c->res->body));
-        }
-    }
-
-    $c->res->content_type('text/html') unless $c->res->content_type;
-
-    # Errors
-    if ($c->res->status =~ /^(1\d\d|[23]04)$/) {
-        $c->res->headers->remove_header("Content-Length");
-        $c->res->body('');
-    }
-
-    $self->finalize_cookies($c);
-    $self->finalize_output_headers($c);
-
-    # Done
-    $c->res->{_finalized_headers} = 1;
-}
-
-sub finalize_cookies {}
-sub finalize_output_headers {}
-sub finalize_body {
+sub run {
     my $self = shift;
-    $self->finalize_output_body(@_);
-}
-sub finalize_output_body {}
-
-
-sub absolute_url {
-    my($self, $c, $location) = @_;
-
-    unless ($location =~ m!^https?://!) {
-        my $base = $c->req->base;
-        my $url = sprintf '%s://%s', $base->scheme, $base->host;
-        unless (($base->scheme eq 'http' && $base->port eq '80') ||
-               ($base->scheme eq 'https' && $base->port eq '443')) {
-            $url .= ':' . $base->port;
-        }
-        $url .= $base->path;
-        $location = URI->new_abs($location, $url);
-    }
-    $location;
+    $self->interface->run($self);
 }
 
 1;

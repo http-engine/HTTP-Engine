@@ -8,8 +8,8 @@ use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 
 __PACKAGE__->mk_accessors(
-    qw/address context cookies match method
-      protocol query_parameters secure captures uri user raw_body/
+    qw/address context cookies method
+      protocol query_parameters secure  uri user raw_body/
 );
 
 *body_params  = \&body_parameters;
@@ -17,19 +17,16 @@ __PACKAGE__->mk_accessors(
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-*snippets     = \&captures;
 
 sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
-    $self->{arguments}        = [];
     $self->{body_parameters}  = {};
     $self->{cookies}          = {};
     $self->{parameters}       = {};
     $self->{query_parameters} = {};
     $self->{secure}           = 0;
-    $self->{captures}         = [];
     $self->{uploads}          = {};
     $self->{raw_body}         = '';
 

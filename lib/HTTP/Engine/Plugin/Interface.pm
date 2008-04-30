@@ -236,8 +236,9 @@ sub finalize_output_body :InterfaceMethod {
 
     no warnings 'uninitialized';
     if (Scalar::Util::blessed($body) && $body->can('read') or ref($body) eq 'GLOB') {
+        my $maxlength ||= $self->config->{chunksize} || $CHUNKSIZE;
         while (!eof $body) {
-            read $body, my ($buffer), $CHUNKSIZE;
+            read $body, my ($buffer), $maxlength;
             last unless $self->write($buffer);
         }
         close $body;

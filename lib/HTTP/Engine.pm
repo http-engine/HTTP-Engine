@@ -2,7 +2,7 @@ package HTTP::Engine;
 use Moose;
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
 use base 'HTTPEx';
-our $VERSION = '0.0.2';
+our $VERSION = '0.0.3';
 
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;
@@ -72,10 +72,45 @@ sub run {
     $self->interface->run($self);
 }
 
-# hook me!
-sub handle_error {
-    my ($self, $context, $error) = @_;
-    print STDERR $error;
+sub finalize_headers {
+    my($self, $c) = @_;
+    return if $c->res->{_finalized_headers};
+
+    # Handle redirects
+    if (my $location = $c->res->redirect ) {
+        $self->log( debug => qq/Redirecting to "$location"/ );
+        $c->res->header( Location => $self->absolute_url($c, $location) );
+        $c->res->body($c->res->status . ': Redirect') unless $c->res->body;
+    }
+
+    # Content-Length
+    $c->res->content_length(0);
+    if ($c->res->body && !$c->res->content_length) {
+        # get the length from a filehandle
+        if (Scalar::Util::blessed($c->res->body) && $c->res->body->can('read')) {
+            if (my $stat = stat $c->res->body) {
+                $c->res->content_length($stat->size);
+            } else {
+                $self->log( warn => 'Serving filehandle without a content-length' );
+            }
+        } else {
+            $c->res->content_length(bytes::length($c->res->body));
+        }
+    }
+
+    $c->res->content_type('text/html') unless $c->res->content_type;
+
+    # Errors
+    if ($c->res->status =~ /^(1\d\d|[23]04)$/) {
+        $c->res->headers->remove_header("Content-Length");
+        $c->res->body('');
+    }
+
+    $self->finalize_cookies($c);
+    $self->finalize_output_headers($c);
+
+    # Done
+    $c->res->{_finalized_headers} = 1;
 }
 
 # hook me!
@@ -129,17 +164,19 @@ you could load it as
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 
-=head1 COMMITTERS
-
 lestrrat
 
 tokuhirom
 
-=head1 THANKS TO
+nyarla
 
 marcus
 
 =head1 SEE ALSO
+
+wiki page L<http://coderepos.org/share/wiki/HTTP%3A%3AEngine>
+
+L<Class::Component>
 
 =head1 REPOSITORY
 

@@ -22,6 +22,11 @@ features(
         recommends('FCGI'),
     ],
 
+    'Interface::ServerSimple' => [
+        -default => 0,
+        recommends('HTTP::Server::Simple'),
+    ],
+
     'Interface::Standalone' => [
         -default => 0,
         recommends('Errno'),

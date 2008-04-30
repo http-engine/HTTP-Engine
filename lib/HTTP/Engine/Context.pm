@@ -20,6 +20,10 @@ has req => (
     is       => 'rw',
     isa      => 'HTTP::Engine::Request',
     required => 1,
+    trigger => sub {
+        my $self = shift;
+        $self->req->context( $self );
+    },
 );
 
 has res => (

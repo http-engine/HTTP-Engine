@@ -12,7 +12,7 @@ has address => (
 
 has context => (
     is      => 'rw',
-    isa     => 'HTTP::Engine',    # or HTTP::Engine::Context?
+    isa     => 'HTTP::Engine::Context',
     weakref => 1,
 );
 
@@ -45,7 +45,6 @@ has secure => (
     default => 0,
 );
 
-# why override HTTP::Request->uri?
 has uri => (
     is  => 'rw',
     # isa => 'URI',
@@ -219,7 +218,7 @@ sub upload {
 
 sub uploads {
     my ($self, $uploads) = @_;
-    $self->context->prepare_body;
+    $self->context->engine->interface->prepare_body;
     $self->{uploads} = $uploads if $uploads;
     return $self->{uploads};
 }

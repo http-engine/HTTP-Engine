@@ -204,6 +204,10 @@ you could load it as
   use HTTP::Engine;
   HTTP::Engine->load_plugins(qw( +HTTPEx::Plugin::Foo ));
 
+=head1 BRANCHES
+
+Moose brance L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
+
 =head1 AUTHOR
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>

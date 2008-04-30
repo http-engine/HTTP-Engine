@@ -1,6 +1,7 @@
 Changes
 examples/basic-lighty.conf
 examples/dumper.pl
+examples/ie-post-problem.pl
 examples/plusplus.pl
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -27,7 +28,9 @@ lib/HTTP/Engine/Plugin.pm
 lib/HTTP/Engine/Plugin/DebugScreen.pm
 lib/HTTP/Engine/Plugin/Interface.pm
 lib/HTTP/Engine/Plugin/Interface/Adaptor.pm
+lib/HTTP/Engine/Plugin/Interface/CGI.pm
 lib/HTTP/Engine/Plugin/Interface/FCGI.pm
+lib/HTTP/Engine/Plugin/Interface/ServerSimple.pm
 lib/HTTP/Engine/Plugin/Interface/Standalone.pm
 lib/HTTP/Engine/Plugin/Interface/Test.pm
 lib/HTTP/Engine/Plugin/ModuleReload.pm
@@ -40,4 +43,5 @@ MANIFEST			This list of files
 META.yml
 README
 t/00_compile.t
+t/01_abstract_method.t
 t/optional_lighttpd-fastcgi.t

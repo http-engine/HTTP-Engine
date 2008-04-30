@@ -2,6 +2,7 @@ package HTTP::Engine::Request;
 use Moose;
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
+use HTTP::Headers;
 
 # the IP address of the client
 has address => (
@@ -19,12 +20,6 @@ has cookies => (
     is      => 'rw',
     isa     => 'HashRef',
     default => sub { {} },
-);
-
-has match => (
-    is => 'rw',
-
-    # XXX what's this?
 );
 
 has method => (
@@ -48,12 +43,6 @@ has secure => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
-);
-
-has captures => (
-    is      => 'rw',
-    isa     => 'ArrayRef',
-    default => sub { [] },
 );
 
 # why override HTTP::Request->uri?
@@ -82,7 +71,6 @@ has headers => (
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-*snippets     = \&captures;
 
 # shortcut.
 sub content_encoding { shift->headers->content_encoding(@_) }

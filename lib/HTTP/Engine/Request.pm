@@ -3,16 +3,10 @@ use Moose;
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 
+# the IP address of the client
 has address => (
-    is => 'rw',
-
-    # XXX what's this?
-);
-
-has arguments => (
-    is      => 'rw',
-    isa     => 'ArrayRef',
-    default => sub { [] },
+    is  => 'rw',
+    isa => 'Str',
 );
 
 has context => (
@@ -83,7 +77,6 @@ has headers => (
 );
 
 # aliases
-*args         = \&arguments;
 *body_params  = \&body_parameters;
 *input        = \&body;
 *params       = \&parameters;

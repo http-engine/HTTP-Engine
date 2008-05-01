@@ -14,13 +14,14 @@ use HTTP::Server::Simple::CGI;
 sub run {
     my ($self, ) = @_;
 
-    my $simple_meta = Class::MOP::Class->create_anon_class(
+    my $simple_meta = Moose::Meta::Class->create_anon_class(
         superclasses => ['HTTP::Server::Simple::CGI'],
         methods => {
             handler => sub {
                 $self->handle_request;
             }
         },
+        cache => 1
     );
     my $simple = $simple_meta->new_object();
     $simple->new( $self->port )->run;

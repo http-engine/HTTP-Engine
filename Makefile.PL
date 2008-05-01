@@ -1,4 +1,13 @@
 use inc::Module::Install;
+
+{
+    no warnings 'redefine';
+    *recommends_hack = $Module::Install::VERSION > 0.70 ?
+        sub { recommends(@_); $_[0] } :
+        \&recommends;
+}
+
+
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 

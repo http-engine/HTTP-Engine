@@ -4,7 +4,7 @@ use HTTP::Headers;
 
 has body => (
     is      => 'rw',
-    isa     => 'Str',
+    isa     => 'Any',
     default => '',
 );
 

@@ -2,6 +2,16 @@ use inc::Module::Install;
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
+{
+    no warnings 'redefine';
+    if ($Module::Install::VERSION > 0.70) {
+        *recommends_hack = sub { $_[0] }
+    } else {
+        *recommends_hack = \&recommends;
+    }
+}
+    
+
 requires 'Class::Accessor::Fast';
 requires 'Class::Component';
 requires 'Scalar::Util';
@@ -19,35 +29,57 @@ requires 'URI';
 features(
     'Interface::FCGI' => [
         -default => 0,
-        recommends('FCGI'),
+        recommends_hack('FCGI'),
     ],
 
     'Interface::ServerSimple' => [
         -default => 0,
-        recommends('HTTP::Server::Simple'),
+        recommends_hack('HTTP::Server::Simple'),
     ],
 
     'Interface::Standalone' => [
         -default => 0,
-        recommends('Errno'),
+        recommends_hack('Errno'),
     ],
 
     'Interface::Test' => [
         -default => 0,
-        recommends('HTTP::Request::AsCGI'),
+        recommends_hack('HTTP::Request::AsCGI'),
     ],
 
     'ModuleReload' => [
         -default => 0,
-        recommends('Module::Reload'),
+        recommends_hack('Module::Reload'),
     ],
 
     'DebugScreen' => [
         -default => 0,
-        recommends('Carp::Always'),
+        recommends_hack('Carp::Always'),
     ],
 );
 
+#
+#    'Interface::Standalone' => [
+#        -default => 0,
+#        recommends_hack('Errno'),
+#    ],
+#
+#    'Interface::Test' => [
+#        -default => 0,
+#        recommends_hack('HTTP::Request::AsCGI'),
+#    ],
+#
+#    'ModuleReload' => [
+#        -default => 0,
+#        recommends_hack('Module::Reload'),
+#    ],
+#
+#    'DebugScreen' => [
+#        -default => 0,
+#        recommends_hack('Carp::Always'),
+#    ],
+#);
+#
 build_requires 'Test::More';
 use_test_base;
 auto_include;

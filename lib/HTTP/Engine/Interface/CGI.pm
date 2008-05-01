@@ -1,6 +1,7 @@
 package HTTP::Engine::Interface::CGI;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
+use Scalar::Util qw/blessed/;
 
 has read_position => (
     is  => 'rw',
@@ -37,17 +38,8 @@ sub initialize {
 }
 
 sub run {
-    my ($self, $engine) = @_;
-    $engine->handle_request();
-}
-
-sub prepare {
-    my ($self, $context) = @_;
-
-    for my $method (qw/ request connection query_parameters headers cookie path body body_parameters parameters uploads /) {
-        my $method = "prepare_$method";
-        $self->$method($context);
-    }
+    my ($self, ) = @_;
+    $self->handle_request();
 }
 
 sub prepare_request {}
@@ -279,7 +271,14 @@ sub finalize_output_body  {
 
 # private methods
 
-sub read_chunk { shift; *STDIN->sysread(@_) }
+sub read_chunk {
+    my $self = shift;
+    if (blessed(*STDIN)) {
+        *STDIN->sysread(@_);
+    } else {
+        STDIN->sysread(@_);
+    }
+}
 #Apache sub read_chunk { shift->apache->read(@_) }
 
 sub prepare_read {
@@ -296,7 +295,7 @@ sub read {
     }
 
     my $remaining = $self->read_length - $self->read_position;
-    $maxlength ||= $self->chunksize;
+    $maxlength ||= $self->chunk_size;
 
     # Are we done reading?
     if ($remaining <= 0) {
@@ -320,7 +319,9 @@ sub prepare_write {
     my $self = shift;
 
     # Set the output handle to autoflush
-    *STDOUT->autoflush(1);
+    if (blessed *STDOUT) {
+        *STDOUT->autoflush(1);
+    }
 }
 
 sub write {

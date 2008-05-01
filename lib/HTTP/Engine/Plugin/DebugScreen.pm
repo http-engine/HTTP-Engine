@@ -1,6 +1,12 @@
 package HTTP::Engine::Plugin::DebugScreen;
 use Moose::Role;
-use Carp::Always;
+use Carp;
+
+around call_handler => sub {
+    my ($next, @args) = @_;
+    local $SIG{__DIE__} = \&Carp::confess;
+    $next->(@args);
+};
 
 around handle_error => sub {
     my ($next, $engine, $context, $error) = @_;

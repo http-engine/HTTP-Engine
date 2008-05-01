@@ -12,13 +12,13 @@ use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
 
 sub run {
-    my ($self, $engine) = @_;
+    my ($self, ) = @_;
 
     my $simple_meta = Class::MOP::Class->create_anon_class(
         superclasses => ['HTTP::Server::Simple::CGI'],
         methods => {
             handler => sub {
-                $engine->handle_request;
+                $self->handle_request;
             }
         },
     );
@@ -26,16 +26,10 @@ sub run {
     $simple->new( $self->port )->run;
 }
 
-sub finalize_output_headers {
-    my ( $self, $engine ) = @_;
-
-    $self->write_response_line($engine);
-    $self->SUPER::finalize_output_headers($engine);
-}
-
-sub prepare_write {
-    # nop. do not *STDOUT->autoflush(1);
-}
+before 'finalize_output_headers' => sub {
+    my ($self, $c) = @_;
+    $self->write_response_line($c);
+};
 
 1;
 __END__

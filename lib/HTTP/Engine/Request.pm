@@ -1,5 +1,6 @@
 package HTTP::Engine::Request;
 use Moose;
+with 'MooseX::Object::Pluggable';
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 use HTTP::Headers;
@@ -145,11 +146,13 @@ sub param {
 
 sub parameters {
     my ($self, $params) = @_;
+    $self->{parameters} ||= {};
+
     if ($params) {
         if (ref $params) {
             $self->{parameters} = $params;
         } else {
-            $self->context->log->warn(
+            warn(
                 "Attempt to retrieve '$params' with req->params(), " .
                 "you probably meant to call req->param('$params')" );
         }

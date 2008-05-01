@@ -2,18 +2,8 @@ use inc::Module::Install;
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-{
-    no warnings 'redefine';
-    if ($Module::Install::VERSION > 0.70) {
-        *recommends_hack = sub { $_[0] }
-    } else {
-        *recommends_hack = \&recommends;
-    }
-}
-    
-
-requires 'Class::Accessor::Fast';
-requires 'Class::Component';
+requires 'Moose' => 0.40;
+requires 'MooseX::Object::Pluggable';
 requires 'Scalar::Util';
 
 requires 'IO::Socket';
@@ -24,6 +14,7 @@ requires 'File::Spec::Unix';
 
 requires 'CGI::Simple::Cookie';
 requires 'HTTP::Body';
+requires 'HTTP::Headers';
 requires 'URI';
 
 features(

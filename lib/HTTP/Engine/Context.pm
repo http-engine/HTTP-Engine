@@ -11,7 +11,7 @@ has env => (
 
 has engine => (
     is       => 'rw',
-    isa      => 'HTTP::Engine',
+    does     => 'HTTP::Engine::Role::Interface',
     required => 1,
     weakref  => 1,
 );

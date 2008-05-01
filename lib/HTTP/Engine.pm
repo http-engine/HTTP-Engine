@@ -16,9 +16,10 @@ has handler => (
 );
 
 has interface => (
-    is  => 'rw',
-    does => 'HTTP::Engine::Role::Interface',
+    is       => 'rw',
+    does     => 'HTTP::Engine::Role::Interface',
     required => 1,
+    handles  => [ qw(prepare finalize) ],
 );
 
 has context_class => (
@@ -54,7 +55,7 @@ sub handle_request {
         env    => \%env,
     );
 
-    $self->interface->prepare( $context );
+    $self->prepare( $context );
 
     my $ret = eval {
         $self->call_handler($context);
@@ -62,7 +63,7 @@ sub handle_request {
     if (my $e = $@) {
         $self->handle_error( $context, $e);
     }
-    $self->interface->finalize( $context );
+    $self->finalize( $context );
 
     $ret;
 }

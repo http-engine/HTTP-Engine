@@ -1,43 +1,16 @@
 package HTTP::Engine;
-use Class::Inspector;
 use UNIVERSAL::require;
 use Moose;
-use Moose::Util::TypeConstraints;
+use HTTP::Engine::Types::Core qw( Interface );
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
 use base 'HTTPEx';
 our $VERSION = '0.0.3';
 
-subtype 'Interface'
-    => as 'Object'
-    => where {
-        $_->does('HTTP::Engine::Role::Interface');
-    }
-;
-
-coerce 'Interface'
-    => from 'HashRef'
-        => via {
-            my $module = $_->{module};
-            my $plugins = $_->{plugins} || [];
-            my $args    = $_->{args};
-
-            if ($module !~ s{^\+}{}) {
-                $module = join('::', __PACKAGE__, "Interface", $module);
-            }
-            if (! Class::Inspector->loaded($module)) {
-                $module->require or die;
-            }
-            return $module->new( %$args );
-        }
-;
-
 has 'interface' => (
-    does    => 'Interface',
+    does    => Interface,
     coerce  => 1,
     handles => [ qw(run) ],
 );
-
-
 
 1;
 __END__

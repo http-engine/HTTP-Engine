@@ -47,15 +47,17 @@ sub prepare_request {}
 sub prepare_connection  {
     my($self, $c) = @_;
 
-    $c->req->address($c->env->{REMOTE_ADDR}) unless $c->req->address;
+    my $req = $c->req;
+    my $env = $c->env; 
+    $req->address($env->{REMOTE_ADDR}) unless $req->address;
 
-    $c->req->hostname($c->env->{REMOTE_HOST});
-    $c->req->protocol($c->env->{SERVER_PROTOCOL});
-    $c->req->user($c->env->{REMOTE_USER});
-    $c->req->method($c->env->{REQUEST_METHOD});
+    $req->hostname($env->{REMOTE_HOST});
+    $req->protocol($env->{SERVER_PROTOCOL});
+    $req->user($env->{REMOTE_USER});
+    $req->method($env->{REQUEST_METHOD});
 
-    $c->req->secure(1) if $c->env->{HTTPS} && uc $c->env->{HTTPS} eq 'ON';
-    $c->req->secure(1) if $c->env->{SERVER_PORT} == 443;
+    $req->secure(1) if $env->{HTTPS} && uc $env->{HTTPS} eq 'ON';
+    $req->secure(1) if $env->{SERVER_PORT} == 443;
 }
 
 sub prepare_query_parameters  {

@@ -1,6 +1,10 @@
 package HTTP::Engine::Interface::ServerSimple;
 use Moose;
-extends 'HTTP::Engine::Interface::CGI';
+with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::RequestProcessor;
+
+use HTTP::Server::Simple 0.33;
+use HTTP::Server::Simple::CGI;
 
 has port => (
     is      => 'rw',
@@ -8,17 +12,18 @@ has port => (
     default => 80,
 );
 
-use HTTP::Server::Simple 0.33;
-use HTTP::Server::Simple::CGI;
-
 sub run {
     my ($self, ) = @_;
 
+    my $processor = HTTP::Engine::RequestProcessor->new(
+        handler                    => $self->handler,
+        should_write_response_line => 1,
+    );
     my $simple_meta = Moose::Meta::Class->create_anon_class(
         superclasses => ['HTTP::Server::Simple::CGI'],
         methods => {
             handler => sub {
-                $self->handle_request;
+                $processor->handle_request();
             }
         },
         cache => 1
@@ -26,11 +31,6 @@ sub run {
     my $simple = $simple_meta->new_object();
     $simple->new( $self->port )->run;
 }
-
-before 'finalize_output_headers' => sub {
-    my ($self, $c) = @_;
-    $self->write_response_line($c);
-};
 
 1;
 __END__

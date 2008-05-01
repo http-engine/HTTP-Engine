@@ -9,13 +9,6 @@ has env => (
     required => 1,
 );
 
-has engine => (
-    is       => 'rw',
-    does     => 'HTTP::Engine::Role::Interface',
-    required => 1,
-    weakref  => 1,
-);
-
 has req => (
     is       => 'rw',
     isa      => 'HTTP::Engine::Request',

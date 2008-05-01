@@ -1,4 +1,4 @@
-use inc::Module::Install;
+use inc::Module::Install 0.72;
 
 {
     no warnings 'redefine';

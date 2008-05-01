@@ -5,6 +5,11 @@ use HTTP::Engine::Types::Core qw( Interface );
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
 use base 'HTTPEx';
 our $VERSION = '0.0.3';
+use HTTP::Engine::Context;
+use HTTP::Engine::Request;
+use HTTP::Engine::Request::Upload;
+use HTTP::Engine::Response;
+use HTTP::Engine::RequestProcessor;
 
 has 'interface' => (
     does    => Interface,

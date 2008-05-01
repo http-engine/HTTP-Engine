@@ -13,6 +13,7 @@ all_from 'lib/HTTP/Engine.pm';
 
 requires 'Moose' => 0.40;
 requires 'MooseX::Object::Pluggable';
+requires 'MooseX::Types';
 requires 'Scalar::Util';
 
 requires 'IO::Socket';

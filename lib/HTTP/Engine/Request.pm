@@ -1,9 +1,20 @@
 package HTTP::Engine::Request;
 use Moose;
+use Moose::Util::TypeConstraints;
 with 'MooseX::Object::Pluggable';
 use Carp;
 use IO::Socket qw[AF_INET inet_aton];
 use HTTP::Headers;
+
+subtype 'Header'
+    => as 'Object'
+    => where { $_->isa('HTTP::Headers') };
+
+coerce 'Header'
+    => from 'ArrayRef'
+        => via { HTTP::Headers->new( @{ $_ } ) }
+    => from 'HashRef'
+        => via { HTTP::Headers->new( %{ $_ } ) };
 
 # the IP address of the client
 has address => (
@@ -60,8 +71,9 @@ has raw_body => (
 );
 
 has headers => (
-    is => 'rw',
-    isa => 'HTTP::Headers',
+    is      => 'rw',
+    isa     => 'Header',
+    coerce  => 1,
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );

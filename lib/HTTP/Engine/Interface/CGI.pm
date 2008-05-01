@@ -1,7 +1,14 @@
 package HTTP::Engine::Interface::CGI;
 use Moose;
-with 'HTTP::Engine::Role::Interface';
+use CGI::Simple::Cookie;
+use HTTP::Body;
+use HTTP::Headers;
+use HTTP::Status ();
 use Scalar::Util qw/blessed/;
+use URI;
+use URI::QueryParam;
+
+with 'HTTP::Engine::Role::Interface';
 
 has read_position => (
     is  => 'rw',
@@ -23,14 +30,6 @@ has upload_tmp => (
     is => 'rw',
 );
 
-use CGI::Simple::Cookie;
-use HTTP::Body;
-use HTTP::Headers;
-use Scalar::Util;
-use URI;
-use URI::QueryParam;
-use HTTP::Status ();
-
 sub initialize {
     my($self, $c) = @_;
     delete $self->{_prepared_read};
@@ -38,7 +37,7 @@ sub initialize {
 }
 
 sub run {
-    my ($self, ) = @_;
+    my ($self) = @_;
     $self->handle_request();
 }
 

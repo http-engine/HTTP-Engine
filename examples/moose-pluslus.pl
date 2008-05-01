@@ -7,8 +7,8 @@ use HTTP::Engine;
 use HTTP::Engine::Interface::ServerSimple;
 use YAML;
 
-HTTP::Engine->new(
-    interface => HTTP::Engine::Interface::ServerSimple->new( port => 9999 ),
+HTTP::Engine::Interface::ServerSimple->new(
+    port => 9999 ,
     handler   => \&handle_request,
 )->run;
 

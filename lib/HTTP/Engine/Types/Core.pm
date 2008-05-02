@@ -5,6 +5,7 @@ use MooseX::Types
 use MooseX::Types::Moose qw( Object HashRef );
 
 use Class::Inspector;
+use UNIVERSAL::require;
 
 subtype Interface
     => as 'Object'
@@ -32,28 +33,24 @@ coerce Interface
 
 1;
 
+__END__
+
 =head1 NAME
 
-HTTP::Engine::Types::Core
+HTTP::Engine::Types::Core - Core HTTP::Engine Types
+
+=head1 SYNOPSIS
+
+  use Moose;
+  use HTTP::Engine::Types::Core;
+
+  has 'interface' => (
+    isa    => 'Interface',
+    coerce => 1
+  );
 
 =head1 DESCRIPTION
 
-=over
-
-
-=back
-
-=head1 SEE ALSO
-
-=over
-
-=item * L<HTTP::Engine::Types::Core>
-
-=back
-
-=head1 AUTHORS
-
-
-=head1 LICENSE
+HTTP::Engine::Types::Core defines the main subtypes used in HTTP::Engine
 
 =cut

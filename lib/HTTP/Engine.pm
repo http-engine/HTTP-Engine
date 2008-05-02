@@ -1,5 +1,4 @@
 package HTTP::Engine;
-use UNIVERSAL::require;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" }

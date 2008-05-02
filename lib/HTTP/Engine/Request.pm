@@ -62,7 +62,7 @@ has raw_body => (
 
 has headers => (
     is      => 'rw',
-    isa     => Header,
+    isa     => 'Header',
     coerce  => 1,
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],

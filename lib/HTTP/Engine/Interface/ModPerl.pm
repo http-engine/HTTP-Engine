@@ -15,6 +15,10 @@ use Apache2::RequestUtil;
 
 extends 'HTTP::Engine::Interface::CGI';
 
+has 'apache' => (
+    isa => 'Apache2::RequestRec'
+);
+
 my %HE;
 
 sub handler : method
@@ -31,6 +35,7 @@ sub handler : method
         $HE{ $r->location } = $engine;
     }
 
+    $engine->interface->apache( $r );
     $engine->run();
 }
 

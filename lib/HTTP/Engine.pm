@@ -12,7 +12,7 @@ use HTTP::Engine::Response;
 use HTTP::Engine::RequestProcessor;
 
 has 'interface' => (
-    does    => Interface,
+    does    => 'Interface',
     coerce  => 1,
     handles => [ qw(run) ],
 );

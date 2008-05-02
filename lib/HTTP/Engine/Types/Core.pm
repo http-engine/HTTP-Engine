@@ -21,7 +21,7 @@ coerce Interface
             my $args    = $_->{args};
 
             if ($module !~ s{^\+}{}) {
-                $module = join('::', __PACKAGE__, "Interface", $module);
+                $module = join('::', "HTTP", "Engine", "Interface", $module);
             }
             if (! Class::Inspector->loaded($module)) {
                 $module->require or die;

@@ -31,8 +31,10 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
   use HTTP::Engine;
   HTTP::Engine->new(
     interface => {
-      module  => 'FastCGI',
-      handler => sub {
+      module       => 'FastCGI',
+      # XXX TODO: Define middle_wares better!
+      middle_wares => [ qw(Session MobileAttributes) ],
+      handler      => sub {
         my ($self, $request) = @_;
         ....
         return HTTP::Response->new(200, "OK");
@@ -64,6 +66,31 @@ HTTP::Engine will handle absorbing the differences between the environment,
 the I/O, etc. Your application can focus on creating response objects
 (which is pretty much what your typical webapp is doing)
 
+=head1 INTERFACES
+
+Interfaces are the actual environment-dependent components which handles
+the actual interaction between your clients and the application.
+
+For example, in CGI mode, you can write to STDOUT and expect your clients to
+see it, but in mod_perl, you may need to use $r-E<gt>print instead.
+
+Interfaces are the actual layers that does the interaction. HTTP::Engine
+currently supports the following:
+
+# XXX TODO: Update the list
+
+=over 4
+
+=item HTTP::Engine::Interface::CGI
+
+=item HTTP::Engine::Interface::FastCGI
+
+=item HTTP::Engine::Interface::ModPerl
+
+=item HTTP::Engine::Interface::ServerSimple
+
+=back
+
 =head1 PLUGINS
 
 For all non-core plugins (consult #codrepos first), use the HTTPEx::
@@ -75,7 +102,7 @@ you could load it as
 
 =head1 BRANCHES
 
-Moose brance L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
+Moose branch L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
 
 =head1 AUTHOR
 

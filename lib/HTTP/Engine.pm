@@ -33,13 +33,13 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
     interface => {
       module       => 'FastCGI',
       # XXX TODO: Define middle_wares better!
-      middle_wares => [ qw(Session MobileAttributes) ],
       handler      => sub {
         my ($self, $request) = @_;
         ....
         return HTTP::Response->new(200, "OK");
       }
     }
+    middle_wares => [ qw(Session MobileAttributes) ],
   )->run();
 
 

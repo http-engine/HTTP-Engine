@@ -32,13 +32,13 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
   HTTP::Engine->new(
     interface => {
       module       => 'FastCGI',
-      # XXX TODO: Define middle_wares better!
       handler      => sub {
         my ($self, $request) = @_;
         ....
         return HTTP::Response->new(200, "OK");
       }
     }
+    # XXX TODO: Define middle_wares better!
     middle_wares => [ qw(Session MobileAttributes) ],
   )->run();
 
@@ -90,6 +90,26 @@ currently supports the following:
 =item HTTP::Engine::Interface::ServerSimple
 
 =back
+
+Interfaces can be specified as part of the HTTP::Engine constructor:
+
+  my $interface = HTTP::Engine::Interface::FastCGI->new(
+    handler => ...
+  );
+  HTTP::Engine->new(
+    interface => $interface
+  )->run();
+
+Or you can let HTTP::Engine instantiate the interface for you:
+
+  HTTP::Engine->new(
+    interface => {
+      module => 'FastCGI',
+      args   => {
+        handler => ...
+      }
+    }
+  )->run();
 
 =head1 PLUGINS
 

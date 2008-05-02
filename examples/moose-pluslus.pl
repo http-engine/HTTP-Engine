@@ -3,26 +3,37 @@ use warnings;
 
 use lib 'lib';
 
+use Data::Dumper;
 use HTTP::Engine;
 use HTTP::Engine::Interface::ServerSimple;
+use HTTP::Headers;
+use HTTP::Response;
 use YAML;
 
-HTTP::Engine::Interface::ServerSimple->new(
-    port => 9999 ,
-    handler   => \&handle_request,
+HTTP::Engine->new(
+    interface => HTTP::Engine::Interface::ServerSimple->new(
+        {   port    => 9999,
+            handler => \&handle_request,
+        }
+    )
 )->run;
 
 my %karma = {};
-
 sub handle_request {
-    my $c = shift;
+    my $req = shift;
 
-    my $method = $c->req->method;
-    my ( $name, $karma, $pm ) = split '/', $c->req->path;
+    my $method = $req->method;
+    my $path = $req->uri->path;
+    $path =~ s/^\///;
+    my ( $name, $karma, $pm ) = split '/', $path;
 
     if ( $method eq 'POST' ) {
         $karma ||= '';
         $pm    ||= '';
+
+        warn $req->uri->path;
+        warn "$name $karma $pm";
+
         if (   $name
             && $karma eq 'karma'
             && ( $pm eq 'plus' || $pm eq 'minus' ) )
@@ -31,22 +42,20 @@ sub handle_request {
             $karma{$name}->{$pm}++;
         }
         else {
-            $c->res->body('403');
-            $c->res->status('403');
-            return;
+            return HTTP::Response->new(403);
         }
     }
     elsif ( $method eq 'GET' || $method eq 'HEAD' ) {
         unless ( $name && $karma{$name} ) {
-            $c->res->body('404');
-            $c->res->status('404');
-            return;
+            return HTTP::Response->new(404);
         }
     }
     else {
-        $c->res->body('400');
-        $c->res->status('400');
-        return;
+        return HTTP::Response->new(400);
     }
-    $c->res->body( Dump( $karma{$name} ) );
+    my $headers = HTTP::Headers->new(
+        Contet_Type => 'text/html',
+    );
+    my $body = Dump($karma{$name});
+    return HTTP::Response->new( 200, 'OK',$headers, $body );
 }

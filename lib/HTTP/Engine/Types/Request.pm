@@ -16,17 +16,23 @@ coerce Header
         => via { HTTP::Headers->new( %{ $_ } ) };
 
 1;
+__END__
 
 =head1 NAME
 
-HTTP::Engine::Types::Request
+HTTP::Engine::Types::Request - HTTP::Engine types for HTTP Request
 
-=head1 DESCRIPTION
+=head1 SYNPOSIS
 
-=over
-
-
-=back
+  use Moose;
+  use MooseX::Types::Request qw(Header);
+  has headers => (
+      is      => 'rw',
+      isa     => 'Header',
+      coerce  => 1,
+      default => sub { HTTP::Headers->new },
+      handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
+  );
 
 =head1 SEE ALSO
 
@@ -40,5 +46,8 @@ HTTP::Engine::Types::Request
 
 
 =head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut

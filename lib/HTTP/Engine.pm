@@ -30,12 +30,16 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
   use HTTP::Engine;
   HTTP::Engine->new(
-    config         => 'config.yaml',
-    handle_request => sub {
-      my $c = shift;
-      $c->res->body( Dumper($e->req) );
+    interface => {
+      module  => 'FastCGI',
+      handler => sub {
+        my ($self, $request) = @_;
+        ....
+        return HTTP::Response->new(200, "OK");
+      }
     }
-  )->run;
+  )->run();
+
 
 =head1 CONCEPT RELEASE
 
@@ -45,9 +49,20 @@ It is mostly based on the code of Catalyst::Engine.
 =head1 DESCRIPTION
 
 HTTP::Engine is a bare-bones, extensible HTTP engine. It is not a 
-socket binding server. The purpose of this module is to be an 
-adaptor between various HTTP-based logic layers and the actual 
-implementation of an HTTP server, such as, mod_perl and FastCGI
+socket binding server.
+
+The purpose of this module is to be an adaptor between various HTTP-based 
+logic layers and the actual implementation of an HTTP server, such as, 
+mod_perl and FastCGI.
+
+Internally, the only thing HTTP::Engine will do is to prepare a 
+HTTP::Engine::Request object for you to handle, and pass to your handler's
+C<TBD> method. In turn your C<TBD> method should return a fully prepared
+HTTP::Engine::Response object.
+
+HTTP::Engine will handle absorbing the differences between the environment,
+the I/O, etc. Your application can focus on creating response objects
+(which is pretty much what your typical webapp is doing)
 
 =head1 PLUGINS
 

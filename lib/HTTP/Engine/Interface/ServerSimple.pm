@@ -1,10 +1,10 @@
 package HTTP::Engine::Interface::ServerSimple;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-use HTTP::Engine::RequestProcessor;
 
 use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
+use HTTP::Request;
 
 has port => (
     is      => 'rw',
@@ -14,22 +14,34 @@ has port => (
 
 sub run {
     my ($self, ) = @_;
+    my $handler = $self->handler; # bind to this scope
 
-    my $processor = HTTP::Engine::RequestProcessor->new(
-        handler                    => $self->handler,
-        should_write_response_line => 1,
-    );
-    my $simple_meta = Moose::Meta::Class->create_anon_class(
-        superclasses => ['HTTP::Server::Simple::CGI'],
-        methods => {
-            handler => sub {
-                $processor->handle_request();
-            }
-        },
-        cache => 1
-    );
-    my $simple = $simple_meta->new_object();
-    $simple->new( $self->port )->run;
+    Moose::Meta::Class
+        ->create_anon_class(
+            superclasses => ['HTTP::Server::Simple::CGI'],
+            methods => {
+                accept_hook => sub {
+                    my $self = shift;
+                    $self->{header} = {}; # initialize headers
+                    $self->setup_environment(@_); # defined at H::S::S::CGI::Environment
+                },
+                header => sub {
+                    my ($self, $key, $val) = @_;
+                    $self->{header}->{$key} = $val;
+                },
+                handler => sub {
+                    my $self = shift;
+                    my $req = HTTP::Request->new( $ENV{REQUEST_METHOD}, $ENV{REQUEST_URI}, $self->{headers}); 
+                    my $res = $handler->($req);
+                    $res->protocol($ENV{SERVER_PROTOCOL}) unless $res->protocol();
+                    print STDOUT $res->as_string;
+                },
+            },
+            cache => 1
+        )->new_object(
+        )->new(
+            $self->port
+        )->run;
 }
 
 1;

@@ -3,16 +3,16 @@ use warnings;
 use lib 'lib';
 use Data::Dumper;
 use HTTP::Engine;
+use HTTP::Engine::Interface::ServerSimple;
+use HTTP::Response;
 
 my $engine = HTTP::Engine->new(
-    interface => {
-        module => 'ServerSimple',
-        args   => {
+    interface => HTTP::Engine::Interface::ServerSimple->new({
             port    => 9999,
             handler => sub {
-                my $c        = shift;
-                my $req_dump = Dumper( $c->req );
-                my $raw      = $c->req->raw_body;
+                my $req      = shift;
+                my $req_dump = Dumper( $req );
+                my $raw      = $req->content;
                 my $body     = <<"...";
         <form method="post">
             <input type="text" name="foo" />
@@ -22,10 +22,9 @@ my $engine = HTTP::Engine->new(
         <pre>$req_dump</pre>
 ...
 
-                $c->res->body($body);
+                return HTTP::Response->new(200, 'OK', [ 'Content-Type' => 'text/html'], $body);
             },
-        }
-    }
+    })
 );
 $engine->run;
 # $engine->load_plugins(qw/DebugScreen/);

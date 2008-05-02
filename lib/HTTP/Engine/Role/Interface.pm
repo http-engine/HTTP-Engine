@@ -3,7 +3,7 @@ use strict;
 use Moose::Role;
 with 'MooseX::Object::Pluggable';
 
-requires qw(run prepare_request finalize_response);
+requires qw(run);
 
 has handler => (
     is       => 'rw',

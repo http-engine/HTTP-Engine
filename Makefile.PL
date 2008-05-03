@@ -1,7 +1,10 @@
 use inc::Module::Install 0.72;
 BEGIN
 {
-    eval { require mod_perl2 };
+    eval { 
+        require mod_perl2;
+        require Apache::Test;
+    };
     {
         no strict 'refs';
         *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
@@ -10,7 +13,7 @@ BEGIN
 
 if (HAVE_MP) {
     require Apache::TestMM;
-    Apache::TestMM->import(qw(clean test));
+    Apache::TestMM->import(qw(clean));
 }
 
 {

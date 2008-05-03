@@ -1,4 +1,17 @@
 use inc::Module::Install 0.72;
+BEGIN
+{
+    eval { require mod_perl2 };
+    {
+        no strict 'refs';
+        *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
+    }
+}
+
+if (HAVE_MP) {
+    require Apache::TestMM;
+    Apache::TestMM->import(qw(clean test));
+}
 
 {
     no warnings 'redefine';
@@ -81,8 +94,14 @@ features(
 #    ],
 #);
 #
+if (HAVE_MP) {
+    Apache::TestMM::filter_args();
+    Apache::TestMM::generate_script('t/TEST');
+}
+
 build_requires 'Test::More';
 use_test_base;
 auto_include;
 auto_install;
 WriteAll;
+

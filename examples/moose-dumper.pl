@@ -8,13 +8,13 @@ use HTTP::Response;
 
 my $engine = HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new({
-            port    => 9999,
-            handler => sub {
-                my $c = shift;
-                local $Data::Dumper::Sortkeys = 1;
-                my $req_dump = Dumper( $c->req );
-                my $raw      = $c->req->raw_body;
-                my $body     = <<"...";
+        port    => 9999,
+        request_handler => sub {
+            my $c = shift;
+            local $Data::Dumper::Sortkeys = 1;
+            my $req_dump = Dumper( $c->req );
+            my $raw      = $c->req->raw_body;
+            my $body     = <<"...";
         <form method="post">
             <input type="text" name="foo" />
             <input type="submit" />
@@ -23,8 +23,8 @@ my $engine = HTTP::Engine->new(
         <pre>$req_dump</pre>
 ...
 
-                $c->res->body($body);
-            },
+            $c->res->body($body);
+        },
     })
 );
 $engine->run;

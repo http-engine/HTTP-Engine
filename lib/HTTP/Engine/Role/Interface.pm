@@ -5,7 +5,7 @@ with 'MooseX::Object::Pluggable';
 
 requires qw(run should_write_response_line);
 
-has handler => (
+has request_handler => (
     is       => 'rw',
     isa      => 'CodeRef',
     required => 1,
@@ -18,7 +18,7 @@ has request_processor => (
     default => sub {
         my $self = shift;
         HTTP::Engine::RequestProcessor->new(
-            handler                    => $self->handler,
+            handler                    => $self->request_handler,
             should_write_response_line => $self->should_write_response_line,
         );
     },

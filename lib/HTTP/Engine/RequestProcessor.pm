@@ -56,8 +56,6 @@ has response_writer => (
     is       => 'ro',
     isa      => 'HTTP::Engine::ResponseWriter',
     required => 1,
-    default  => sub {
-    },
 );
 
 has chunk_size => (

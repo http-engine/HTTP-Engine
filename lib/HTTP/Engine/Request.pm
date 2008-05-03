@@ -75,9 +75,20 @@ has base => (
     isa     => 'URI',
     trigger => sub {
         my $self = shift;
+
         if ( $self->uri ) {
-            $self->path;
+            $self->path; # clear cache.
         }
+    },
+);
+
+has hostname => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        $self->context->env->{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
     },
 );
 
@@ -109,17 +120,6 @@ sub cookie {
         return undef unless exists $self->cookies->{$name}; ## no critic.
         return $self->cookies->{$name};
     }
-}
-
-sub hostname {
-    my $self = shift;
-
-    if (@_ == 0 && not $self->{hostname}) {
-        $self->{hostname} = gethostbyaddr( inet_aton( $self->address ), AF_INET );
-    }
-
-    $self->{hostname} = shift if @_ == 1;
-    return $self->{hostname};
 }
 
 sub param {

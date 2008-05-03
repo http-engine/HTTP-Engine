@@ -179,7 +179,6 @@ sub prepare_connection  {
     my $env = $c->env; 
     $req->address($env->{REMOTE_ADDR}) unless $req->address;
 
-    $req->hostname($env->{REMOTE_HOST});
     $req->protocol($env->{SERVER_PROTOCOL});
     $req->user($env->{REMOTE_USER});
     $req->method($env->{REQUEST_METHOD});

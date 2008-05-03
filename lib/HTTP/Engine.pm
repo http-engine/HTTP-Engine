@@ -11,6 +11,7 @@ use HTTP::Engine::Response;
 use HTTP::Engine::RequestProcessor;
 
 has 'interface' => (
+    is      => 'ro',
     does    => 'Interface',
     coerce  => 1,
     handles => [ qw(run) ],

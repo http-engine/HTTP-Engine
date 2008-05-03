@@ -4,8 +4,7 @@ with 'MooseX::Object::Pluggable';
 
 use Carp;
 use HTTP::Headers;
-use HTTP::Engine::Types::Core qw( Uri );
-use HTTP::Engine::Types::Request qw( Header );
+use HTTP::Engine::Types::Core qw( Uri Header );
 use IO::Socket qw[AF_INET inet_aton];
 
 # the IP address of the client

@@ -1,12 +1,13 @@
 package HTTP::Engine::Types::Core;
 
 use MooseX::Types
-    -declare => [qw/Interface Uri/];
-use MooseX::Types::Moose qw( Object HashRef );
+    -declare => [qw/Interface Uri Header/];
+use MooseX::Types::Moose qw( Object HashRef ArrayRef);
 
 use Class::MOP;
 use UNIVERSAL::require;
 use URI;
+use HTTP::Headers;
 
 subtype Interface
     => as 'Object'
@@ -41,6 +42,18 @@ coerce Uri
     => from 'Str'
         => via { URI->new($_) }
 ;
+
+subtype Header
+    => as 'Object'
+    => where { $_->isa('HTTP::Headers') }
+;
+
+coerce Header
+    => from 'ArrayRef'
+        => via { HTTP::Headers->new( @{ $_ } ) }
+    => from 'HashRef'
+        => via { HTTP::Headers->new( %{ $_ } ) };
+
 
 1;
 

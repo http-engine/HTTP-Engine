@@ -1,6 +1,8 @@
 package HTTP::Engine::Response;
 use Moose;
+
 use HTTP::Headers;
+use HTTP::Engine::Types::Core qw( Header );
 
 has body => (
     is      => 'rw',
@@ -33,7 +35,7 @@ has status => (
 
 has headers => (
     is      => 'rw',
-    isa     => 'HTTP::Headers',
+    isa     => 'Header',
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header) ],
 );

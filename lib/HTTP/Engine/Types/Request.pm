@@ -22,7 +22,7 @@ __END__
 
 HTTP::Engine::Types::Request - HTTP::Engine types for HTTP Request
 
-=head1 SYNPOSIS
+=head1 SYNOPSIS
 
   use Moose;
   use MooseX::Types::Request qw(Header);

@@ -13,6 +13,7 @@ has context => (
     isa => 'HTTP::Engine::Context',
 );
 
+
 has cookies => (
     is      => 'rw',
     isa     => 'HashRef',
@@ -58,8 +59,8 @@ sub redirect {
 
 sub set_http_response {
     my ($self, $res) = @_;
-    $self->status( $res->status );
-    $self->{_headers} = $res->headers; # ad hoc
+    $self->status( $res->code );
+    $self->headers( $res->headers->clone );
     $self->body( $res->content );
     $self;
 }

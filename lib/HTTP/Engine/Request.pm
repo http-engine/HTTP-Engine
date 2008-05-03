@@ -146,21 +146,11 @@ sub param {
     }
 }
 
-sub parameters {
-    my ($self, $params) = @_;
-    $self->{parameters} ||= {};
-
-    if ($params) {
-        if (ref $params) {
-            $self->{parameters} = $params;
-        } else {
-            warn(
-                "Attempt to retrieve '$params' with req->params(), " .
-                "you probably meant to call req->param('$params')" );
-        }
-    }
-    return $self->{parameters};
-}
+has parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
 
 sub path {
     my ($self, $params) = @_;

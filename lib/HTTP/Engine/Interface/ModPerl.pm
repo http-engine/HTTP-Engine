@@ -10,20 +10,27 @@ BEGIN
     }
 }
 
+use Apache2::Const -compile => qw(OK);
+use Apache2::Connection;
 use Apache2::RequestRec;
 use Apache2::RequestUtil;
+use Apache2::ServerRec;
+use HTTP::Engine;
 
 extends 'HTTP::Engine::Interface::CGI';
 
 has 'apache' => (
-    isa => 'Apache2::RequestRec'
+    is      => 'rw',
+    isa     => 'Apache2::RequestRec',
+    is_weak => 1,
 );
 
 my %HE;
 
 sub handler : method
 {
-    my ($class, $r) = @_;
+    my $class = shift;
+    my $r     = shift;
 
     # ModPerl is currently the only environment where the inteface comes
     # before the actual invocation of HTTP::Engine
@@ -36,12 +43,28 @@ sub handler : method
     }
 
     $engine->interface->apache( $r );
-    $engine->run();
+
+    my $server = $r->server;
+    my $connection = $r->connection;
+    $engine->interface->request_processor->handle_request(
+        REQUEST_METHOD => $r->method(),
+        REMOTE_ADDR    => $connection->remote_ip(),
+        SERVER_PORT    => $server->port(),
+        QUERY_STRING   => $r->args(),
+    );
+
+    return &Apache2::Const::OK;
 }
 
-sub run
+sub create_engine
 {
-    die "Implement me!";
+    my ($self, $r) = @_;
+
+    HTTP::Engine->new(
+        interface => HTTP::Engine::Interface::ModPerl->new(
+            request_handler   => sub { warn "hoge" },
+        )
+    );
 }
 
 1;

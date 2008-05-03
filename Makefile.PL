@@ -13,7 +13,7 @@ BEGIN
 
 if (HAVE_MP) {
     require Apache::TestMM;
-    Apache::TestMM->import(qw(clean));
+    Apache::TestMM->import(qw(clean test));
 }
 
 {
@@ -100,6 +100,7 @@ features(
 if (HAVE_MP) {
     Apache::TestMM::filter_args();
     Apache::TestMM::generate_script('t/TEST');
+    tests('t/*.t t/modperl/basic.t');
 }
 
 build_requires 'Test::More';

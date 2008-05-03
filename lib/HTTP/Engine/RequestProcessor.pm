@@ -190,6 +190,8 @@ sub prepare_connection  {
 sub prepare_query_parameters  {
     my($self, $c) = @_;
     my $query_string = $c->env->{QUERY_STRING};
+    return unless 
+        defined $query_string && length($query_string);
 
     # replace semi-colons
     $query_string =~ s/;/&/g;

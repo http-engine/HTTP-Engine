@@ -12,29 +12,29 @@ has port => (
     default => 80,
 );
 
+has request_processor => (
+    is      => 'ro',
+    isa     => 'HTTP::Engine::RequestProcessor',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        HTTP::Engine::RequestProcessor->new(
+            handler                    => $self->handler,
+            should_write_response_line => 1,
+        );
+    },
+    handles => [qw/handle_request/],
+);
+
 sub run {
     my ($self, ) = @_;
-    my $handler = $self->handler; # bind to this scope
 
     Moose::Meta::Class
         ->create_anon_class(
             superclasses => ['HTTP::Server::Simple::CGI'],
             methods => {
-                accept_hook => sub {
-                    my $self = shift;
-                    $self->{header} = {}; # initialize headers
-                    $self->setup_environment(@_); # defined at H::S::S::CGI::Environment
-                },
-                header => sub {
-                    my ($self, $key, $val) = @_;
-                    $self->{header}->{$key} = $val;
-                },
                 handler => sub {
-                    my $self = shift;
-                    my $req = HTTP::Request->new( $ENV{REQUEST_METHOD}, $ENV{REQUEST_URI}, $self->{headers}); 
-                    my $res = $handler->($req);
-                    $res->protocol($ENV{SERVER_PROTOCOL}) unless $res->protocol();
-                    print STDOUT $res->as_string;
+                    $self->handle_request();
                 },
             },
             cache => 1

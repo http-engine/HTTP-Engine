@@ -10,9 +10,9 @@ my $engine = HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new({
             port    => 9999,
             handler => sub {
-                my $req      = shift;
-                my $req_dump = Dumper( $req );
-                my $raw      = $req->content;
+                my $c = shift;
+                my $req_dump = Dumper( $c->req );
+                my $raw      = $c->req->raw_body;
                 my $body     = <<"...";
         <form method="post">
             <input type="text" name="foo" />
@@ -22,7 +22,7 @@ my $engine = HTTP::Engine->new(
         <pre>$req_dump</pre>
 ...
 
-                return HTTP::Response->new(200, 'OK', [ 'Content-Type' => 'text/html'], $body);
+                $c->res->body($body);
             },
     })
 );

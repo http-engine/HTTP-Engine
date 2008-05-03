@@ -11,6 +11,7 @@ my $engine = HTTP::Engine->new(
             port    => 9999,
             handler => sub {
                 my $c = shift;
+                local $Data::Dumper::Sortkeys = 1;
                 my $req_dump = Dumper( $c->req );
                 my $raw      = $c->req->raw_body;
                 my $body     = <<"...";

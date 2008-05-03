@@ -4,7 +4,7 @@ use MooseX::Types
     -declare => [qw/Interface/];
 use MooseX::Types::Moose qw( Object HashRef );
 
-use Class::Inspector;
+use Class::MOP;
 use UNIVERSAL::require;
 
 subtype Interface
@@ -24,7 +24,7 @@ coerce Interface
             if ($module !~ s{^\+}{}) {
                 $module = join('::', "HTTP", "Engine", "Interface", $module);
             }
-            if (! Class::Inspector->loaded($module)) {
+            if (! Class::MOP::is_class_loaded($module)) {
                 $module->require or die;
             }
             return $module->new( %$args );

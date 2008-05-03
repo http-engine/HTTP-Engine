@@ -64,13 +64,9 @@ has headers => (
     is      => 'rw',
     isa     => 'Header',
     coerce  => 1,
-    lazy_build => 1,
+    default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );
-
-sub _build_headers {
-    return HTTP::Headers->new;
-}
 
 # aliases
 *body_params  = \&body_parameters;

@@ -66,7 +66,7 @@ HTTP::Engine::Types::Core - Core HTTP::Engine Types
 =head1 SYNOPSIS
 
   use Moose;
-  use HTTP::Engine::Types::Core;
+  use HTTP::Engine::Types::Core qw( Interface );
 
   has 'interface' => (
     isa    => 'Interface',

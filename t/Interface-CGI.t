@@ -25,6 +25,7 @@ run {
             args => {
                 handler => sub {
                     my $c = shift;
+                    $c->res->header( 'X-Req-Base' => $c->req->base );
                     $c->res->body('OK!');
                 },
             },
@@ -48,9 +49,11 @@ REMOTE_ADDR:    192.168.1.1
 SERVER_PORT:    80
 QUERY_STRING:   ''
 REQUEST_METHOD: 'GET'
+HTTP_HOST: localhost
 --- response
 Content-Length: 3
 Content-Type: text/html
 Status: 200
+X-Req-Base: http://localhost/
 
 OK!

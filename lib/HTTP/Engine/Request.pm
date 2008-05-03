@@ -68,25 +68,25 @@ has headers => (
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );
 
+# Contains the URI base. This will always have a trailing slash.
+# If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.
+has base => (
+    is      => 'rw',
+    isa     => 'URI',
+    trigger => sub {
+        my $self = shift;
+        if ( $self->uri ) {
+            $self->path;
+        }
+    },
+);
+
 # aliases
 *body_params  = \&body_parameters;
 *input        = \&body;
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-
-sub base {
-    my($self, $base) = @_;
-
-    return $self->{base} unless $base;
-    $self->{base} = $base;
-
-    # set the value in path for backwards-compat                                                                      
-    if ($self->uri) {
-        $self->path;
-    }
-    return $self->{base};
-}
 
 sub body {
     my ($self, $body) = @_;

@@ -1,10 +1,17 @@
 package HTTP::Engine::ResponseWriter;
 use Moose;
+use File::stat;
 
 has 'should_write_response_line' => (
     is       => 'rw',
     isa      => 'Bool',
     required => 1,
+);
+
+has chunk_size => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 4096,
 );
 
 sub finalize {
@@ -34,7 +41,7 @@ sub finalize_headers {
             if (my $stat = stat $c->res->body) {
                 $c->res->content_length($stat->size);
             } else {
-                $self->log( warn => 'Serving filehandle without a content-length' );
+                warn 'Serving filehandle without a content-length';
             }
         } else {
             $c->res->content_length(bytes::length($c->res->body));

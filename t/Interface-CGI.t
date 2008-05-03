@@ -23,7 +23,7 @@ run {
         interface => {
             module => 'CGI',
             args => {
-                handler => sub {
+                request_handler => sub {
                     my $c = shift;
                     $c->res->header( 'X-Req-Base' => $c->req->base );
                     $c->res->body('OK!');

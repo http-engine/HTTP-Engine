@@ -3,12 +3,26 @@ use strict;
 use Moose::Role;
 with 'MooseX::Object::Pluggable';
 
-requires qw(run);
+requires qw(run should_write_response_line);
 
 has handler => (
     is       => 'rw',
     isa      => 'CodeRef',
     required => 1,
+);
+
+has request_processor => (
+    is      => 'ro',
+    isa     => 'HTTP::Engine::RequestProcessor',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        HTTP::Engine::RequestProcessor->new(
+            handler                    => $self->handler,
+            should_write_response_line => $self->should_write_response_line,
+        );
+    },
+    handles => [qw/handle_request/],
 );
 
 1;

@@ -1,29 +1,14 @@
 package HTTP::Engine::Interface::ServerSimple;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-
+use constant should_write_response_line => 1;
 use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
-use HTTP::Request;
 
 has port => (
     is      => 'rw',
     isa     => 'Int',
     default => 80,
-);
-
-has request_processor => (
-    is      => 'ro',
-    isa     => 'HTTP::Engine::RequestProcessor',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        HTTP::Engine::RequestProcessor->new(
-            handler                    => $self->handler,
-            should_write_response_line => 1,
-        );
-    },
-    handles => [qw/handle_request/],
 );
 
 sub run {

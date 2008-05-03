@@ -1,11 +1,12 @@
 package HTTP::Engine::Types::Core;
 
 use MooseX::Types
-    -declare => [qw/Interface/];
+    -declare => [qw/Interface Uri/];
 use MooseX::Types::Moose qw( Object HashRef );
 
 use Class::MOP;
 use UNIVERSAL::require;
+use URI;
 
 subtype Interface
     => as 'Object'
@@ -29,6 +30,16 @@ coerce Interface
             }
             return $module->new( %$args );
         }
+;
+
+subtype Uri
+    => as 'Object'
+    => where { $_->isa('URI') }
+;
+
+coerce Uri
+    => from 'Str'
+        => via { URI->new($_) }
 ;
 
 1;

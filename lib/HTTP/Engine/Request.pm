@@ -1,10 +1,12 @@
 package HTTP::Engine::Request;
 use Moose;
-use HTTP::Engine::Types::Request qw( Header );
 with 'MooseX::Object::Pluggable';
+
 use Carp;
-use IO::Socket qw[AF_INET inet_aton];
 use HTTP::Headers;
+use HTTP::Engine::Types::Core qw( Uri );
+use HTTP::Engine::Types::Request qw( Header );
+use IO::Socket qw[AF_INET inet_aton];
 
 # the IP address of the client
 has address => (
@@ -49,7 +51,8 @@ has secure => (
 
 has uri => (
     is  => 'rw',
-    # isa => 'URI',
+    isa => 'Uri',
+    coerce => 1,
 );
 
 has user => ( is => 'rw', );

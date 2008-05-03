@@ -256,5 +256,6 @@ sub absolute_url {
     $location;
 }
 
+__PACKAGE__->meta->make_immutable;
 
 1;

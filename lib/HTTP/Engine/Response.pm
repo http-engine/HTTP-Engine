@@ -67,4 +67,6 @@ sub set_http_response {
     $self;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;

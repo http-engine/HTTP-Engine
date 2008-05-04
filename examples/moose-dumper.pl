@@ -8,15 +8,6 @@ use HTTP::Response;
 use HTTP::Engine::Request;
 use HTTP::MobileAttribute;
 
-HTTP::Engine::Request->meta->make_mutable;
-HTTP::Engine::Request->meta->add_method(
-    mobile_attribute => sub {
-        my $self = shift;
-        HTTP::MobileAttribute->new($self->headers);
-    },
-);
-HTTP::Engine::Request->meta->make_immutable;
-
 my $engine = HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new({
         port    => 9999,
@@ -41,6 +32,6 @@ my $engine = HTTP::Engine->new(
     }),
     plugins => [qw/DebugScreen/],
 );
-$engine->load_plugins(qw/DebugScreen ModuleReload/);
+$engine->load_plugins(qw/DebugScreen ModuleReload MobileAttribute/);
 $engine->run;
 

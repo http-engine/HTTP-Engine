@@ -14,11 +14,11 @@ has req => (
     is       => 'rw',
     isa      => 'HTTP::Engine::Request',
     required => 1,
-    default => sub {
+    default  => sub {
         my $self = shift;
         HTTP::Engine::Request->new( context => $self );
     },
-    trigger  => sub {
+    trigger => sub {
         my $self = shift;
         $self->req->context($self);
     },
@@ -28,7 +28,7 @@ has res => (
     is       => 'rw',
     isa      => 'HTTP::Engine::Response',
     required => 1,
-    default => sub {
+    default  => sub {
         HTTP::Engine::Response->new;
     },
 );

@@ -14,8 +14,8 @@ has address => (
 );
 
 has context => (
-    is      => 'rw',
-    isa     => 'HTTP::Engine::Context',
+    is       => 'rw',
+    isa      => 'HTTP::Engine::Context',
     weak_ref => 1,
 );
 
@@ -49,8 +49,8 @@ has secure => (
 );
 
 has uri => (
-    is  => 'rw',
-    isa => 'Uri',
+    is     => 'rw',
+    isa    => 'Uri',
     coerce => 1,
 );
 

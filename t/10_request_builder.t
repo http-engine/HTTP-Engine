@@ -1,5 +1,4 @@
 use Test::Base;
-use Test::More;
 use YAML ();
 use HTTP::Engine::Context;
 use HTTP::Engine::RequestBuilder;

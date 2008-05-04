@@ -30,12 +30,12 @@ sub prepare {
 
     # do build.
     for my $method (qw( connection query_parameters headers cookie path body body_parameters parameters uploads )) {
-        my $method = "prepare_$method";
+        my $method = "_prepare_$method";
         $self->$method($context);
     }
 }
 
-sub prepare_connection  {
+sub _prepare_connection {
     my($self, $c) = @_;
 
     my $req = $c->req;
@@ -50,7 +50,7 @@ sub prepare_connection  {
     $req->secure(1) if $env->{SERVER_PORT} == 443;
 }
 
-sub prepare_query_parameters  {
+sub _prepare_query_parameters  {
     my($self, $c) = @_;
     my $query_string = $c->env->{QUERY_STRING};
     return unless 
@@ -67,7 +67,7 @@ sub prepare_query_parameters  {
     }
 }
 
-sub prepare_headers  {
+sub _prepare_headers  {
     my($self, $c) = @_;
 
     # Read headers from env
@@ -78,7 +78,7 @@ sub prepare_headers  {
     }
 }
 
-sub prepare_cookie  {
+sub _prepare_cookie  {
     my($self, $c) = @_;
 
     if (my $header = $c->req->header('Cookie')) {
@@ -86,7 +86,7 @@ sub prepare_cookie  {
     }
 }
 
-sub prepare_path  {
+sub _prepare_path  {
     my($self, $c) = @_;
 
     my $scheme = $c->req->secure ? 'https' : 'http';
@@ -123,7 +123,7 @@ sub prepare_path  {
     $c->req->base($base);
 }
 
-sub prepare_body  {
+sub _prepare_body  {
     my($self, $c) = @_;
 
     # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
@@ -136,7 +136,7 @@ sub prepare_body  {
     }
 
     if ($self->read_length > 0) {
-        while (my $buffer = $self->read) {
+        while (my $buffer = $self->_read) {
             $self->prepare_body_chunk($c, $buffer);
         }
 
@@ -149,18 +149,18 @@ sub prepare_body  {
     }
 }
 
-sub prepare_body_chunk {
+sub _prepare_body_chunk {
     my($self, $c, $chunk) = @_;
     $c->req->raw_body($c->req->raw_body.$chunk);
     $c->req->{_body}->add($chunk);
 }
 
-sub prepare_body_parameters  {
+sub _prepare_body_parameters  {
     my($self, $c) = @_;
     $c->req->body_parameters($c->req->{_body}->param);
 }
 
-sub prepare_parameters  {
+sub _prepare_parameters  {
     my ($self, $c) = @_;
 
     # We copy, no references
@@ -187,7 +187,7 @@ sub prepare_parameters  {
     }
 }
 
-sub prepare_uploads  {
+sub _prepare_uploads  {
     my($self, $c) = @_;
 
     my $uploads = $c->req->{_body}->upload;
@@ -213,12 +213,12 @@ sub prepare_uploads  {
     }
 }
 
-sub prepare_read {
+sub _prepare_read {
     my $self = shift;
     $self->read_position(0);
 }
 
-sub read {
+sub _read {
     my ($self, $maxlength) = @_;
 
     unless ($self->{_prepared_read}) {
@@ -236,7 +236,7 @@ sub read {
     }
 
     my $readlen = ($remaining > $maxlength) ? $maxlength : $remaining;
-    my $rc = $self->read_chunk(my $buffer, $readlen);
+    my $rc = $self->_read_chunk(my $buffer, $readlen);
     if (defined $rc) {
         $self->read_position($self->read_position + $rc);
         return $buffer;
@@ -245,7 +245,7 @@ sub read {
     }
 }
 
-sub read_chunk {
+sub _read_chunk {
     my $self = shift;
 
     if (blessed(*STDIN)) {

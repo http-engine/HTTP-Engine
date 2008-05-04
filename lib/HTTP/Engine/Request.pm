@@ -104,6 +104,13 @@ has http_body => (
     },
 );
 
+# contains body_params and query_params
+has parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
 # aliases
 *body_params  = \&body_parameters;
 *input        = \&body;
@@ -147,11 +154,6 @@ sub param {
     }
 }
 
-has parameters => (
-    is      => 'rw',
-    isa     => 'HashRef',
-    default => sub { +{} },
-);
 
 sub path {
     my ($self, $params) = @_;

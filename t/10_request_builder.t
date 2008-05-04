@@ -4,7 +4,7 @@ use HTTP::Engine::Context;
 use HTTP::Engine::RequestBuilder;
 use IO::Scalar;
 
-plan tests => 5;
+plan tests => 7;
 
 can_ok(
     'HTTP::Engine::RequestBuilder' => 'prepare'
@@ -69,4 +69,19 @@ HTTP_CONTENT_TYPE: application/octet-stream
 isa_ok $c->req->body, 'IO::Handle';
 $c->req->body->sysread(my $buf, $c->req->content_length);
 is $buf, 'OCTET STREAM';
+
+=== cookie
+--- env
+REMOTE_ADDR:    127.0.0.1
+SERVER_PORT:    80
+QUERY_STRING:   ''
+REQUEST_METHOD: 'POST'
+HTTP_HOST: localhost
+HTTP_CONTENT_LENGTH: 12
+HTTP_CONTENT_TYPE: application/octet-stream
+HTTP_COOKIE: foo=hoge; foo=hoge; path=/
+--- body: OCTET STREAM
+--- test
+is $c->req->cookie('unknown'), undef;
+is $c->req->cookie('foo')->value, 'hoge';
 

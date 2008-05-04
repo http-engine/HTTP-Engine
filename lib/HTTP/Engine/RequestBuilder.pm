@@ -1,5 +1,6 @@
 package HTTP::Engine::RequestBuilder;
 use Moose;
+use CGI::Simple::Cookie;
 
 # tempolary file path for upload file.
 has upload_tmp => (

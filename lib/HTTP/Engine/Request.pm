@@ -211,7 +211,6 @@ sub upload {
 
 sub uploads {
     my ($self, $uploads) = @_;
-    $self->context->engine->interface->prepare_body;
     $self->{uploads} = $uploads if $uploads;
     return $self->{uploads};
 }

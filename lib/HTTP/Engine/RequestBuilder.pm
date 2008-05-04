@@ -135,7 +135,7 @@ sub _prepare_body  {
 
     if ($self->read_length > 0) {
         while (my $buffer = $self->_read) {
-            $self->prepare_body_chunk($c, $buffer);
+            $self->_prepare_body_chunk($c, $buffer);
         }
 
         # paranoia against wrong Content-Length header
@@ -149,7 +149,8 @@ sub _prepare_body  {
 
 sub _prepare_body_chunk {
     my($self, $c, $chunk) = @_;
-    $c->req->raw_body($c->req->raw_body.$chunk);
+
+    $c->req->raw_body($c->req->raw_body . $chunk);
     $c->req->http_body->add($chunk);
 }
 
@@ -221,7 +222,7 @@ sub _read {
     my ($self, $maxlength) = @_;
 
     unless ($self->{_prepared_read}) {
-        $self->prepare_read;
+        $self->_prepare_read;
         $self->{_prepared_read} = 1;
     }
 

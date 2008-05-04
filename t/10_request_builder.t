@@ -21,7 +21,7 @@ run {
 
     my $c = HTTP::Engine::Context->new(env => $block->env);
 
-    tie *STDIN, 'IO::Scalar', $block->input;
+    tie *STDIN, 'IO::Scalar', \( $block->body );
     $builder->prepare($c);
     untie *STDIN;
 
@@ -41,4 +41,17 @@ HTTP_HOST: localhost
 --- body
 --- test
 is $c->req->address, '127.0.0.1';
+
+===
+--- env
+REMOTE_ADDR:    127.0.0.1
+SERVER_PORT:    80
+QUERY_STRING:   ''
+REQUEST_METHOD: 'POST'
+HTTP_HOST: localhost
+HTTP_CONTENT_LENGTH: 7
+HTTP_CONTENT_TYPE: application/x-www-form-urlencoded
+--- body: a=b&c=d
+--- test
+is_deeply $c->req->body_params, {a => 'b', c => 'd'};
 

@@ -1,4 +1,5 @@
 package HTTP::Engine::Plugin::DebugScreen;
+use strict;
 use Moose::Role;
 use Carp;
 

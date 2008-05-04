@@ -1,4 +1,5 @@
 package HTTP::Engine::Types::Core;
+use strict;
 
 use MooseX::Types
     -declare => [qw/Interface Uri Header/];

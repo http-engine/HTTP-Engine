@@ -1,4 +1,5 @@
 package HTTP::Engine::Plugin::ModuleReload;
+use strict;
 use Moose::Role;
 use Module::Reload;
 

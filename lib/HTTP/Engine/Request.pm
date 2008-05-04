@@ -111,6 +111,8 @@ has parameters => (
     default => sub { +{} },
 );
 
+no Moose;
+
 # aliases
 *body_params  = \&body_parameters;
 *input        = \&body;

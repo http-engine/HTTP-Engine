@@ -23,6 +23,8 @@ has read_position => (
     isa => 'Int',
 );
 
+no Moose;
+
 sub prepare {
     my ($self, $context) = @_;
 

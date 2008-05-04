@@ -64,6 +64,8 @@ has chunk_size => (
     default => 4096,
 );
 
+no Moose;
+
 sub handle_request {
     my $self = shift;
 

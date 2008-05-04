@@ -130,10 +130,8 @@ sub _prepare_body  {
     $self->read_length($c->req->header('Content-Length') || 0);
     my $type = $c->req->header('Content-Type');
 
-    unless ($c->req->{_body}) {
-        $c->req->{_body} = HTTP::Body->new($type, $self->read_length);
-        $c->req->{_body}->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
-    }
+    $c->req->http_body( HTTP::Body->new($type, $self->read_length) );
+    $c->req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
     if ($self->read_length > 0) {
         while (my $buffer = $self->_read) {
@@ -152,12 +150,13 @@ sub _prepare_body  {
 sub _prepare_body_chunk {
     my($self, $c, $chunk) = @_;
     $c->req->raw_body($c->req->raw_body.$chunk);
-    $c->req->{_body}->add($chunk);
+    $c->req->http_body->add($chunk);
 }
 
 sub _prepare_body_parameters  {
     my($self, $c) = @_;
-    $c->req->body_parameters($c->req->{_body}->param);
+    # FIXME: use delegate(Moose's handles)
+    $c->req->body_parameters($c->req->http_body->param);
 }
 
 sub _prepare_parameters  {
@@ -190,7 +189,7 @@ sub _prepare_parameters  {
 sub _prepare_uploads  {
     my($self, $c) = @_;
 
-    my $uploads = $c->req->{_body}->upload;
+    my $uploads = $c->req->http_body->upload;
     for my $name (keys %{ $uploads }) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];

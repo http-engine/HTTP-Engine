@@ -95,6 +95,11 @@ has hostname => (
     },
 );
 
+has http_body => (
+    is      => 'rw',
+    isa     => 'HTTP::Body',
+);
+
 # aliases
 *body_params  = \&body_parameters;
 *input        = \&body;
@@ -104,7 +109,7 @@ has hostname => (
 
 sub body {
     my ($self, $body) = @_;
-    return $self->{_body}->body;
+    return $self->http_body->body;
 }
 
 sub body_parameters {

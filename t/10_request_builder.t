@@ -4,7 +4,7 @@ use HTTP::Engine::Context;
 use HTTP::Engine::RequestBuilder;
 use IO::Scalar;
 
-plan tests => 1 + 1*blocks;
+plan tests => 5;
 
 can_ok(
     'HTTP::Engine::RequestBuilder' => 'prepare'
@@ -54,4 +54,19 @@ HTTP_CONTENT_TYPE: application/x-www-form-urlencoded
 --- body: a=b&c=d
 --- test
 is_deeply $c->req->body_params, {a => 'b', c => 'd'};
+
+===
+--- env
+REMOTE_ADDR:    127.0.0.1
+SERVER_PORT:    80
+QUERY_STRING:   ''
+REQUEST_METHOD: 'POST'
+HTTP_HOST: localhost
+HTTP_CONTENT_LENGTH: 12
+HTTP_CONTENT_TYPE: application/octet-stream
+--- body: OCTET STREAM
+--- test
+isa_ok $c->req->body, 'IO::Handle';
+$c->req->body->sysread(my $buf, $c->req->content_length);
+is $buf, 'OCTET STREAM';
 

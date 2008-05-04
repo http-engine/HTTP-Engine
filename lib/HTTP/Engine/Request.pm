@@ -100,6 +100,7 @@ has http_body => (
     isa     => 'HTTP::Body',
     handles => {
         body_parameters => 'param',
+        body            => 'body',
     },
 );
 
@@ -109,11 +110,6 @@ has http_body => (
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-
-sub body {
-    my ($self, $body) = @_;
-    return $self->http_body->body;
-}
 
 sub cookie {
     my $self = shift;

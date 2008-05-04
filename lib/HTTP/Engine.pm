@@ -14,7 +14,7 @@ has 'interface' => (
     is      => 'ro',
     does    => 'Interface',
     coerce  => 1,
-    handles => [ qw(run) ],
+    handles => [ qw(run load_plugins) ],
 );
 
 1;

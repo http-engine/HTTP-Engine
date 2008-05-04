@@ -1,7 +1,6 @@
 package HTTP::Engine::Role::Interface;
 use strict;
 use Moose::Role;
-with 'MooseX::Object::Pluggable';
 use HTTP::Engine::ResponseWriter;
 
 requires qw(run should_write_response_line);
@@ -25,7 +24,7 @@ has request_processor => (
             ),
         );
     },
-    handles => [qw/handle_request/],
+    handles => [qw/handle_request load_plugins/],
 );
 
 1;

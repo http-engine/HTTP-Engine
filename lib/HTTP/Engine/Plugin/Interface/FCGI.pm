@@ -6,7 +6,7 @@ use base 'HTTP::Engine::Plugin::Interface';
 use HTTP::Status;
 use FCGI;
 
-sub run :Method {
+sub run {
     my ( $self, $class, $listen, ) = @_;
 
     my $options = $self->conf;

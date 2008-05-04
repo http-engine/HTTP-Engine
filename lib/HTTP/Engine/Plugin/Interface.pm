@@ -1,7 +1,7 @@
 package HTTP::Engine::Plugin::Interface;
 use strict;
 use warnings;
-use base qw( HTTP::Engine::Plugin Class::Accessor::Fast );
+use base qw( HTTP::Engine::Plugin HTTP::Engine::Role::Interface Class::Accessor::Fast );
 __PACKAGE__->mk_accessors(qw/ read_position read_length /);
 
 our $CHUNKSIZE = 4096;
@@ -16,13 +16,14 @@ use HTTP::Status ();
 
 use HTTP::Engine::Request::Upload;
 
+
 sub initialize :Hook {
     my($self, $c) = @_;
     delete $self->{_prepared_read};
     delete $self->{_prepared_write};
 }
 
-sub prepare_connection :InterfaceMethod {
+sub prepare_connection {
     my($self, $c) = @_;
 
     $c->req->address($c->env->{REMOTE_ADDR}) unless $c->req->address;
@@ -36,7 +37,7 @@ sub prepare_connection :InterfaceMethod {
     $c->req->secure(1) if $c->env->{SERVER_PORT} == 443;
 }
 
-sub prepare_query_parameters :InterfaceMethod {
+sub prepare_query_parameters {
     my($self, $c) = @_;
     my $query_string = $c->env->{QUERY_STRING};
 
@@ -51,7 +52,7 @@ sub prepare_query_parameters :InterfaceMethod {
     }
 }
 
-sub prepare_headers :InterfaceMethod {
+sub prepare_headers {
     my($self, $c) = @_;
 
     # Read headers from env
@@ -62,7 +63,7 @@ sub prepare_headers :InterfaceMethod {
     }
 }
 
-sub prepare_cookie :InterfaceMethod {
+sub prepare_cookie {
     my($self, $c) = @_;
 
     if (my $header = $c->req->header('Cookie')) {
@@ -70,7 +71,7 @@ sub prepare_cookie :InterfaceMethod {
     }
 }
 
-sub prepare_path :InterfaceMethod {
+sub prepare_path {
     my($self, $c) = @_;
 
     my $scheme = $c->req->secure ? 'https' : 'http';
@@ -107,7 +108,7 @@ sub prepare_path :InterfaceMethod {
     $c->req->base($base);
 }
 
-sub prepare_body :InterfaceMethod {
+sub prepare_body {
     my($self, $c) = @_;
 
     # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
@@ -140,12 +141,12 @@ sub prepare_body_chunk {
     $c->req->{_body}->add($chunk);
 }
 
-sub prepare_body_parameters :InterfaceMethod {
+sub prepare_body_parameters {
     my($self, $c) = @_;
     $c->req->body_parameters($c->req->{_body}->param);
 }
 
-sub prepare_parameters :InterfaceMethod {
+sub prepare_parameters {
     my($self, $c) = @_;
 
     # We copy, no references
@@ -172,7 +173,7 @@ sub prepare_parameters :InterfaceMethod {
     }
 }
 
-sub prepare_uploads :InterfaceMethod {
+sub prepare_uploads {
     my($self, $c) = @_;
 
     my $uploads = $c->req->{_body}->upload;
@@ -200,7 +201,7 @@ sub prepare_uploads :InterfaceMethod {
 
 
 # output
-sub finalize_cookies :InterfaceMethod {
+sub finalize_cookies {
     my($self, $c) = @_;
 
     for my $name (keys %{ $c->res->cookies }) {
@@ -222,7 +223,7 @@ sub finalize_cookies :InterfaceMethod {
     }
 }
 
-sub finalize_output_headers :InterfaceMethod {
+sub finalize_output_headers {
     my($self, $c) = @_;
 
     $c->res->header(Status => $c->res->status);
@@ -230,7 +231,7 @@ sub finalize_output_headers :InterfaceMethod {
     $self->write("\015\012");
 }
 
-sub finalize_output_body :InterfaceMethod {
+sub finalize_output_body {
     my($self, $c) = @_;
     my $body = $c->res->body;
 

@@ -34,7 +34,7 @@ sub prepare_read {
     $self->SUPER::prepare_read(@_);
 }
 
-sub finalize_output_headers :InterfaceMethod {
+sub finalize_output_headers {
     my($self, $c) = @_;
 
     $self->write_response_line($c);
@@ -47,7 +47,7 @@ sub finalize_output_headers :InterfaceMethod {
     $self->SUPER::finalize_output_headers($c);
 }
 
-sub run :Method {
+sub run {
     my($self, $c) = @_;
     my $host = $self->config->{host} || '';
     my $port = $self->config->{port} || 80;

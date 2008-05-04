@@ -5,7 +5,7 @@ use base 'HTTP::Engine::Plugin::Interface';
 
 use HTTP::Request::AsCGI;
 
-sub run :Method {
+sub run {
     my($senf, $c, $request, $env) = @_;
     $env ||= \%ENV;
 

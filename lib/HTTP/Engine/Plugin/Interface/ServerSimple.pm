@@ -4,7 +4,7 @@ use warnings;
 use base 'HTTP::Engine::Plugin::Interface';
 use HTTP::Server::Simple 0.33;
 
-sub run: Method {
+sub run  {
     my ($self, $c) = @_;
     my $port = $self->config->{port} || '80';
 
@@ -13,7 +13,7 @@ sub run: Method {
     $server->run;
 }
 
-sub finalize_output_headers : InterfaceMethod {
+sub finalize_output_headers {
     my ( $self, $c ) = @_;
 
     $self->write_response_line($c);

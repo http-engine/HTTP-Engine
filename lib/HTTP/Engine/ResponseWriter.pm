@@ -64,7 +64,7 @@ sub _write {
         $self->{_prepared_write} = 1;
     }
 
-    print STDOUT $buffer unless $self->{_sigpipe};
+    print STDOUT $buffer;
 }
 
 sub _prepare_write {

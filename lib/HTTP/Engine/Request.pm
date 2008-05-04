@@ -244,7 +244,7 @@ sub absolute_url {
     my ($self, $location) = @_;
 
     unless ($location =~ m!^https?://!) {
-        my $base = $self->req->base;
+        my $base = $self->base;
         my $url = sprintf '%s://%s', $base->scheme, $base->host;
         unless (($base->scheme eq 'http' && $base->port eq '80') ||
                ($base->scheme eq 'https' && $base->port eq '443')) {

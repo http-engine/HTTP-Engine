@@ -1,8 +1,6 @@
 package HTTP::Engine;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-BEGIN { eval "package HTTPEx; sub dummy {} 1;" } ## no critic.
-use base 'HTTPEx';
 our $VERSION = '0.0.3';
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;

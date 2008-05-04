@@ -31,4 +31,8 @@ __END__
 --- location: /add
 --- expected: http://localhost/add
 
+=== abs path
+--- base: http://localhost/
+--- location: http://example.com/
+--- expected: http://example.com/
 

@@ -27,7 +27,6 @@ sub prepare {
 
     # init.
     delete $self->{_prepared_read};
-    delete $self->{_prepared_write};
 
     # do build.
     for my $method (qw( connection query_parameters headers cookie path body body_parameters parameters uploads )) {

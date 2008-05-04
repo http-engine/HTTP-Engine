@@ -22,6 +22,8 @@ sub finalize {
     my($self, $c) = @_;
     croak "argument missing" unless $c;
 
+    delete $self->{_prepared_write};
+
     $c->res->finalize($c);
 
     $self->_write($self->_response_line($c) . $CRLF) if $self->should_write_response_line;

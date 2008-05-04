@@ -29,7 +29,7 @@ sub prepare {
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection query_parameters headers cookie path body body_parameters parameters uploads )) {
+    for my $method (qw( connection query_parameters headers cookie path body parameters uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
@@ -152,12 +152,6 @@ sub _prepare_body_chunk {
 
     $c->req->raw_body($c->req->raw_body . $chunk);
     $c->req->http_body->add($chunk);
-}
-
-sub _prepare_body_parameters  {
-    my($self, $c) = @_;
-    # FIXME: use delegate(Moose's handles)
-    $c->req->body_parameters($c->req->http_body->param);
 }
 
 sub _prepare_parameters  {

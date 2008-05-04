@@ -98,6 +98,9 @@ has hostname => (
 has http_body => (
     is      => 'rw',
     isa     => 'HTTP::Body',
+    handles => {
+        body_parameters => 'param',
+    },
 );
 
 # aliases
@@ -110,12 +113,6 @@ has http_body => (
 sub body {
     my ($self, $body) = @_;
     return $self->http_body->body;
-}
-
-sub body_parameters {
-    my ($self, $params) = @_;
-    $self->{body_parameters} = $params if $params;
-    return $self->{body_parameters};
 }
 
 sub cookie {

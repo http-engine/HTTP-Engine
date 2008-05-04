@@ -22,17 +22,14 @@ has read_position => (
     isa => 'Int',
 );
 
-
-sub initialize {
-    my $self = shift;
-
-    delete $self->{_prepared_read};
-    delete $self->{_prepared_write};
-}
-
 sub prepare {
     my ($self, $context) = @_;
 
+    # init.
+    delete $self->{_prepared_read};
+    delete $self->{_prepared_write};
+
+    # do build.
     for my $method (qw( connection query_parameters headers cookie path body body_parameters parameters uploads )) {
         my $method = "prepare_$method";
         $self->$method($context);

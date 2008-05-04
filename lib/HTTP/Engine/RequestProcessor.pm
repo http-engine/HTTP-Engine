@@ -67,8 +67,6 @@ has chunk_size => (
 sub handle_request {
     my $self = shift;
 
-    $self->request_builder->initialize();
-
     my %env = @_;
        %env = %ENV unless %env;
 

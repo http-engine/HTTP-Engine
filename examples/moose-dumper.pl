@@ -22,6 +22,12 @@ my $engine = HTTP::Engine->new(
             <input type="text" name="foo" />
             <input type="submit" />
         </form>
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="upload_file" />
+            <input type="submit" />
+        </form>
+
         <pre>$raw</pre>
         <pre>$req_dump</pre>
         <pre>$ma</pre>

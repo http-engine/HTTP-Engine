@@ -16,7 +16,7 @@ has address => (
 has context => (
     is      => 'rw',
     isa     => 'HTTP::Engine::Context',
-    weakref => 1,
+    weak_ref => 1,
 );
 
 has cookies => (

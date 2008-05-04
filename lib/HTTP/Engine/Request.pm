@@ -4,6 +4,7 @@ with 'MooseX::Object::Pluggable';
 
 use Carp;
 use HTTP::Headers;
+use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use IO::Socket qw[AF_INET inet_aton];
 

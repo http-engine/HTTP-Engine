@@ -111,6 +111,12 @@ has parameters => (
     default => sub { +{} },
 );
 
+has uploads => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
 no Moose;
 
 # aliases
@@ -207,12 +213,6 @@ sub upload {
             }
         }
     }
-}
-
-sub uploads {
-    my ($self, $uploads) = @_;
-    $self->{uploads} = $uploads if $uploads;
-    return $self->{uploads};
 }
 
 sub uri_with {

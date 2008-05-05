@@ -130,7 +130,7 @@ sub daemon_fork {
 sub daemon_detach {
     my $self = shift;
     print "FastCGI daemon started (pid $$)\n";
-    open STDIN,  "+</dev/null" or die $!;
+    open STDIN,  "+</dev/null" or die $!; ## no critic
     open STDOUT, ">&STDIN"     or die $!;
     open STDERR, ">&STDIN"     or die $!;
     POSIX::setsid();

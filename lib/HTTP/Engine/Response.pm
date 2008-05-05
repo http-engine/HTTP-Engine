@@ -66,10 +66,8 @@ sub finalize {
     confess 'argument missing: $c' unless $c;
 
     # Handle redirects
-    # FIXME: this part does not works now.
-    if (my $location = $self->redirect ) {
-        $self->log( debug => qq/Redirecting to "$location"/ );
-        $self->header( Location => $self->absolute_url($c, $location) );
+    if (my $location = $self->location ) {
+        $self->header( Location => $c->req->absolute_url($location) );
         $self->body($self->status . ': Redirect') unless $self->body;
     }
 

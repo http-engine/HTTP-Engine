@@ -1,8 +1,10 @@
 package HTTP::Engine::Plugin::Interface;
 use strict;
 use warnings;
-use base qw( HTTP::Engine::Plugin HTTP::Engine::Role::Interface Class::Accessor::Fast );
+use base qw( HTTP::Engine::Plugin Class::Accessor::Fast );
 __PACKAGE__->mk_accessors(qw/ read_position read_length /);
+use HTTP::Engine::Role;
+with 'HTTP::Engine::Role::Interface';
 
 our $CHUNKSIZE = 4096;
 

@@ -92,19 +92,22 @@ sub _prepare_cookie  {
 sub _prepare_path  {
     my($self, $c) = @_;
 
-    my $scheme = $c->req->secure ? 'https' : 'http';
-    my $host   = $c->env->{HTTP_HOST}   || $c->env->{SERVER_NAME};
-    my $port   = $c->env->{SERVER_PORT} || ( $c->req->secure ? 443 : 80 );
+    my $env    = $c->env;
+    my $req    = $c->req;
+
+    my $scheme = $req->secure ? 'https' : 'http';
+    my $host   = $env->{HTTP_HOST}   || $env->{SERVER_NAME};
+    my $port   = $env->{SERVER_PORT} || ( $req->secure ? 443 : 80 );
 
     my $base_path;
-    if (exists $c->env->{REDIRECT_URL}) {
-        $base_path = $c->env->{REDIRECT_URL};
-        $base_path =~ s/$c->env->{PATH_INFO}$//;
+    if (exists $env->{REDIRECT_URL}) {
+        $base_path = $env->{REDIRECT_URL};
+        $base_path =~ s/$env->{PATH_INFO}$//;
     } else {
-        $base_path = $c->env->{SCRIPT_NAME} || '/';
+        $base_path = $env->{SCRIPT_NAME} || '/';
     }
 
-    my $path = $base_path . ($c->env->{PATH_INFO} || '');
+    my $path = $base_path . ($env->{PATH_INFO} || '');
     $path =~ s{^/+}{};
 
     my $uri = URI->new;
@@ -112,11 +115,11 @@ sub _prepare_path  {
     $uri->host($host);
     $uri->port($port);
     $uri->path($path);
-    $uri->query($c->env->{QUERY_STRING}) if $c->env->{QUERY_STRING};
+    $uri->query($env->{QUERY_STRING}) if $env->{QUERY_STRING};
 
     # sanitize the URI
     $uri = $uri->canonical;
-    $c->req->uri($uri);
+    $req->uri($uri);
 
     # set the base URI
     # base must end in a slash
@@ -129,12 +132,14 @@ sub _prepare_path  {
 sub _prepare_body  {
     my($self, $c) = @_;
 
-    # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
-    $self->read_length($c->req->header('Content-Length') || 0);
-    my $type = $c->req->header('Content-Type');
+    my $req = $c->req;
 
-    $c->req->http_body( HTTP::Body->new($type, $self->read_length) );
-    $c->req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
+    # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
+    $self->read_length($req->header('Content-Length') || 0);
+    my $type = $req->header('Content-Type');
+
+    $req->http_body( HTTP::Body->new($type, $self->read_length) );
+    $req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
     if ($self->read_length > 0) {
         while (my $buffer = $self->_read) {
@@ -153,33 +158,37 @@ sub _prepare_body  {
 sub _prepare_body_chunk {
     my($self, $c, $chunk) = @_;
 
-    $c->req->raw_body($c->req->raw_body . $chunk);
-    $c->req->http_body->add($chunk);
+    my $req = $c->req;
+    $req->raw_body($req->raw_body . $chunk);
+    $req->http_body->add($chunk);
 }
 
 sub _prepare_parameters  {
     my ($self, $c) = @_;
 
+    my $req = $c->req;
+    my $parameters = $req->parameters;
+
     # We copy, no references
-    for my $name (keys %{ $c->req->query_parameters }) {
-        my $param = $c->req->query_parameters->{$name};
+    for my $name (keys %{ $req->query_parameters }) {
+        my $param = $req->query_parameters->{$name};
         $param = ref $param eq 'ARRAY' ? [ @{$param} ] : $param;
-        $c->req->parameters->{$name} = $param;
+        $parameters->{$name} = $param;
     }
 
     # Merge query and body parameters
-    for my $name (keys %{ $c->req->body_parameters }) {
-        my $param = $c->req->body_parameters->{$name};
+    for my $name (keys %{ $req->body_parameters }) {
+        my $param = $req->body_parameters->{$name};
         $param = ref $param eq 'ARRAY' ? [ @{$param} ] : $param;
-        if ( my $old_param = $c->req->parameters->{$name} ) {
+        if ( my $old_param = $parameters->{$name} ) {
             if ( ref $old_param eq 'ARRAY' ) {
-                push @{ $c->req->parameters->{$name} },
+                push @{ $parameters->{$name} },
                   ref $param eq 'ARRAY' ? @$param : $param;
             } else {
-                $c->req->parameters->{$name} = [ $old_param, $param ];
+                $parameters->{$name} = [ $old_param, $param ];
             }
         } else {
-            $c->req->parameters->{$name} = $param;
+            $parameters->{$name} = $param;
         }
     }
 }
@@ -187,7 +196,8 @@ sub _prepare_parameters  {
 sub _prepare_uploads  {
     my($self, $c) = @_;
 
-    my $uploads = $c->req->http_body->upload;
+    my $req     = $c->req;
+    my $uploads = $req->http_body->upload;
     for my $name (keys %{ $uploads }) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
@@ -202,11 +212,11 @@ sub _prepare_uploads  {
             $u->filename($upload->{filename});
             push @uploads, $u;
         }
-        $c->req->uploads->{$name} = @uploads > 1 ? \@uploads : $uploads[0];
+        $req->uploads->{$name} = @uploads > 1 ? \@uploads : $uploads[0];
 
         # support access to the filename as a normal param
         my @filenames = map { $_->{filename} } @uploads;
-        $c->req->parameters->{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
+        $req->parameters->{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
     }
 }
 

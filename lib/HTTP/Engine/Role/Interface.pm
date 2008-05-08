@@ -2,6 +2,7 @@ package HTTP::Engine::Role::Interface;
 use strict;
 use warnings;
 use HTTP::Engine::Role;
+use base 'HTTP::Engine::Role';
 
 requires run => ['Method'];
 requires_with_attributes ['InterfaceMethod'], qw(

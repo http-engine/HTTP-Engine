@@ -9,7 +9,7 @@ use IO::Socket qw[AF_INET inet_aton];
 
 __PACKAGE__->mk_accessors(
     qw/address context cookies method
-      protocol query_parameters secure  uri user raw_body/
+      protocol query_parameters secure uri user raw_body http_body /
 );
 
 *body_params  = \&body_parameters;
@@ -178,9 +178,8 @@ sub upload {
 
 sub uploads {
     my ($self, $uploads) = @_;
-    $self->context->prepare_body;
     $self->{uploads} = $uploads if $uploads;
-    return $self->{uploads};
+    $self->{uploads};
 }
 
 sub uri_with {

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base qw( HTTP::Response Class::Accessor::Fast );
 
-__PACKAGE__->mk_accessors(qw/body context cookies location status/);
+__PACKAGE__->mk_accessors(qw/body context cookies location status protocol/);
 
 *output = \&body;
 
@@ -12,9 +12,10 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
-    $self->{body}    = '';
-    $self->{cookies} = {};
-    $self->{status}  = 200;
+    $self->{body}     = '';
+    $self->{cookies}  = {};
+    $self->{status}   = 200;
+    $self->{protocol} = '1.0';
 
     $self;
 }

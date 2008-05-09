@@ -6,6 +6,8 @@ use HTTP::Engine::Context;
 use HTTP::Response;
 use File::Temp qw/:seekable/;
 
+plan skip_all => 'File::Temp 0.20 required for this test' unless $File::Temp::VERSION >= 0.20;
+
 plan tests => 1*blocks;
 
 filters {

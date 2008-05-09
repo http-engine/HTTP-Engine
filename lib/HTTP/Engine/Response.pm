@@ -75,7 +75,7 @@ sub finalize {
     $self->content_length(0);
     if ($self->body) {
         # get the length from a filehandle
-        if (Scalar::Util::blessed($self->body) && $self->body->can('read')) {
+        if (Scalar::Util::blessed($self->body) && $self->body->can('read') or ref($self->body) eq 'GLOB') {
             if (my $stat = stat $self->body) {
                 $self->content_length($stat->size);
             } else {

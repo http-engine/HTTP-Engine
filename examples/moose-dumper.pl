@@ -7,6 +7,7 @@ use HTTP::Engine::Interface::ServerSimple;
 use HTTP::Response;
 use HTTP::Engine::Request;
 use HTTP::MobileAttribute;
+use String::TT qw/strip tt/;
 
 my $engine = HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new({
@@ -17,21 +18,21 @@ my $engine = HTTP::Engine->new(
             my $req_dump = Dumper( $c->req );
             my $ma = $c->req->mobile_attribute;
             my $raw      = $c->req->raw_body;
-            my $body     = <<"...";
-        <form method="post">
-            <input type="text" name="foo" />
-            <input type="submit" />
-        </form>
+            my $body     = strip tt q{ 
+                <form method="post">
+                    <input type="text" name="foo" />
+                    <input type="submit" />
+                </form>
 
-        <form method="post" enctype="multipart/form-data">
-            <input type="file" name="upload_file" />
-            <input type="submit" />
-        </form>
+                <form method="post" enctype="multipart/form-data">
+                    <input type="file" name="upload_file" />
+                    <input type="submit" />
+                </form>
 
-        <pre>$raw</pre>
-        <pre>$req_dump</pre>
-        <pre>$ma</pre>
-...
+                <pre>[% raw      | html %]</pre>
+                <pre>[% req_dump | html %]</pre>
+                <pre>[% ma       | html %]</pre>
+            };
 
             $c->res->body($body);
         },

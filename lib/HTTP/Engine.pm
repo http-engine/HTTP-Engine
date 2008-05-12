@@ -122,13 +122,22 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 =head1 SYNOPSIS
 
   use HTTP::Engine;
-  HTTP::Engine->new(
-    config         => 'config.yaml',
-    handle_request => sub {
+  my $engine = HTTP::Engine->new(
+      interface => {
+          module => 'ServerSimple',
+          conf    => {
+              host => 'localhost',
+              port =>  1978,
+          },
+      },
+      handle_request => 'handle_request',# or CODE ref
+  };
+  $engine->run;
+
+  sub handle_request {
       my $c = shift;
       $c->res->body( Dumper($e->req) );
-    }
-  )->run;
+  }
 
 =head1 CONCEPT RELEASE
 
@@ -142,14 +151,11 @@ socket binding server. The purpose of this module is to be an
 adaptor between various HTTP-based logic layers and the actual 
 implementation of an HTTP server, such as, mod_perl and FastCGI
 
-=head1 PLUGINS
+=head1 MIDDLEWARES
 
-For all non-core plugins (consult #codrepos first), use the HTTPEx::
-namespace. For example, if you have a plugin module named "HTTPEx::Plugin::Foo",
+For all non-core middlewaress (consult #codrepos first), use the HTTPEx::
+namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
 you could load it as
-
-  use HTTP::Engine;
-  HTTP::Engine->load_plugins(qw( +HTTPEx::Plugin::Foo ));
 
 =head1 BRANCHES
 

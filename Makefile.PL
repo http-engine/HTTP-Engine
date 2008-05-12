@@ -3,7 +3,7 @@ name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
 requires 'Class::Accessor::Fast';
-requires 'Class::Component';
+requires 'Class::Component', '0.17';
 requires 'Scalar::Util';
 
 requires 'IO::Socket';

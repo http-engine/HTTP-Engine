@@ -9,6 +9,7 @@ use constant should_write_response_line => 0;
 
 sub run :Method{
     my ($self, $c) = @_;
+    local %ENV = %ENV;
     $c->handle_request;
 }
 

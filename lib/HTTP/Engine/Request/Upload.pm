@@ -1,42 +1,57 @@
 package HTTP::Engine::Request::Upload;
 
-use strict;
-use base qw( Class::Accessor::Fast );
+use Moose;
 
 use File::Copy ();
 use IO::File   ();
 use File::Spec::Unix;
 
-__PACKAGE__->mk_accessors(qw/filename headers size tempname type basename/);
+has filename => ( is => 'rw' );
+has headers  => ( is => 'rw' );
+has size     => ( is => 'rw' );
+has tempname => ( is => 'rw' );
+has type     => ( is => 'rw' );
+has basename => ( is => 'rw' );
 
-sub new { shift->SUPER::new(ref($_[0]) ? $_[0] : {@_}) }
+has fh => (
+    is       => 'rw',
+    required => 1,
+    lazy     => 1,
+    default  => sub {
+        my $self = shift;
+
+        my $fh = IO::File->new( $self->tempname, IO::File::O_RDONLY );
+        unless ( defined $fh ) {
+            my $filename = $self->tempname;
+            die "Can't open '$filename': '$!'";
+        }
+        return $fh;
+    },
+);
+
+no Moose;
 
 sub copy_to {
     my $self = shift;
-    return File::Copy::copy($self->tempname, @_);
-}
-
-sub fh {
-    my $self = shift;
-    IO::File->new($self->tempname, IO::File::O_RDONLY) or die "Can't open '" . $self->tempname . "': '$!'";
+    File::Copy::copy( $self->tempname, @_ );
 }
 
 sub link_to {
-    my($self, $target) = @_;
-    CORE::link($self->tempname, $target);
+    my ( $self, $target ) = @_;
+    CORE::link( $self->tempname, $target );
 }
 
 sub slurp {
-    my ($self, $layer) = @_;
+    my ( $self, $layer ) = @_;
 
     $layer = ':raw' unless $layer;
 
     my $content = undef;
     my $handle  = $self->fh;
 
-    binmode($handle, $layer);
+    binmode( $handle, $layer );
 
-    while ($handle->sysread(my $buffer, 8192)) {
+    while ( $handle->sysread( my $buffer, 8192 ) ) {
         $content .= $buffer;
     }
 
@@ -46,7 +61,7 @@ sub slurp {
 sub basename {
     my $self = shift;
 
-    unless ($self->{basename}) {
+    unless ( $self->{basename} ) {
         my $basename = $self->filename;
         $basename =~ s|\\|/|g;
         $basename = ( File::Spec::Unix->splitpath($basename) )[2];
@@ -55,5 +70,7 @@ sub basename {
     }
     $self->{basename};
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;

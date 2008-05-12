@@ -1,150 +1,72 @@
 package HTTP::Engine::Role::Interface;
 use strict;
-use warnings;
-use HTTP::Engine::Role;
-use base 'HTTP::Engine::Role';
+use Moose::Role;
+use HTTP::Engine::ResponseWriter;
 
-use HTTP::Status ();
-use Scalar::Util ();
+requires qw(run should_write_response_line);
 
-requires 'should_write_response_line';
-requires run => ['Method'];
+has request_handler => (
+    is       => 'rw',
+    isa      => 'CodeRef',
+    required => 1,
+);
 
-requires request_init => ['Method'];
-sub request_init {
-    my $self = shift;
-    $self->read_position(0);
-    delete $self->{_prepared_read};
-    delete $self->{_prepared_write};
-}
-
-requires interface_proxy => ['Method'];
-sub interface_proxy {
-    my($self, $c, $method, @args) = @_;
-    $self->$method(@args);
-}
-
-
-sub CRLF { "\015\012" }
-
-
-#
-# reader methods
-#
-my $read_length = 0;
-sub read_length { $read_length = defined($_[1]) ?  $_[1] : $read_length }
-my $read_position = 0;
-sub read_position { $read_position = defined($_[1]) ?  $_[1] : $read_position }
-sub chunk_size { 4096 }
-
-sub read_all {
-    my($self, $callback) = @_;
-    return unless $self->read_length;
-
-    while (my $buffer = $self->read) {
-        $callback->($buffer);
-    }
-
-    # paranoia against wrong Content-Length header
-    my $remaining = $self->read_length - $self->read_position;
-    if ($remaining > 0) {
-        $self->finalize_read;
-        die "Wrong Content-Length value: " . $self->read_length;
-    }
-}
-
-sub prepare_read {
-    my $self = shift;
-    $self->read_position(0);
-}
-
-sub read {
-    my ($self, $maxlength) = @_;
-
-    unless ($self->{_prepared_read}) {
-        $self->prepare_read;
-        $self->{_prepared_read} = 1;
-    }
-
-    my $remaining = $self->read_length - $self->read_position;
-    $maxlength ||= $self->chunk_size;
-
-    # Are we done reading?
-    if ($remaining <= 0) {
-        $self->finalize_read;
-        return;
-    }
-
-    my $readlen = ($remaining > $maxlength) ? $maxlength : $remaining;
-    my $rc = $self->read_chunk(my $buffer, $readlen);
-    if (defined $rc) {
-        $self->read_position($self->read_position + $rc);
-        return $buffer;
-    } else {
-        die "Unknown error reading input: $!";
-    }
-}
-
-sub read_chunk {
-    my $self = shift;
-
-    if (Scalar::Util::blessed(*STDIN)) {
-        *STDIN->sysread(@_);
-    } else {
-        STDIN->sysread(@_);
-    }
-}
-
-sub finalize_read { undef shift->{_prepared_read} }
-
-
-#
-# writer methods
-#
-sub write_headers {
-    my($self, $res) = @_;
-
-    my @headers;
-    push @headers, join(" ", $res->protocol, $res->status, HTTP::Status::status_message($res->status)) if $self->should_write_response_line;
-    push @headers, $res->headers->as_string(CRLF);
-
-    $self->write(join(CRLF, @headers) . CRLF);
-}
-
-sub write_body {
-    my($self, $res) = @_;
-    my $body = $res->body;
-
-    no warnings 'uninitialized';
-    if (Scalar::Util::blessed($body) && $body->can('read') or ref($body) eq 'GLOB') {
-        while (!eof $body) {
-            $body->read(my ($buffer), $self->chunk_size);
-            last unless $self->write($buffer);
-        }
-        close $body;
-    } else {
-        $self->write($body);
-    }
-}
-
-sub prepare_write {
-    my $self = shift;
-
-    # Set the output handle to autoflush
-    if (Scalar::Util::blessed *STDOUT) {
-        *STDOUT->autoflush(1);
-    }
-}
-
-sub write {
-    my($self, $buffer) = @_;
-
-    unless ($self->{_prepared_write}) {
-        $self->prepare_write;
-        $self->{_prepared_write} = 1;
-    }
-
-    print STDOUT $buffer;
-}
+has request_processor => (
+    is      => 'ro',
+    isa     => 'HTTP::Engine::RequestProcessor',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        HTTP::Engine::RequestProcessor->new(
+            handler                    => $self->request_handler,
+            response_writer            => HTTP::Engine::ResponseWriter->new(
+                should_write_response_line => $self->should_write_response_line,
+            ),
+        );
+    },
+    handles => [qw/handle_request load_plugins/],
+);
 
 1;
+
+__END__
+
+=head1 NAME
+
+HTTP::Engine::Role::Interface - The Interface Role Definition
+
+=head1 SYNOPSIS
+
+  package HTTP::Engine::Interface::CGI;
+  use Moose;
+  with 'HTTP::Engine::Role::Interface';
+
+=head1 DESCRIPTION
+
+HTTP::Engine::Role::Interface defines the role of an interface in HTTP::Engine.
+
+Specifically, an Interface in HTTP::Engine needs to do at least two things:
+
+=over 4
+
+=item Create a HTTP::Engine::Request object from the client request
+
+If you are on a CGI environment, you need to receive all the data from 
+%ENV and such. If you are running on a mod_perl process, you need to muck
+with $r. 
+
+In any case, you need to construct a valid HTTP::Engine::Request object
+so the application handler can do the real work.
+
+=item Accept a HTTP::Engine::Response object, send it back to the client
+
+The application handler must return an HTTP::Engine::Response object.
+
+In turn, the interface needs to do whatever necessary to present this
+object to the client. In a  CGI environment, you would write to STDOUT.
+In mod_perl, you need to call the appropriate $r->headers methods and/or
+$r->print
+
+=back
+
+=cut

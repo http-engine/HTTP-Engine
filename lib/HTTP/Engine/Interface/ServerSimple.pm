@@ -1,38 +1,32 @@
 package HTTP::Engine::Interface::ServerSimple;
-use strict;
-use warnings;
-use base 'HTTP::Engine::Plugin';
-use HTTP::Engine::Role;
+use Moose;
 with 'HTTP::Engine::Role::Interface';
-
-use HTTP::Server::Simple 0.33;
-
 use constant should_write_response_line => 1;
+use HTTP::Server::Simple 0.33;
+use HTTP::Server::Simple::CGI;
 
+has port => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 80,
+);
 
-sub run  {
-    my ($self, $c) = @_;
+sub run {
+    my ($self, ) = @_;
 
-    my $port = $self->config->{port} || '80';
-    my $host = $self->config->{host} || '127.0.0.1';
-
-    my $server = HTTP::Engine::Interface::ServerSimple::Server->new( $port );
-    $server->host($host);
-
-    $server->{http_engine} = $c;
-    $server->run;
-}
-
-sub prepare_write {}
-
-package HTTP::Engine::Interface::ServerSimple::Server;
-use base qw/HTTP::Server::Simple::CGI/;
-
-sub handler {
-    my $self = shift;
-
-    local %ENV = %ENV;
-    $self->{http_engine}->handle_request;
+    Moose::Meta::Class
+        ->create_anon_class(
+            superclasses => ['HTTP::Server::Simple::CGI'],
+            methods => {
+                handler => sub {
+                    $self->handle_request();
+                },
+            },
+            cache => 1
+        )->new_object(
+        )->new(
+            $self->port
+        )->run;
 }
 
 1;
@@ -40,20 +34,18 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP::Engine
+HTTP::Engine::Plugin::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP::Engine
 
 =head1 SYNOPSIS
 
-  interface:
-    module: ServerSimple
-    args:
-      host: localhost
-      port: 5963
-    handle_request: methodname
+  plugins:
+    - module: Interface::ServerSimple
+      conf:
+        port: 5963
 
 =head1 DESCRIPTION
 
-HTTP::Engine::Interface::ServerSimple is wrapper for HTTP::Server::Simple.
+HTTP::Engine::Plugin::Interface::ServerSimple is wrapper for HTTP::Server::Simple.
 
 HTTP::Server::Simple is flexible web server.And it can use Net::Server, so you can make it preforking or using Coro.
 

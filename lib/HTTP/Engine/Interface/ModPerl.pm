@@ -1,11 +1,5 @@
 package HTTP::Engine::Interface::ModPerl;
-use strict;
-use warnings;
-use base 'HTTP::Engine::Plugin';
-use HTTP::Engine::Role;
-with 'HTTP::Engine::Role::Interface';
-
-use constant should_write_response_line => 0;
+use Moose;
 
 BEGIN
 {
@@ -23,36 +17,41 @@ use Apache2::RequestUtil;
 use Apache2::ServerRec;
 use HTTP::Engine;
 
-my $apache;
-sub apache { $apache }
-my $engine;
+extends 'HTTP::Engine::Interface::CGI';
+
+has 'apache' => (
+    is      => 'rw',
+    isa     => 'Apache2::RequestRec',
+    is_weak => 1,
+);
+
+my %HE;
 
 sub handler : method
 {
     my $class = shift;
     my $r     = shift;
-    local %ENV = %ENV;
 
     # ModPerl is currently the only environment where the inteface comes
     # before the actual invocation of HTTP::Engine
 
     my $location = $r->location;
+    my $engine   = $HE{ $location };
     if (! $engine ) {
         $engine = $class->create_engine($r);
+        $HE{ $r->location } = $engine;
     }
 
-    $apache = $r;
     $engine->interface->apache( $r );
 
     my $server = $r->server;
     my $connection = $r->connection;
-
-    $ENV{REQUEST_METHOD} = $r->method();
-    $ENV{REMOTE_ADDR}    = $connection->remote_ip();
-    $ENV{SERVER_PORT}    = $server->port();
-    $ENV{QUERY_STRING}   = $r->args();
-
-    $engine->handle_request;
+    $engine->interface->request_processor->handle_request(
+        REQUEST_METHOD => $r->method(),
+        REMOTE_ADDR    => $connection->remote_ip(),
+        SERVER_PORT    => $server->port(),
+        QUERY_STRING   => $r->args(),
+    );
 
     return &Apache2::Const::OK;
 }
@@ -62,12 +61,9 @@ sub create_engine
     my ($self, $r) = @_;
 
     HTTP::Engine->new(
-        interface => {
-            module => 'ModPerl',
-            conf   => {
-            },
-        },
-        handle_request => sub { warn "hoge" },
+        interface => HTTP::Engine::Interface::ModPerl->new(
+            request_handler   => sub { warn "hoge" },
+        )
     );
 }
 

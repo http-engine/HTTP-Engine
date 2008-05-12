@@ -1,115 +1,20 @@
 package HTTP::Engine;
-use strict;
-use warnings;
-BEGIN { eval "package HTTPEx; sub dummy {} 1;" } ## no critic
-use base 'HTTPEx';
-use Class::Component;
-our $VERSION = '0.0.4';
-
-use Carp;
-use Scalar::Util;
-use URI;
-
+use Moose;
+use HTTP::Engine::Types::Core qw( Interface );
+our $VERSION = '0.0.3';
+our $AUTHORITY = 'cpan:YAPPO';
 use HTTP::Engine::Context;
+use HTTP::Engine::Request;
+use HTTP::Engine::Request::Upload;
+use HTTP::Engine::Response;
+use HTTP::Engine::RequestProcessor;
 
-__PACKAGE__->load_components(qw/Plaggerize Moosenize Autocall::InjectMethod/);
-
-sub new {
-    my ($class, %opts) = @_;
-
-    my $config = +{ %opts };
-    $config->{plugins} ||= [];
-
-    $class->setup_innerware($config);
-    $class->setup_interface($config);
-
-    my $handle_request = $config->{interface}->{handle_request};
-    croak 'handle_request is required ' unless $handle_request;
-    unless (ref $handle_request) {
-        my $caller = caller;
-        no strict 'refs';
-        $handle_request = \&{"$caller\::$handle_request"};
-    }
-
-    my $self = $class->SUPER::new({ config => $config });
-    $self->set_handle_request($handle_request);
-    $self->conf->{global}->{log}->{fh} ||= \*STDERR;
-
-    return $self;
-}
-
-sub setup_interface {
-    my($class, $config) = @_;
-    return unless $config->{interface};
-
-    # prepare interface config 
-    my $interface = $config->{interface};
-    $interface->{conf} ||= $interface->{args};
-    unless ($interface->{module} =~ /^\+/) {
-        $interface->{module} = '+HTTP::Engine::Interface::' . $interface->{module};
-    }
-    unshift @{ $config->{plugins} }, $interface;
-}
-
-sub setup_innerware {
-    my($class, $config) = @_;
-
-    my $innerware_baseclass = $config->{innerware_baseclass} || 'Basic';
-    my $plugin = {};
-    unless ($innerware_baseclass =~ /^\+/) {
-        $plugin->{module} = '+HTTP::Engine::Innerware::' . $innerware_baseclass;
-    }
-    unshift @{ $config->{plugins} }, $plugin;
-}
-
-sub set_handle_request {
-    my($self, $callback) = @_;
-    croak 'please CODE refarence' unless $callback && ref($callback) eq 'CODE';
-    $self->{handle_request} = $callback;
-}
-
-sub run { croak ref($_[0] || $_[0] ) ." did not override HTTP::Engine::run" }
-
-sub handle_request {
-    my $self = shift;
-    $self->request_init;
-
-    my $context = HTTP::Engine::Context->new;
-
-    $self->run_innerware_before($context);
-
-    eval {
-        local *STDIN;
-        local *STDOUT;
-        $self->{handle_request}->($context);
-    };
-    $context->handle_error_message($@);
-
-    $self->run_innerware_after($context);
-}
-
-
-sub _run_innerware_hooks {
-    my($self, $context, @hooks) = @_;
-
-    my $rets;
-    for my $hook (@hooks) {
-        my($plugin, $method) = ($hook->{plugin}, $hook->{method});
-        my $ret = $plugin->$method($self, $context, $rets);
-        push @{ $rets }, $ret;
-    }
-    $rets;
-}
-sub run_innerware_before {
-    my($self, $context) = @_;
-    return unless my $hooks = $self->class_component_hooks->{innerware_before};
-    $self->_run_innerware_hooks($context, @{ $hooks });
-}
-sub run_innerware_after {
-    my($self, $context) = @_;
-    return unless my $hooks = $self->class_component_hooks->{innerware_after};
-    $self->_run_innerware_hooks($context, reverse @{ $hooks });
-}
+has 'interface' => (
+    is      => 'ro',
+    does    => 'Interface',
+    coerce  => 1,
+    handles => [ qw(run load_plugins) ],
+);
 
 1;
 __END__
@@ -123,22 +28,19 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 =head1 SYNOPSIS
 
   use HTTP::Engine;
-  my $engine = HTTP::Engine->new(
-      interface => {
-          module => 'ServerSimple',
-          args   => {
-              host => 'localhost',
-              port =>  1978,
-          },
-          handle_request => 'handle_request',# or CODE ref
-      },
-  };
-  $engine->run;
+  HTTP::Engine->new(
+    interface => {
+      module       => 'FastCGI',
+      handler      => sub {
+        my ($self, $request) = @_;
+        ....
+        return HTTP::Response->new(200, "OK");
+      }
+    }
+    # XXX TODO: Define middle_wares better!
+    middle_wares => [ qw(Session MobileAttributes) ],
+  )->run();
 
-  sub handle_request {
-      my $c = shift;
-      $c->res->body( Dumper($e->req) );
-  }
 
 =head1 CONCEPT RELEASE
 
@@ -148,31 +50,94 @@ It is mostly based on the code of Catalyst::Engine.
 =head1 DESCRIPTION
 
 HTTP::Engine is a bare-bones, extensible HTTP engine. It is not a 
-socket binding server. The purpose of this module is to be an 
-adaptor between various HTTP-based logic layers and the actual 
-implementation of an HTTP server, such as, mod_perl and FastCGI
+socket binding server.
 
-=head1 MIDDLEWARES
+The purpose of this module is to be an adaptor between various HTTP-based 
+logic layers and the actual implementation of an HTTP server, such as, 
+mod_perl and FastCGI.
 
-For all non-core middlewares (consult #codrepos first), use the HTTPEx::
-namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
+Internally, the only thing HTTP::Engine will do is to prepare a 
+HTTP::Engine::Request object for you to handle, and pass to your handler's
+C<TBD> method. In turn your C<TBD> method should return a fully prepared
+HTTP::Engine::Response object.
+
+HTTP::Engine will handle absorbing the differences between the environment,
+the I/O, etc. Your application can focus on creating response objects
+(which is pretty much what your typical webapp is doing)
+
+=head1 INTERFACES
+
+Interfaces are the actual environment-dependent components which handles
+the actual interaction between your clients and the application.
+
+For example, in CGI mode, you can write to STDOUT and expect your clients to
+see it, but in mod_perl, you may need to use $r-E<gt>print instead.
+
+Interfaces are the actual layers that does the interaction. HTTP::Engine
+currently supports the following:
+
+# XXX TODO: Update the list
+
+=over 4
+
+=item HTTP::Engine::Interface::CGI
+
+=item HTTP::Engine::Interface::FastCGI
+
+=item HTTP::Engine::Interface::ModPerl
+
+=item HTTP::Engine::Interface::ServerSimple
+
+=back
+
+Interfaces can be specified as part of the HTTP::Engine constructor:
+
+  my $interface = HTTP::Engine::Interface::FastCGI->new(
+    handler => ...
+  );
+  HTTP::Engine->new(
+    interface => $interface
+  )->run();
+
+Or you can let HTTP::Engine instantiate the interface for you:
+
+  HTTP::Engine->new(
+    interface => {
+      module => 'FastCGI',
+      args   => {
+        handler => ...
+      }
+    }
+  )->run();
+
+=head1 PLUGINS
+
+For all non-core plugins (consult #codrepos first), use the HTTPEx::
+namespace. For example, if you have a plugin module named "HTTPEx::Plugin::Foo",
 you could load it as
+
+  use HTTP::Engine;
+  HTTP::Engine->load_plugins(qw( +HTTPEx::Plugin::Foo ));
 
 =head1 BRANCHES
 
-Moose branches L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
+Moose branch L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
 
 =head1 AUTHOR
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
 
-lestrrat
+Daisuke Maki
 
 tokuhirom
 
 nyarla
 
 marcus
+
+hidek
+
+dann
 
 =head1 SEE ALSO
 

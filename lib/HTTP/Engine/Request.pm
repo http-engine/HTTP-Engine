@@ -1,67 +1,131 @@
 package HTTP::Engine::Request;
-
-use strict;
-use warnings;
-use base qw( HTTP::Request Class::Accessor::Fast );
+use Moose;
+with 'MooseX::Object::Pluggable';
 
 use Carp;
+use HTTP::Headers;
+use HTTP::Body;
+use HTTP::Engine::Types::Core qw( Uri Header );
+use HTTP::Request;
 use IO::Socket qw[AF_INET inet_aton];
 
-__PACKAGE__->mk_accessors(
-    qw/address context cookies method
-      protocol query_parameters secure uri user raw_body http_body /
+# the IP address of the client
+has address => (
+    is  => 'rw',
+    isa => 'Str',
 );
 
+has context => (
+    is       => 'rw',
+    isa      => 'HTTP::Engine::Context',
+    weak_ref => 1,
+);
+
+has cookies => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+has method => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has protocol => (
+    is  => 'rw',
+    # isa => 'Str',
+);
+
+has query_parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { {} },
+);
+
+# https or not?
+has secure => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has uri => (
+    is     => 'rw',
+    isa    => 'Uri',
+    coerce => 1,
+);
+
+has user => ( is => 'rw', );
+
+has raw_body => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
+
+has headers => (
+    is      => 'rw',
+    isa     => 'Header',
+    coerce  => 1,
+    default => sub { HTTP::Headers->new },
+    handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
+);
+
+# Contains the URI base. This will always have a trailing slash.
+# If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.
+has base => (
+    is      => 'rw',
+    isa     => 'URI',
+    trigger => sub {
+        my $self = shift;
+
+        if ( $self->uri ) {
+            $self->path; # clear cache.
+        }
+    },
+);
+
+has hostname => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        $self->context->env->{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
+    },
+);
+
+has http_body => (
+    is      => 'rw',
+    isa     => 'HTTP::Body',
+    handles => {
+        body_parameters => 'param',
+        body            => 'body',
+    },
+);
+
+# contains body_params and query_params
+has parameters => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
+has uploads => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
+no Moose;
+
+# aliases
 *body_params  = \&body_parameters;
 *input        = \&body;
 *params       = \&parameters;
 *query_params = \&query_parameters;
 *path_info    = \&path;
-
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-
-    $self->{body_parameters}  = {};
-    $self->{cookies}          = {};
-    $self->{parameters}       = {};
-    $self->{query_parameters} = {};
-    $self->{secure}           = 0;
-    $self->{uploads}          = {};
-    $self->{raw_body}         = '';
-
-    $self;
-}
-
-sub content_encoding { shift->headers->content_encoding(@_) }
-sub content_length   { shift->headers->content_length(@_) }
-sub content_type     { shift->headers->content_type(@_) }
-sub header           { shift->headers->header(@_) }
-sub referer          { shift->headers->referer(@_) }
-sub user_agent       { shift->headers->user_agent(@_) }
-sub base {
-    my($self, $base) = @_;
-
-    return $self->{base} unless $base;
-    $self->{base} = $base;
-
-    # set the value in path for backwards-compat                                                                      
-    if ($self->uri) {
-        $self->path;
-    }
-    return $self->{base};
-}
-
-sub body {
-    my ($self, $body) = @_;
-    return $self->{_body}->body;
-}
-
-sub body_parameters {
-    my ($self, $params) = @_;
-    $self->{body_parameters} = $params if $params;
-    return $self->{body_parameters};
-}
 
 sub cookie {
     my $self = shift;
@@ -73,17 +137,6 @@ sub cookie {
         return undef unless exists $self->cookies->{$name}; ## no critic.
         return $self->cookies->{$name};
     }
-}
-
-sub hostname {
-    my $self = shift;
-
-    if (@_ == 0 && not $self->{hostname}) {
-        $self->{hostname} = gethostbyaddr( inet_aton( $self->address ), AF_INET );
-    }
-
-    $self->{hostname} = shift if @_ == 1;
-    return $self->{hostname};
 }
 
 sub param {
@@ -110,19 +163,6 @@ sub param {
     }
 }
 
-sub parameters {
-    my ($self, $params) = @_;
-    if ($params) {
-        if (ref $params) {
-            $self->{parameters} = $params;
-        } else {
-            $self->context->log->warn(
-                "Attempt to retrieve '$params' with req->params(), " .
-                "you probably meant to call req->param('$params')" );
-        }
-    }
-    return $self->{parameters};
-}
 
 sub path {
     my ($self, $params) = @_;
@@ -154,11 +194,11 @@ sub upload {
         if (ref $self->uploads->{$upload} eq 'ARRAY') {
             return (wantarray)
               ? @{ $self->uploads->{$upload} }
-              : $self->uploads->{$upload}->[0];
+          : $self->uploads->{$upload}->[0];
         } else {
             return (wantarray)
               ? ( $self->uploads->{$upload} )
-              : $self->uploads->{$upload};
+          : $self->uploads->{$upload};
         }
     }
 
@@ -174,12 +214,6 @@ sub upload {
             }
         }
     }
-}
-
-sub uploads {
-    my ($self, $uploads) = @_;
-    $self->{uploads} = $uploads if $uploads;
-    $self->{uploads};
 }
 
 sub uri_with {
@@ -208,5 +242,23 @@ sub as_http_request {
     my $self = shift;
     HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->raw_body );
 }
+
+sub absolute_url {
+    my ($self, $location) = @_;
+
+    unless ($location =~ m!^https?://!) {
+        my $base = $self->base;
+        my $url = sprintf '%s://%s', $base->scheme, $base->host;
+        unless (($base->scheme eq 'http' && $base->port eq '80') ||
+               ($base->scheme eq 'https' && $base->port eq '443')) {
+            $url .= ':' . $base->port;
+        }
+        $url .= $base->path;
+        $location = URI->new_abs($location, $url);
+    }
+    $location;
+}
+
+__PACKAGE__->meta->make_immutable;
 
 1;

@@ -2,12 +2,10 @@ use strict;
 use warnings;
 use lib 'lib';
 
-use Data::Dumper;
 use YAML;
 use HTTP::Engine;
-use String::TT qw( tt );
 
-HTTP::Engine->new(%{ YAML::LoadFile('config.yaml') })->run;
+HTTP::Engine->new( config => 'config.yaml', handle_request => \&handle_request )->run;
 
 my %karma = {};
 sub handle_request {
@@ -15,11 +13,13 @@ sub handle_request {
     _handle_request($c, @_);
 
     use bytes;
-    warn sprintf('%s /%s %s %s', $c->req->method, $c->req->path, $c->res->status, length($c->res->body));
+    $c->engine->log( info => sprintf('%s /%s %s %s', $c->req->method, $c->req->path, $c->res->status, length($c->res->body)) );
 }
 
 sub _handle_request {
     my $c = shift;
+    use Data::Dumper;warn Dumper(\@_);
+    $c->env('DUMY');
 
     my $method             = $c->req->method;
     my($name, $karma, $pm) = split '/', $c->req->path;
@@ -46,7 +46,6 @@ sub _handle_request {
         $c->res->status('400');
         return;
     }
-    my $body = Dump($karma{$name});
-    $c->res->body(tt '[% body | html %]');
+    $c->res->body(Dump($karma{$name}));
 }
 

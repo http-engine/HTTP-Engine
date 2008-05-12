@@ -1,9 +1,5 @@
 Revision history for Perl extension HTTP::Engine
 
-0.0.4    2008-05-12T18:05:32+09:00
-         - more moosenize by Class::Component 0.17
-         - maybe, next release the moose branch
-
 0.0.3    2008-04-30T02:14:21+09:00
          - add Plugin::Interface::ServerSimple (HTTP::Server::Simple support)    tokuhirom++
          - add Plugin::Interface::CGI    nyarla++

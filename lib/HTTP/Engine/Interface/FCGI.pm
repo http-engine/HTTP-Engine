@@ -53,7 +53,7 @@ sub run {
         $self->daemon_fork() if $options->{detach};
 
         if ( $options->{manager} ) {
-            eval "use $options->{manager}; 1" or die $@;
+            eval "use $options->{manager}; 1" or die $@; ## no critic
 
             $proc_manager = $options->{manager}->new(
                 {
@@ -114,9 +114,9 @@ sub daemon_fork {
 sub daemon_detach {
     my $self = shift;
     print "FastCGI daemon started (pid $$)\n";
-    open STDIN,  "+</dev/null" or die $!;
-    open STDOUT, ">&STDIN"     or die $!;
-    open STDERR, ">&STDIN"     or die $!;
+    open STDIN,  "+</dev/null" or die $!; ## no critic
+    open STDOUT, ">&STDIN"     or die $!; ## no critic
+    open STDERR, ">&STDIN"     or die $!; ## no critic
     POSIX::setsid();
 }
 

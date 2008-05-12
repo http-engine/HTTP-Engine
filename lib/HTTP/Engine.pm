@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use strict;
 use warnings;
-BEGIN { eval "package HTTPEx; sub dummy {} 1;" }
+BEGIN { eval "package HTTPEx; sub dummy {} 1;" } ## no critic
 use base 'HTTPEx';
 use Class::Component;
 our $VERSION = '0.0.3';
@@ -153,7 +153,7 @@ implementation of an HTTP server, such as, mod_perl and FastCGI
 
 =head1 MIDDLEWARES
 
-For all non-core middlewaress (consult #codrepos first), use the HTTPEx::
+For all non-core middlewares (consult #codrepos first), use the HTTPEx::
 namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
 you could load it as
 

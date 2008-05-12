@@ -8,12 +8,12 @@ use HTTP::Engine;
 HTTP::Engine->new(
     interface => {
         module => 'ServerSimple',
-        conf   => {
+        args   => {
             host => '0.0.0.0',
             port => 14000,
         },
+        handle_request => 'handle_request',
     },
-    handle_request => 'handle_request',
 )->run;
 
 sub handle_request {

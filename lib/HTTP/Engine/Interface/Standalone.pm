@@ -261,8 +261,9 @@ HTTP::Engine::Interface::Standalone - Standalone HTTP Server
 
   interface:
     module: Standalone
-    conf:
+    args:
       host: localhost
       port: 5963
       fork: 1
       keepalive: 1
+    handle_request: methodname

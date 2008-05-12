@@ -128,8 +128,9 @@ __END__
 
   interface:
     module: FCGI
-      conf:
+      args:
         leave_umask: 1
+      handle_request: methodname
 
 =head1 AUTHORS
 

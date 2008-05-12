@@ -46,9 +46,10 @@ HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP:
 
   interface:
     module: ServerSimple
-    conf:
+    args:
       host: localhost
       port: 5963
+    handle_request: methodname
 
 =head1 DESCRIPTION
 

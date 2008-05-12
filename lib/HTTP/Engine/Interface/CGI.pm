@@ -26,6 +26,7 @@ HTTP::Engine::Interface::CGI - CGI interface for HTTP::Engine
 
   interface:
     module: CGI
+    handle_request: methodname
 
 =head1 AUTHOR
 

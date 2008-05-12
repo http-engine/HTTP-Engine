@@ -23,7 +23,7 @@ sub new {
     $class->setup_innerware($config);
     $class->setup_interface($config);
 
-    my $handle_request = delete $config->{handle_request};
+    my $handle_request = $config->{interface}->{handle_request};
     croak 'handle_request is required ' unless $handle_request;
     unless (ref $handle_request) {
         my $caller = caller;
@@ -44,6 +44,7 @@ sub setup_interface {
 
     # prepare interface config 
     my $interface = $config->{interface};
+    $interface->{conf} ||= $interface->{args};
     unless ($interface->{module} =~ /^\+/) {
         $interface->{module} = '+HTTP::Engine::Interface::' . $interface->{module};
     }
@@ -125,12 +126,12 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
   my $engine = HTTP::Engine->new(
       interface => {
           module => 'ServerSimple',
-          conf    => {
+          args   => {
               host => 'localhost',
               port =>  1978,
           },
+          handle_request => 'handle_request',# or CODE ref
       },
-      handle_request => 'handle_request',# or CODE ref
   };
   $engine->run;
 

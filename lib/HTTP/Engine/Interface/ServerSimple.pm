@@ -45,8 +45,9 @@ HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP:
 =head1 SYNOPSIS
 
   interface:
-    module: Interface::ServerSimple
+    module: ServerSimple
     conf:
+      host: localhost
       port: 5963
 
 =head1 DESCRIPTION

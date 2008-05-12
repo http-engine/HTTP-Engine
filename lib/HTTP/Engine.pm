@@ -17,15 +17,22 @@ __PACKAGE__->load_components(qw/Plaggerize Moosenize Autocall::InjectMethod/);
 sub new {
     my ($class, %opts) = @_;
 
-    my $config = delete $opts{config};
+    my $config = +{ %opts };
     $config->{plugins} ||= [];
 
     $class->setup_innerware($config);
     $class->setup_interface($config);
 
-    my $self = $class->SUPER::new({ config => $config });
-    $self->set_handle_request(delete $opts{handle_request}) if $opts{handle_request};
+    my $handle_request = delete $config->{handle_request};
+    croak 'handle_request is required ' unless $handle_request;
+    unless (ref $handle_request) {
+        my $caller = caller;
+        no strict 'refs';
+        $handle_request = \&{"$caller\::$handle_request"};
+    }
 
+    my $self = $class->SUPER::new({ config => $config });
+    $self->set_handle_request($handle_request);
     $self->conf->{global}->{log}->{fh} ||= \*STDERR;
 
     return $self;
@@ -45,15 +52,6 @@ sub setup_interface {
 
 sub setup_innerware {
     my($class, $config) = @_;
-
-    for my $innerware (@{ $config->{innerwares} }) {
-        unless ($innerware->{module} =~ /^\+/) {
-            $innerware->{module} = '+HTTP::Engine::Innerware::' . $innerware->{module};
-        }
-        unshift @{ $config->{plugins} }, $innerware;
-    }
-
-    return if exists $config->{innerware_baseclass} && !$config->{innerware_baseclass};
 
     my $innerware_baseclass = $config->{innerware_baseclass} || 'Basic';
     my $plugin = {};

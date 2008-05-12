@@ -6,21 +6,16 @@ use Data::Dumper;
 use HTTP::Engine;
 
 HTTP::Engine->new(
-    config => {
-        interface => {
-            module => 'ServerSimple',
-            conf   => {
-                host => '0.0.0.0',
-                port => 14000,
-            },
+    interface => {
+        module => 'ServerSimple',
+        conf   => {
+            host => '0.0.0.0',
+            port => 14000,
         },
-        innerware_baseclass => 'Basic',
-        innerwares => [
-        ],
-        plugins   => [
-        ],
     },
-    handle_request => \&handle_request,
+    plugins   => [
+    ],
+    handle_request => 'handle_request',
 )->run;
 
 sub handle_request {

@@ -4,7 +4,7 @@ use warnings;
 BEGIN { eval "package HTTPEx; sub dummy {} 1;" } ## no critic
 use base 'HTTPEx';
 use Class::Component;
-our $VERSION = '0.0.3';
+our $VERSION = '0.0.4';
 
 use Carp;
 use Scalar::Util;

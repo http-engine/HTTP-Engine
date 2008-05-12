@@ -4,6 +4,7 @@ use lib 'lib';
 use Data::Dumper;
 
 use HTTP::Engine;
+use String::TT qw( tt );
 
 HTTP::Engine->new(
     interface => {
@@ -20,7 +21,7 @@ sub handle_request {
     my $c = shift;
     my $req_dump = Dumper($c->req);
     my $raw = $c->req->raw_body;
-    my $body = <<"...";
+    my $body = tt '
         <form method="post">
             <input type="text" name="foo" />
             <input type="submit" />
@@ -31,9 +32,9 @@ sub handle_request {
             <input type="submit" />
         </form>
 
-        <pre>$raw</pre>
-        <pre>$req_dump</pre>
-...
+        <pre>[% raw | html -%]</pre>
+        <pre>[% req_dump | html -%]</pre>
+';
 
     $c->res->body($body);
 }

@@ -5,6 +5,7 @@ use lib 'lib';
 use Data::Dumper;
 use YAML;
 use HTTP::Engine;
+use String::TT qw( tt );
 
 HTTP::Engine->new(%{ YAML::LoadFile('config.yaml') })->run;
 
@@ -19,7 +20,6 @@ sub handle_request {
 
 sub _handle_request {
     my $c = shift;
-    warn Dumper(\@_);
 
     my $method             = $c->req->method;
     my($name, $karma, $pm) = split '/', $c->req->path;
@@ -46,6 +46,7 @@ sub _handle_request {
         $c->res->status('400');
         return;
     }
-    $c->res->body(Dump($karma{$name}));
+    my $body = Dump($karma{$name});
+    $c->res->body(tt '[% body | html %]');
 }
 

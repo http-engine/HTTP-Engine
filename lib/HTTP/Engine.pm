@@ -80,6 +80,8 @@ sub handle_request {
     $self->run_innerware_before($context);
 
     eval {
+        local *STDIN;
+        local *STDOUT;
         $self->{handle_request}->($context);
     };
     $context->handle_error_message($@);

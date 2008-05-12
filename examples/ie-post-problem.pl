@@ -5,7 +5,7 @@ use lib 'lib';
 use YAML;
 use HTTP::Engine;
  
-HTTP::Engine->new( config => 'config.yaml', handle_request => \&handle_request )->run;
+HTTP::Engine->new(%{ YAML::LoadFile('config.yaml') })->run;
  
 my %karma = {};
 sub handle_request {

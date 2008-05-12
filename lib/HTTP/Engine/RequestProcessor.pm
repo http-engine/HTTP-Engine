@@ -81,6 +81,8 @@ sub handle_request {
     $self->request_builder->prepare( $context );
 
     my $ret = eval {
+        local *STDOUT;
+        local *STDIN;
         $self->call_handler($context);
     };
     if (my $e = $@) {

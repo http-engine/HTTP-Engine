@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.5  2008-05-13T12:14:22+09:00
+         - oops, s/handle_request/request_handler/ in interface param
+
 0.0.4    2008-05-12T18:05:32+09:00
          - more moosenize by Class::Component 0.17
          - maybe, next release the moose branch

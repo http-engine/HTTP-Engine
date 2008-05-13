@@ -2,12 +2,14 @@ package HTTP::Engine::Role::Interface;
 use strict;
 use Moose::Role;
 use HTTP::Engine::ResponseWriter;
+use HTTP::Engine::Types::Core qw( Handler );
 
 requires qw(run should_write_response_line);
 
 has request_handler => (
     is       => 'rw',
-    isa      => 'CodeRef',
+    isa      => 'Handler',
+    coerce  => 1,
     required => 1,
 );
 

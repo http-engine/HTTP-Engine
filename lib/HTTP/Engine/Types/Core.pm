@@ -2,8 +2,8 @@ package HTTP::Engine::Types::Core;
 use strict;
 
 use MooseX::Types
-    -declare => [qw/Interface Uri Header/];
-use MooseX::Types::Moose qw( Object HashRef ArrayRef);
+    -declare => [qw/Interface Uri Header Handler/];
+use MooseX::Types::Moose qw( Object HashRef ArrayRef CodeRef );
 
 use Class::MOP;
 use UNIVERSAL::require;
@@ -56,6 +56,14 @@ coerce Header
     => from 'HashRef'
         => via { HTTP::Headers->new( %{ $_ } ) };
 
+subtype Handler
+    => as 'CodeRef'
+;
+
+coerce Handler
+    => from 'Str'
+        => via { \&{$_} }
+;
 
 1;
 

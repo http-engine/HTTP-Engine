@@ -16,6 +16,28 @@ has 'interface' => (
     handles => [ qw(run load_plugins) ],
 );
 
+
+sub import {
+    my($class, %args) = @_;
+    return unless $args{middle_wares} && ref $args{middle_wares} eq 'ARRAY';
+    require UNIVERSAL::require;
+
+    for my $middleware (@{ $args{middle_wares} }) {
+        my $pkg;
+        if (($pkg = $middleware) =~ s/^(\+)//) {
+            $pkg->require or die $@;
+        } else {
+            $pkg = 'HTTP::Engine::Middleware::' . $middleware;
+            unless ($pkg->require) {
+                $pkg = 'HTTPEx::Middleware::' . $middleware;
+                $pkg->require or die $@;
+            }
+        }
+        my $code = $pkg->setup;
+	HTTP::Engine::RequestProcessor->meta->add_around_method_modifier( call_handler => $code );
+    }
+}
+
 1;
 __END__
 

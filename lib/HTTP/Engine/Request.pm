@@ -22,7 +22,6 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(@_);
 
-    $self->{body_parameters}  = {};
     $self->{cookies}          = {};
     $self->{parameters}       = {};
     $self->{query_parameters} = {};
@@ -33,12 +32,18 @@ sub new {
     $self;
 }
 
+# headers handles
 sub content_encoding { shift->headers->content_encoding(@_) }
 sub content_length   { shift->headers->content_length(@_) }
 sub content_type     { shift->headers->content_type(@_) }
 sub header           { shift->headers->header(@_) }
 sub referer          { shift->headers->referer(@_) }
 sub user_agent       { shift->headers->user_agent(@_) }
+
+# body handles
+sub body_parameters { shift->http_body->param(@_) }
+sub body { shift->http_body->body(@_) }
+
 sub base {
     my($self, $base) = @_;
 
@@ -50,17 +55,6 @@ sub base {
         $self->path;
     }
     return $self->{base};
-}
-
-sub body {
-    my ($self, $body) = @_;
-    return $self->{_body}->body;
-}
-
-sub body_parameters {
-    my ($self, $params) = @_;
-    $self->{body_parameters} = $params if $params;
-    return $self->{body_parameters};
 }
 
 sub cookie {

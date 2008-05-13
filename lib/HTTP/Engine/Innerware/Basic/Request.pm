@@ -6,6 +6,7 @@ use CGI::Simple::Cookie;
 use HTTP::Body;
 use HTTP::Headers;
 use URI;
+use URI::QueryParam;
 
 use HTTP::Engine::Request::Upload;
 

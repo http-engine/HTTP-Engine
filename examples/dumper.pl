@@ -22,8 +22,12 @@ sub handle_request {
     my $req_dump = Dumper($c->req);
     my $raw = $c->req->raw_body;
     my $body = tt '
+        <form method="get">
+            <input type="text" name="foo-get" />
+            <input type="submit" />
+        </form>
         <form method="post">
-            <input type="text" name="foo" />
+            <input type="text" name="foo-post" />
             <input type="submit" />
         </form>
 

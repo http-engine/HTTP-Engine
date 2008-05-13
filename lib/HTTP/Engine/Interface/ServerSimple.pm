@@ -34,14 +34,13 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Plugin::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP::Engine
+HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP::Engine
 
 =head1 SYNOPSIS
 
-  plugins:
-    - module: Interface::ServerSimple
-      conf:
-        port: 5963
+    HTTP::Engine::Interface::ServerSimple->new(
+        port => 5963,
+    );
 
 =head1 DESCRIPTION
 

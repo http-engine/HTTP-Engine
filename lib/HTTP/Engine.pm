@@ -51,19 +51,23 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 =head1 SYNOPSIS
 
-  use HTTP::Engine;
-  HTTP::Engine->new(
-    interface => {
-      module       => 'FastCGI',
-      handler      => sub {
-        my ($self, $request) = @_;
-        ....
-        return HTTP::Response->new(200, "OK");
-      }
-    }
-    # XXX TODO: Define middle_wares better!
-    middle_wares => [ qw(Session MobileAttributes) ],
-  )->run();
+  use HTTP::Engine middle_wares => [ qw(Session MobileAttributes) ];
+  my $engine = HTTP::Engine->new(
+      interface => {
+          module => 'ServerSimple',
+          args   => {
+              host => 'localhost',
+              port =>  1978,
+          },
+          request_handler => 'main::handle_request',# or CODE ref
+      },
+  };
+  $engine->run;
+
+  sub handle_request {
+      my $c = shift;
+      $c->res->body( Dumper($e->req) );
+  }
 
 
 =head1 CONCEPT RELEASE
@@ -134,14 +138,14 @@ Or you can let HTTP::Engine instantiate the interface for you:
     }
   )->run();
 
-=head1 PLUGINS
+=head1 MIDDLEWARES
 
-For all non-core plugins (consult #codrepos first), use the HTTPEx::
-namespace. For example, if you have a plugin module named "HTTPEx::Plugin::Foo",
+For all non-core middlewares (consult #codrepos first), use the HTTPEx::
+namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
 you could load it as
 
-  use HTTP::Engine;
-  HTTP::Engine->load_plugins(qw( +HTTPEx::Plugin::Foo ));
+  use HTTP::Engine middle_wares => [ qw( +HTTPEx::Plugin::Foo ) ];
+
 
 =head1 BRANCHES
 
@@ -167,7 +171,7 @@ dann
 
 wiki page L<http://coderepos.org/share/wiki/HTTP%3A%3AEngine>
 
-L<Class::Component>
+L<Moose>
 
 =head1 REPOSITORY
 

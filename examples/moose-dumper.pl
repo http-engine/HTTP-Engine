@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 'lib';
 use Data::Dumper;
-use HTTP::Engine middle_wares => [qw(
+use HTTP::Engine middlewares => [qw(
     DebugScreen
     MobileAttribute
     ModuleReload

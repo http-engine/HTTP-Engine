@@ -19,10 +19,10 @@ has 'interface' => (
 
 sub import {
     my($class, %args) = @_;
-    return unless $args{middle_wares} && ref $args{middle_wares} eq 'ARRAY';
+    return unless $args{middlewares} && ref $args{middlewares} eq 'ARRAY';
     require UNIVERSAL::require;
 
-    for my $middleware (@{ $args{middle_wares} }) {
+    for my $middleware (@{ $args{middlewares} }) {
         my $pkg;
         if (($pkg = $middleware) =~ s/^(\+)//) {
             $pkg->require or die $@;
@@ -57,7 +57,7 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 =head1 SYNOPSIS
 
-  use HTTP::Engine middle_wares => [ qw(Session MobileAttributes) ];
+  use HTTP::Engine middlewares => [ qw(Session MobileAttributes) ];
   my $engine = HTTP::Engine->new(
       interface => {
           module => 'ServerSimple',
@@ -150,7 +150,7 @@ For all non-core middlewares (consult #codrepos first), use the HTTPEx::
 namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
 you could load it as
 
-  use HTTP::Engine middle_wares => [ qw( +HTTPEx::Plugin::Foo ) ];
+  use HTTP::Engine middlewares => [ qw( +HTTPEx::Plugin::Foo ) ];
 
 
 =head1 BRANCHES

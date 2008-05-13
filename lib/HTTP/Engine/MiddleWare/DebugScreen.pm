@@ -1,23 +1,21 @@
-package HTTP::Engine::MiddleWare::DebugScreen;
-use strict;
-use Moose::Role;
-use Carp;
+package HTTP::Engine::Middleware::DebugScreen;
+use Moose;
+use Carp ();
 
-around call_handler => sub {
-    my ($next, @args) = @_;
+sub wrap {
+    my ($next, $rp, $c) = @_;
+
     local $SIG{__DIE__} = \&_die;
-    $next->(@args);
-};
 
-around handle_error => sub {
-    my ($next, $engine, $context, $error) = @_;
-
-    $next->($engine, $context, $error);
-
-    $context->res->status( 500 );
-    $context->res->content_type( 'text/plain' );
-    $context->res->body( $error );
-};
+    eval {
+        $next->($rp, $c);
+    };
+    if (my $err = $@) {
+        $c->res->status( 500 );
+        $c->res->content_type( 'text/plain' );
+        $c->res->body( $err );
+    }
+}
 
 # copied from Carp::Always. thanks ferreira++
 sub _die {

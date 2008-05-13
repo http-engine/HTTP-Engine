@@ -3,7 +3,9 @@ use warnings;
 use lib 'lib';
 use Data::Dumper;
 use HTTP::Engine middle_wares => [qw(
+    DebugScreen
     MobileAttribute
+    ModuleReload
 )];
 use HTTP::Response;
 use HTTP::Engine::Request;
@@ -19,6 +21,7 @@ my $engine = HTTP::Engine->new(
         request_handler => sub {
             my $c = shift;
             local $Data::Dumper::Sortkeys = 1;
+            die "OK!" if $c->req->body_params->{'foo'} eq 'ok';
             my $req_dump = Dumper( $c->req );
             my $ma = $c->req->mobile_attribute;
             my $raw      = $c->req->raw_body;

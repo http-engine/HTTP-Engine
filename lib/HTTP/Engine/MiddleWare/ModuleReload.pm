@@ -1,11 +1,15 @@
-package HTTP::Engine::MiddleWare::ModuleReload;
-use strict;
-use Moose::Role;
+package HTTP::Engine::Middleware::ModuleReload;
+use Moose;
 use Module::Reload;
 
-before 'call_handler' => sub {
+sub wrap {
+    my ($next, $rp, $c) = @_;
+
+warn "RELOADING";
     Module::Reload->check;
-};
+
+    $next->($rp, $c);
+}
 
 1;
 __END__

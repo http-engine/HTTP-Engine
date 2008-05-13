@@ -23,16 +23,16 @@ sub new {
     $class->setup_innerware($config);
     $class->setup_interface($config);
 
-    my $handle_request = $config->{interface}->{handle_request};
-    croak 'handle_request is required ' unless $handle_request;
-    unless (ref $handle_request) {
+    my $request_handler = $config->{interface}->{request_handler};
+    croak 'request_handler is required ' unless $request_handler;
+    unless (ref $request_handler) {
         my $caller = caller;
         no strict 'refs';
-        $handle_request = \&{"$caller\::$handle_request"};
+        $request_handler = \&{"$caller\::$request_handler"};
     }
 
     my $self = $class->SUPER::new({ config => $config });
-    $self->set_handle_request($handle_request);
+    $self->set_request_handler($request_handler);
     $self->conf->{global}->{log}->{fh} ||= \*STDERR;
 
     return $self;
@@ -62,10 +62,10 @@ sub setup_innerware {
     unshift @{ $config->{plugins} }, $plugin;
 }
 
-sub set_handle_request {
+sub set_request_handler {
     my($self, $callback) = @_;
     croak 'please CODE refarence' unless $callback && ref($callback) eq 'CODE';
-    $self->{handle_request} = $callback;
+    $self->{request_handler} = $callback;
 }
 
 sub run { croak ref($_[0] || $_[0] ) ." did not override HTTP::Engine::run" }
@@ -81,7 +81,7 @@ sub handle_request {
     eval {
         local *STDIN;
         local *STDOUT;
-        $self->{handle_request}->($context);
+        $self->{request_handler}->($context);
     };
     $context->handle_error_message($@);
 
@@ -130,7 +130,7 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
               host => 'localhost',
               port =>  1978,
           },
-          handle_request => 'handle_request',# or CODE ref
+          request_handler => 'handle_request',# or CODE ref
       },
   };
   $engine->run;

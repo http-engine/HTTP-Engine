@@ -13,7 +13,7 @@ HTTP::Engine->new(
             host => '0.0.0.0',
             port => 14000,
         },
-        handle_request => 'handle_request',
+        request_handler => 'handle_request',
     },
 )->run;
 

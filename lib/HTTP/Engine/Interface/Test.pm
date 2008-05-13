@@ -39,7 +39,7 @@ HTTP::Engine::Interface::Test - HTTP::Engine Test Interface
       interface => {
           module => 'Test',
       },
-      handle_request => sub {
+      request_handler => sub {
           my $c = shift;
           $c->res->body( Dumper($c) );
       }

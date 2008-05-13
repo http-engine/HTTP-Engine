@@ -130,7 +130,7 @@ __END__
     module: FCGI
       args:
         leave_umask: 1
-      handle_request: methodname
+      request_handler: methodname
 
 =head1 AUTHORS
 

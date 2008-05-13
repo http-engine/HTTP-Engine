@@ -266,4 +266,4 @@ HTTP::Engine::Interface::Standalone - Standalone HTTP Server
       port: 5963
       fork: 1
       keepalive: 1
-    handle_request: methodname
+    request_handler: methodname

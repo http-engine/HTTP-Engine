@@ -49,7 +49,7 @@ HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP:
     args:
       host: localhost
       port: 5963
-    handle_request: methodname
+    request_handler: methodname
 
 =head1 DESCRIPTION
 

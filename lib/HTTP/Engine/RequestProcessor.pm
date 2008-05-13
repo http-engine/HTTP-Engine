@@ -86,20 +86,14 @@ sub handle_request {
         $self->call_handler($context);
     };
     if (my $e = $@) {
-        $self->handle_error( $context, $e);
+        print STDERR $e;
     }
     $self->response_writer->finalize( $context );
 
     $ret;
 }
 
-# hook me!
-sub handle_error {
-    my ($self, $context, $error) = @_;
-    print STDERR $error;
-}
-
-# hook me!
+# hooked by middlewares.
 sub call_handler {
     my ($self, $context) = @_;
     $self->handler->($context);

@@ -139,9 +139,47 @@ HTTP::Engine::Response - http response object
 
 =over 4
 
-=item TBD
+=item body
 
-T!B!D! T!B!D!
+Sets or returns the output (text or binary data). If you are returning a large body,
+you might want to use a L<IO::FileHandle> type of object (Something that implements the read method
+in the same fashion), or a filehandle GLOB. HTTP::Engine will write it piece by piece into the response.
+
+=item cookies
+
+
+Returns a reference to a hash containing cookies to be set. The keys of the
+hash are the cookies' names, and their corresponding values are hash
+references used to construct a L<CGI::Cookie> object.
+
+        $c->response->cookies->{foo} = { value => '123' };
+
+The keys of the hash reference on the right correspond to the L<CGI::Cookie>
+parameters of the same name, except they are used without a leading dash.
+Possible parameters are:
+
+=item status
+
+Sets or returns the HTTP status.
+
+    $c->response->status(404);
+
+=item headers
+
+Returns an L<HTTP::Headers> object, which can be used to set headers.
+
+    $c->response->headers->header( 'X-Catalyst' => $Catalyst::VERSION );
+
+=item redirect
+
+Causes the response to redirect to the specified URL.
+
+    $c->response->redirect( 'http://slashdot.org' );
+    $c->response->redirect( 'http://slashdot.org', 307 );
+
+=item set_http_response
+
+set a L<HTTP::Response> into $self.
 
 =back
 

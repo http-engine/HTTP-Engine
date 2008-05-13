@@ -276,9 +276,154 @@ HTTP::Engine::Request - http request object
 
 =over 4
 
-=item TBD
+=item address
 
-T!B!D! T!B!D!
+Returns the IP address of the client.
+
+=item context
+
+Returns the HTTP::Context(internal use only)
+
+=item cookies
+
+Returns a reference to a hash containing the cookies
+
+=item method
+
+Contains the request method (C<GET>, C<POST>, C<HEAD>, etc).
+
+=item protocol
+
+Returns the protocol (HTTP/1.0 or HTTP/1.1) used for the current request.
+
+=item query_parameters
+
+Returns a reference to a hash containing query string (GET) parameters. Values can                                                    
+be either a scalar or an arrayref containing scalars.
+
+=item secure
+
+Returns true or false, indicating whether the connection is secure (https).
+
+=item uri
+
+Returns a URI object for the current request. Stringifies to the URI text.
+
+=item user
+
+Returns REMOTE_USER.
+
+=item raw_body
+
+Returns string containing body(POST).
+
+=item headers
+
+Returns an L<HTTP::Headers> object containing the headers for the current request.
+
+=item base
+
+Contains the URI base. This will always have a trailing slash.
+
+=item hostname
+
+Returns the hostname of the client.
+
+=item http_body
+
+Returns an L<HTTP::Body> object.
+
+=item parameters
+
+Returns a reference to a hash containing GET and POST parameters. Values can
+be either a scalar or an arrayref containing scalars.
+
+=item uploads
+
+Returns a reference to a hash containing uploads. Values can be either a
+L<HTTP::Engine::Request::Upload> object, or an arrayref of
+L<HTTP::Engine::Request::Upload> objects.
+
+=item content_encoding
+
+Shortcut to $req->headers->content_encoding.
+
+=item content_length
+
+Shortcut to $req->headers->content_length.
+
+=item content_type
+
+Shortcut to $req->headers->content_type.
+
+=item header
+
+Shortcut to $req->headers->header.
+
+=item referer
+
+Shortcut to $req->headers->referer.
+
+=item user_agent
+
+Shortcut to $req->headers->user_agent.
+
+=item cookie
+
+A convenient method to access $req->cookies.
+
+    $cookie  = $c->request->cookie('name');
+    @cookies = $c->request->cookie;
+
+=item param
+
+Returns GET and POST parameters with a CGI.pm-compatible param method. This 
+is an alternative method for accessing parameters in $c->req->parameters.
+
+    $value  = $c->request->param( 'foo' );
+    @values = $c->request->param( 'foo' );
+    @params = $c->request->param;
+
+Like L<CGI>, and B<unlike> earlier versions of Catalyst, passing multiple
+arguments to this method, like this:
+
+    $c->request->param( 'foo', 'bar', 'gorch', 'quxx' );
+
+will set the parameter C<foo> to the multiple values C<bar>, C<gorch> and
+C<quxx>. Previously this would have added C<bar> as another value to C<foo>
+(creating it if it didn't exist before), and C<quxx> as another value for
+C<gorch>.
+
+=item path
+
+Returns the path, i.e. the part of the URI after $req->base, for the current request.
+
+=item upload
+
+A convenient method to access $req->uploads.
+
+    $upload  = $c->request->upload('field');
+    @uploads = $c->request->upload('field');
+    @fields  = $c->request->upload;
+
+    for my $upload ( $c->request->upload('field') ) {
+        print $upload->filename;
+    }
+
+
+=item uri_with
+
+Returns a rewritten URI object for the current request. Key/value pairs
+passed in will override existing parameters. Unmodified pairs will be
+preserved.
+
+=item as_http_request
+
+convert HTTP::Engine::Request to HTTP::Request.
+
+=item $req->absolute_url($location)
+
+convert $location to absolute uri.
 
 =back
 

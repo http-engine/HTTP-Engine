@@ -1,4 +1,4 @@
-package HTTP::Engine::Plugin::ModuleReload;
+package HTTP::Engine::MiddleWare::ModuleReload;
 use strict;
 use Moose::Role;
 use Module::Reload;
@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Plugin::ModuleReload - module reloader for HTTP::Engine
+HTTP::Engine::MiddleWare::ModuleReload - module reloader for HTTP::Engine
 
 =head1 SYNOPSIS
 

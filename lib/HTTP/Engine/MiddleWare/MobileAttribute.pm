@@ -1,4 +1,4 @@
-package HTTP::Engine::Plugin::MobileAttribute;
+package HTTP::Engine::MiddleWare::MobileAttribute;
 use strict;
 use Moose::Role;
 use HTTP::MobileAttribute;

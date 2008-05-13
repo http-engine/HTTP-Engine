@@ -42,20 +42,19 @@ sub _prepare_connection {
     my($self, $c) = @_;
 
     my $req = $c->req;
-    my $env = $c->env; 
-    $req->address($env->{REMOTE_ADDR}) unless $req->address;
+    $req->address($ENV{REMOTE_ADDR}) unless $req->address;
 
-    $req->protocol($env->{SERVER_PROTOCOL});
-    $req->user($env->{REMOTE_USER});
-    $req->method($env->{REQUEST_METHOD});
+    $req->protocol($ENV{SERVER_PROTOCOL});
+    $req->user($ENV{REMOTE_USER});
+    $req->method($ENV{REQUEST_METHOD});
 
-    $req->secure(1) if $env->{HTTPS} && uc $env->{HTTPS} eq 'ON';
-    $req->secure(1) if $env->{SERVER_PORT} == 443;
+    $req->secure(1) if $ENV{HTTPS} && uc $ENV{HTTPS} eq 'ON';
+    $req->secure(1) if $ENV{SERVER_PORT} == 443;
 }
 
 sub _prepare_query_parameters  {
     my($self, $c) = @_;
-    my $query_string = $c->env->{QUERY_STRING};
+    my $query_string = $ENV{QUERY_STRING};
     return unless 
         defined $query_string && length($query_string);
 
@@ -74,10 +73,10 @@ sub _prepare_headers  {
     my($self, $c) = @_;
 
     # Read headers from env
-    for my $header (keys %{ $c->env }) {
+    for my $header (keys %ENV) {
         next unless $header =~ /^(?:HTTP|CONTENT|COOKIE)/i;
         (my $field = $header) =~ s/^HTTPS?_//;
-        $c->req->headers->header($field => $c->env->{$header});
+        $c->req->headers->header($field => $ENV{$header});
     }
 }
 
@@ -92,22 +91,21 @@ sub _prepare_cookie  {
 sub _prepare_path  {
     my($self, $c) = @_;
 
-    my $env    = $c->env;
     my $req    = $c->req;
 
     my $scheme = $req->secure ? 'https' : 'http';
-    my $host   = $env->{HTTP_HOST}   || $env->{SERVER_NAME};
-    my $port   = $env->{SERVER_PORT} || ( $req->secure ? 443 : 80 );
+    my $host   = $ENV{HTTP_HOST}   || $ENV{SERVER_NAME};
+    my $port   = $ENV{SERVER_PORT} || ( $req->secure ? 443 : 80 );
 
     my $base_path;
-    if (exists $env->{REDIRECT_URL}) {
-        $base_path = $env->{REDIRECT_URL};
-        $base_path =~ s/$env->{PATH_INFO}$//;
+    if (exists $ENV{REDIRECT_URL}) {
+        $base_path = $ENV{REDIRECT_URL};
+        $base_path =~ s/$ENV{PATH_INFO}$//;
     } else {
-        $base_path = $env->{SCRIPT_NAME} || '/';
+        $base_path = $ENV{SCRIPT_NAME} || '/';
     }
 
-    my $path = $base_path . ($env->{PATH_INFO} || '');
+    my $path = $base_path . ($ENV{PATH_INFO} || '');
     $path =~ s{^/+}{};
 
     my $uri = URI->new;
@@ -115,7 +113,7 @@ sub _prepare_path  {
     $uri->host($host);
     $uri->port($port);
     $uri->path($path);
-    $uri->query($env->{QUERY_STRING}) if $env->{QUERY_STRING};
+    $uri->query($ENV{QUERY_STRING}) if $ENV{QUERY_STRING};
 
     # sanitize the URI
     $uri = $uri->canonical;

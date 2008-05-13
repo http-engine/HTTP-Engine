@@ -19,7 +19,8 @@ my $builder = HTTP::Engine::RequestBuilder->new;
 run {
     my $block = shift;
 
-    my $c = HTTP::Engine::Context->new(env => $block->env);
+    local %ENV = %{ $block->env };
+    my $c = HTTP::Engine::Context->new();
 
     tie *STDIN, 'IO::Scalar', \( $block->body );
     $builder->prepare($c);

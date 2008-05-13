@@ -68,13 +68,9 @@ no Moose;
 sub handle_request {
     my $self = shift;
 
-    my %env = @_;
-       %env = %ENV unless %env;
-
     my $context = $self->context_class->new(
         req    => $self->request_class->new(),
         res    => $self->response_class->new(),
-        env    => \%env,
     );
 
     $self->request_builder->prepare( $context );

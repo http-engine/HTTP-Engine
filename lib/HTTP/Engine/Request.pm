@@ -91,7 +91,7 @@ has hostname => (
     lazy    => 1,
     default => sub {
         my $self = shift;
-        $self->context->env->{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
+        $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
     },
 );
 

@@ -3,13 +3,6 @@ use Moose;
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 
-has env => (
-    is       => 'rw',
-    isa      => 'HashRef',
-    required => 1,
-    default  => sub { \%ENV },
-);
-
 has req => (
     is       => 'rw',
     isa      => 'HTTP::Engine::Request',
@@ -57,10 +50,6 @@ Kazuhiro Osawa and HTTP::Engine Authors.
 =head1 ATTRIBUTES
 
 =over 4
-
-=item env
-
-Will be remove :(
 
 =item req
 

@@ -46,12 +46,13 @@ sub handler : method
 
     my $server = $r->server;
     my $connection = $r->connection;
-    $engine->interface->request_processor->handle_request(
-        REQUEST_METHOD => $r->method(),
-        REMOTE_ADDR    => $connection->remote_ip(),
-        SERVER_PORT    => $server->port(),
-        QUERY_STRING   => $r->args(),
-    );
+
+    $ENV{REQUEST_METHOD} = $r->method();
+    $ENV{REMOTE_ADDR}    = $connection->remote_ip();
+    $ENV{SERVER_PORT}    = $server->port();
+    $ENV{QUERY_STRING}   = $r->args();
+
+    $engine->interface->request_processor->handle_request();
 
     return &Apache2::Const::OK;
 }

@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use lib 'lib';
 use Data::Dumper;
-use HTTP::Engine;
-use HTTP::Engine::Interface::ServerSimple;
+use HTTP::Engine middle_wares => [qw(
+    MobileAttribute
+)];
 use HTTP::Response;
 use HTTP::Engine::Request;
 use HTTP::MobileAttribute;
@@ -40,8 +41,6 @@ my $engine = HTTP::Engine->new(
             $c->res->body($body);
         },
     },
-    plugins => [qw/DebugScreen/],
 );
-$engine->load_plugins(qw/DebugScreen ModuleReload MobileAttribute/);
 $engine->run;
 

@@ -1,17 +1,25 @@
-package HTTP::Engine::MiddleWare::MobileAttribute;
-use strict;
-use Moose::Role;
+package HTTP::Engine::Middleware::MobileAttribute;
+use Moose;
 use HTTP::MobileAttribute;
 use HTTP::Engine::Request;
 
-my $meta = HTTP::Engine::Request->meta;
-$meta->make_mutable;
-$meta->add_method(
-    mobile_attribute => sub {
-        my $self = shift;
-        $self->{______mobile_attribute_cache______} ||= HTTP::MobileAttribute->new($self->headers);
-    },
-);
-$meta->make_immutable;
+sub setup {
+    my $meta = HTTP::Engine::Request->meta;
+    $meta->make_mutable;
+
+    $meta->add_attribute(
+        mobile_attribute => (
+            is => 'ro',
+            isa => 'Object',
+            lazy => 1,
+            default => sub {
+                my $self = shift;
+                $self->{mobile_attribute} = HTTP::MobileAttribute->new($self->headers);
+            },
+        )
+    );
+
+    $meta->make_immutable;
+}
 
 1;

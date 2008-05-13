@@ -34,7 +34,9 @@ sub import {
             }
         }
         my $code = $pkg->setup;
-	HTTP::Engine::RequestProcessor->meta->add_around_method_modifier( call_handler => $code );
+        if ($code && ref $code eq 'CODE') {
+            HTTP::Engine::RequestProcessor->meta->add_around_method_modifier( call_handler => $code );
+        }
     }
 }
 

@@ -5,7 +5,6 @@ use Module::Reload;
 sub wrap {
     my ($next, $rp, $c) = @_;
 
-warn "RELOADING";
     Module::Reload->check;
 
     $next->($rp, $c);

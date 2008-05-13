@@ -75,4 +75,16 @@ __END__
 
 HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
+=head1 SYNOPSIS
+
+    TBD
+
+=head1 AUTHORS
+
+Daisuke Maki
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>, L<Apache2>
+
 =cut

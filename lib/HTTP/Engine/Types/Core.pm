@@ -87,4 +87,12 @@ HTTP::Engine::Types::Core - Core HTTP::Engine Types
 
 HTTP::Engine::Types::Core defines the main subtypes used in HTTP::Engine
 
+=head1 AUTHORS
+
+Kazuhiro Osawa and HTTP::Engine Authors.
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>, L<MooseX::Types>
+
 =cut

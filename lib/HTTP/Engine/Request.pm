@@ -262,3 +262,31 @@ sub absolute_url {
 __PACKAGE__->meta->make_immutable;
 
 1;
+__END__
+
+=head1 NAME
+
+HTTP::Engine::Request - http request object
+
+=head1 SYNOPSIS
+
+    $c->req
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item TBD
+
+T!B!D! T!B!D!
+
+=back
+
+=head1 AUTHORS
+
+Kazuhiro Osawa and HTTP::Engine Authors.
+
+=head1 SEE ALSO
+
+L<HTTP::Request>, L<Catalyst::Request>
+

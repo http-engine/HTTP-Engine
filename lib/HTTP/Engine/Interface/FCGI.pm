@@ -139,11 +139,42 @@ sub daemon_detach {
 1;
 __END__
 
+=head1 NAME
+
+HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
+
+=head1 SYNOPSIS
+
+    HTTP::Engine::Interface::FCGI->new(
+    );
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item leave_umask
+
+=item keep_stderr
+
+=item nointr
+
+=item detach
+
+=item manager
+
+=item nproc
+
+=item pidfile
+
+=item listen
+
+=back
+
 =head1 AUTHORS
 
 Tokuhiro Matsuno
 
 =head1 THANKS TO
 
-may codes copied from L<Catalyst::Engine::FastCGI>. thanks authors of C::E::FastCGI!
+many codes copied from L<Catalyst::Engine::FastCGI>. thanks authors of C::E::FastCGI!
 

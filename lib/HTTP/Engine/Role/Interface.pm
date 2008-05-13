@@ -71,4 +71,12 @@ $r->print
 
 =back
 
+=head1 AUTHORS
+
+Kazuhiro Osawa and HTTP::Engine Authors
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+
 =cut

@@ -33,9 +33,50 @@ has res => (
     },
 );
 
+# shortcut.
 *request  = \&req;
 *response = \&res;
 
 __PACKAGE__->meta->make_immutable;
 
 1;
+__END__
+
+=head1 NAME
+
+HTTP::Engine::Context - Context object
+
+=head1 SYNOPSIS
+
+    my $c = shift;
+
+=head1 DESCRIPTION
+
+Kazuhiro Osawa and HTTP::Engine Authors.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item env
+
+Will be remove :(
+
+=item req
+
+    $c->req
+
+The instance of the HTTP::Engine::Request.
+
+=item res
+
+    $c->res
+
+The instance of the HTTP::Engine::Response.
+
+=back
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+

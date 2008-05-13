@@ -70,3 +70,27 @@ sub run {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+HTTP::Engine::Interface::POE - POE interface for HTTP::Engine.
+
+=head1 DESCRIPTION
+
+This is POE interface for HTTP::Engine.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item port
+
+The port number of TCP server.
+
+=back
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+

@@ -24,6 +24,7 @@ wiki
 Coro
 preforking
 yaml
+Standalone
 
 MIDDLEWARES
 middlewares

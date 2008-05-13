@@ -8,10 +8,13 @@ eval {
 plan skip_all => "HTTP::MobileAttribute is not installed." if $@;
 
 plan tests => 3;
-use_ok 'HTTP::Engine::Plugin::MobileAttribute';
+use_ok 'HTTP::Engine::Middleware::MobileAttribute';
+
+HTTP::Engine::Middleware::MobileAttribute->setup();
 
 {
     my $req = HTTP::Engine::Request->new();
+    $req->user_agent('IE');
     isa_ok $req->mobile_attribute, 'HTTP::MobileAttribute::Agent::NonMobile';
 }
 

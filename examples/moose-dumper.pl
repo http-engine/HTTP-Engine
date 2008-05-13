@@ -10,8 +10,11 @@ use HTTP::MobileAttribute;
 use String::TT qw/strip tt/;
 
 my $engine = HTTP::Engine->new(
-    interface => HTTP::Engine::Interface::ServerSimple->new({
-        port    => 9999,
+    interface => {
+        module  => 'ServerSimple',
+        args => {
+            port    => 9999,
+        },
         request_handler => sub {
             my $c = shift;
             local $Data::Dumper::Sortkeys = 1;
@@ -36,7 +39,7 @@ my $engine = HTTP::Engine->new(
 
             $c->res->body($body);
         },
-    }),
+    },
     plugins => [qw/DebugScreen/],
 );
 $engine->load_plugins(qw/DebugScreen ModuleReload MobileAttribute/);

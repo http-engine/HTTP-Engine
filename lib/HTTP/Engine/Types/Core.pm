@@ -20,9 +20,10 @@ subtype Interface
 coerce Interface
     => from 'HashRef'
         => via {
-            my $module = $_->{module};
+            my $module  = $_->{module};
             my $plugins = $_->{plugins} || [];
             my $args    = $_->{args};
+            $args->{request_handler} = $_->{request_handler};
 
             if ($module !~ s{^\+}{}) {
                 $module = join('::', "HTTP", "Engine", "Interface", $module);

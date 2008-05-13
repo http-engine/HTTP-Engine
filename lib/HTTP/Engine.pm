@@ -33,9 +33,15 @@ sub import {
                 $pkg->require or die $@;
             }
         }
-        my $code = $pkg->setup;
-        if ($code && ref $code eq 'CODE') {
-            HTTP::Engine::RequestProcessor->meta->add_around_method_modifier( call_handler => $code );
+
+        if ($pkg->meta->has_method('setup')) {
+            $pkg->setup();
+        }
+
+        if ($pkg->meta->has_method('wrap')) {
+            HTTP::Engine::RequestProcessor->meta->add_around_method_modifier(
+                call_handler => $pkg->meta->get_method('wrap')->body
+            );
         }
     }
 }

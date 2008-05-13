@@ -4,15 +4,16 @@ use Moose;
 
 sub setup {
     warn 'middleware setup';
-    sub {
-        my($next, $rp, $c) = @_;
-        warn 'middleware before';
-        $next->($rp, $c);
-        warn 'middleware after';
-        my $body = $c->res->body;
-        $body =~ s/REGEXP/MIDDLEWARE/g;
-        $c->res->body($body);
-    };
+}
+
+sub wrap {
+    my($next, $rp, $c) = @_;
+    warn 'middleware before';
+    $next->($rp, $c);
+    warn 'middleware after';
+    my $body = $c->res->body;
+    $body =~ s/REGEXP/MIDDLEWARE/g;
+    $c->res->body($body);
 }
 
 1;

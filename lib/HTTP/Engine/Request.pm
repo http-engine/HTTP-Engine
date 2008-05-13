@@ -1,6 +1,5 @@
 package HTTP::Engine::Request;
 use Moose;
-with 'MooseX::Object::Pluggable';
 
 use Carp;
 use HTTP::Headers;

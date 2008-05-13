@@ -1,6 +1,5 @@
 package HTTP::Engine::RequestProcessor;
 use Moose;
-with 'MooseX::Object::Pluggable';
 use CGI::Simple::Cookie;
 use HTTP::Body;
 use HTTP::Headers;

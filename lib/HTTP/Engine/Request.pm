@@ -263,6 +263,8 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+=for stopwords Stringifies URI http https param CGI.pm-compatible referer uri
+
 =head1 NAME
 
 HTTP::Engine::Request - http request object

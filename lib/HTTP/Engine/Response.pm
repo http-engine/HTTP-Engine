@@ -129,7 +129,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Response - http response object
+HTTP::Engine::Response - HTTP response object
 
 =head1 SYNOPSIS
 

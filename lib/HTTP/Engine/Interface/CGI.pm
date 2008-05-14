@@ -11,6 +11,8 @@ sub run {
 1;
 __END__
 
+=for stopwords 
+
 =for stopwords CGI Naoki Nyarla Okamura yaml
 
 =head1 NAME

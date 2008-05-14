@@ -139,6 +139,8 @@ sub daemon_detach {
 1;
 __END__
 
+=for stopwords nointr pidfile nproc
+
 =head1 NAME
 
 HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine

@@ -49,6 +49,8 @@ sub import {
 1;
 __END__
 
+=for stopwords middlewares Middleware
+
 =encoding utf8
 
 =head1 NAME

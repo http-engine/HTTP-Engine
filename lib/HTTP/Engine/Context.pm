@@ -35,6 +35,8 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+=for stopwords req
+
 =head1 NAME
 
 HTTP::Engine::Context - Context object

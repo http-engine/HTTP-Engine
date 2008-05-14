@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-our $VERSION = '0.0.3';
+our $VERSION = '0.0.6';
 our $AUTHORITY = 'cpan:YAPPO';
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;

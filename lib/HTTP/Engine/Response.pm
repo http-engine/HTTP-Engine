@@ -127,6 +127,8 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+=for stopwords URL
+
 =head1 NAME
 
 HTTP::Engine::Response - HTTP response object

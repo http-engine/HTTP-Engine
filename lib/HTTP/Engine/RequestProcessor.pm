@@ -14,7 +14,6 @@ use HTTP::Engine::ResponseWriter;
 around 'new' => sub {
     my ($next, @args) = @_;
     my $self = $next->(@args);
-    $self->_plugin_app_ns(['HTTP::Engine']);
     $self;
 };
 

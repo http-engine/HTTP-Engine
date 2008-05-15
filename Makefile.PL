@@ -62,16 +62,6 @@ features(
         -default => 0,
         recommends_hack('HTTP::Request::AsCGI'),
     ],
-
-    'ModuleReload' => [
-        -default => 0,
-        recommends_hack('Module::Reload'),
-    ],
-
-    'DebugScreen' => [
-        -default => 0,
-        recommends_hack('Carp::Always'),
-    ],
 );
 
 if (HAVE_MP) {

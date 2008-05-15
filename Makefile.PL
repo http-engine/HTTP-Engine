@@ -74,28 +74,6 @@ features(
     ],
 );
 
-#
-#    'Interface::Standalone' => [
-#        -default => 0,
-#        recommends_hack('Errno'),
-#    ],
-#
-#    'Interface::Test' => [
-#        -default => 0,
-#        recommends_hack('HTTP::Request::AsCGI'),
-#    ],
-#
-#    'ModuleReload' => [
-#        -default => 0,
-#        recommends_hack('Module::Reload'),
-#    ],
-#
-#    'DebugScreen' => [
-#        -default => 0,
-#        recommends_hack('Carp::Always'),
-#    ],
-#);
-#
 if (HAVE_MP) {
     Apache::TestMM::filter_args();
     Apache::TestMM::generate_script('t/TEST');

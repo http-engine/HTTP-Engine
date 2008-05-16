@@ -161,6 +161,15 @@ you could load it as
 
   use HTTP::Engine middlewares => [ qw( +HTTPEx::Plugin::Foo ) ];
 
+=head1 METHODS
+
+=over 4
+
+=item load_middleware(middleware)
+
+Loads the given middleware into the HTTP::Engine.
+
+=back
 
 =head1 BRANCHES
 

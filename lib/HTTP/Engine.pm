@@ -20,7 +20,6 @@ has 'interface' => (
 sub import {
     my($class, %args) = @_;
     return unless $args{middlewares} && ref $args{middlewares} eq 'ARRAY';
-    require UNIVERSAL::require;
 
     for my $middleware (@{ $args{middlewares} }) {
         $class->load_middleware( $middleware );
@@ -29,6 +28,8 @@ sub import {
 
 sub load_middleware {
     my ($class, $middleware) = @_;
+
+    require UNIVERSAL::require;
 
     my $pkg;
     if (($pkg = $middleware) =~ s/^(\+)//) {

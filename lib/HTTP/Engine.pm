@@ -16,7 +16,6 @@ has 'interface' => (
     handles => [ qw(run load_plugins) ],
 );
 
-
 sub import {
     my($class, %args) = @_;
     return unless $args{middlewares} && ref $args{middlewares} eq 'ARRAY';
@@ -56,7 +55,7 @@ sub load_middleware {
 1;
 __END__
 
-=for stopwords middlewares Middleware
+=for stopwords middlewares Middleware middleware
 
 =encoding utf8
 

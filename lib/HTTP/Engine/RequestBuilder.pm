@@ -263,3 +263,29 @@ sub _read_chunk {
 sub _finalize_read { undef shift->{_prepared_read} }
 
 1;
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+HTTP::Engine::RequestBuilder - build request object from env/stdin
+
+=head1 SYNOPSIS
+
+    INTERNAL USE ONLY ＞＜
+
+=head1 METHODS
+
+=over 4
+
+=item prepare
+
+internal use only
+
+=back
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+

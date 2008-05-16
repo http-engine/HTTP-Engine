@@ -23,26 +23,32 @@ sub import {
     require UNIVERSAL::require;
 
     for my $middleware (@{ $args{middlewares} }) {
-        my $pkg;
-        if (($pkg = $middleware) =~ s/^(\+)//) {
+        $class->load_middleware( $middleware );
+    }
+}
+
+sub load_middleware {
+    my ($class, $middleware) = @_;
+
+    my $pkg;
+    if (($pkg = $middleware) =~ s/^(\+)//) {
+        $pkg->require or die $@;
+    } else {
+        $pkg = 'HTTP::Engine::Middleware::' . $middleware;
+        unless ($pkg->require) {
+            $pkg = 'HTTPEx::Middleware::' . $middleware;
             $pkg->require or die $@;
-        } else {
-            $pkg = 'HTTP::Engine::Middleware::' . $middleware;
-            unless ($pkg->require) {
-                $pkg = 'HTTPEx::Middleware::' . $middleware;
-                $pkg->require or die $@;
-            }
         }
+    }
 
-        if ($pkg->meta->has_method('setup')) {
-            $pkg->setup();
-        }
+    if ($pkg->meta->has_method('setup')) {
+        $pkg->setup();
+    }
 
-        if ($pkg->meta->has_method('wrap')) {
-            HTTP::Engine::RequestProcessor->meta->add_around_method_modifier(
-                call_handler => $pkg->meta->get_method('wrap')->body
-            );
-        }
+    if ($pkg->meta->has_method('wrap')) {
+        HTTP::Engine::RequestProcessor->meta->add_around_method_modifier(
+            call_handler => $pkg->meta->get_method('wrap')->body
+        );
     }
 }
 

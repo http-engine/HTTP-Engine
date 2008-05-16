@@ -81,7 +81,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::ResponseWriter - write response to stdout
+HTTP::Engine::ResponseWriter - write response to STDOUT
 
 =head1 SYNOPSIS
 
@@ -95,7 +95,7 @@ HTTP::Engine::ResponseWriter - write response to stdout
 
 INTERNAL USE ONLY
 
-=cut
+=back
 
 =head1 SEE ALSO
 

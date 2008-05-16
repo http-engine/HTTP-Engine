@@ -23,6 +23,16 @@ HTTP::Engine::Interface::CGI - CGI interface for HTTP::Engine
 
     HTTP::Engine::Interface::CGI->new();
 
+=head1 METHODS
+
+=over 4
+
+=item run
+
+internal use only
+
+=back
+
 =head1 AUTHOR
 
 Naoki Okamura (Nyarla) E<lt>thotep@nyarla.netE<gt>

@@ -80,6 +80,16 @@ HTTP::Engine::Interface::POE - POE interface for HTTP::Engine.
 
 This is POE interface for HTTP::Engine.
 
+=head1 METHODS
+
+=over 4
+
+=item run
+
+internal use only
+
+=back
+
 =head1 ATTRIBUTES
 
 =over 4

@@ -80,6 +80,16 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
     TBD
 
+=head1 METHODS
+
+=over 4
+
+=item run
+
+internal use only
+
+=back
+
 =head1 AUTHORS
 
 Daisuke Maki

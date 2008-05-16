@@ -171,6 +171,16 @@ HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 =item listen
 
 =back
+=head1 METHODS
+
+=over 4
+
+=item run
+
+internal use only
+
+=back
+
 
 =head1 AUTHORS
 

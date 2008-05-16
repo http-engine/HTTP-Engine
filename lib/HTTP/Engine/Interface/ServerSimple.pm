@@ -42,6 +42,16 @@ HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP:
         port => 5963,
     );
 
+=head1 METHODS
+
+=over 4
+
+=item run
+
+internal use only
+
+=back
+
 =head1 DESCRIPTION
 
 HTTP::Engine::Plugin::Interface::ServerSimple is wrapper for HTTP::Server::Simple.

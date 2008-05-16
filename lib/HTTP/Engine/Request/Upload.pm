@@ -11,7 +11,18 @@ has headers  => ( is => 'rw' );
 has size     => ( is => 'rw' );
 has tempname => ( is => 'rw' );
 has type     => ( is => 'rw' );
-has basename => ( is => 'rw' );
+has basename => (
+    is      => 'rw',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        my $basename = $self->filename;
+        $basename =~ s|\\|/|g;
+        $basename = ( File::Spec::Unix->splitpath($basename) )[2];
+        $basename =~ s|[^\w\.-]+|_|g;
+        $basename;
+    }
+);
 
 has fh => (
     is       => 'rw',
@@ -56,19 +67,6 @@ sub slurp {
     }
 
     $content;
-}
-
-sub basename {
-    my $self = shift;
-
-    unless ( $self->{basename} ) {
-        my $basename = $self->filename;
-        $basename =~ s|\\|/|g;
-        $basename = ( File::Spec::Unix->splitpath($basename) )[2];
-        $basename =~ s|[^\w\.-]+|_|g;
-        $self->{basename} = $basename;
-    }
-    $self->{basename};
 }
 
 __PACKAGE__->meta->make_immutable;

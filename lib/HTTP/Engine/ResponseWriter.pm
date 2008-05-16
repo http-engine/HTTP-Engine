@@ -77,3 +77,27 @@ sub _prepare_write {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+HTTP::Engine::ResponseWriter - write response to stdout
+
+=head1 SYNOPSIS
+
+    INTERNAL USE ONLY
+
+=head1 METHODS
+
+=over 4
+
+=item finalize
+
+INTERNAL USE ONLY
+
+=cut
+
+=head1 SEE ALSO
+
+L<HTTP::Engine>
+

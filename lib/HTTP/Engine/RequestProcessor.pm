@@ -10,12 +10,6 @@ use URI::QueryParam;
 use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
 
-# modify plugin namespace to HTTP::Engine::Plugin::*
-around 'new' => sub {
-    my ($next, @args) = @_;
-    my $self = $next->(@args);
-    $self;
-};
 
 has handler => (
     is       => 'rw',

@@ -1,4 +1,4 @@
-use inc::Module::Install 0.72;
+use inc::Module::Install;
 BEGIN
 {
     eval { 

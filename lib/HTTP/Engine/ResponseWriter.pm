@@ -26,6 +26,7 @@ sub finalize {
 
     delete $self->{_prepared_write};
 
+    $c->res->protocol( $c->req->protocol ) unless $c->res->protocol;
     $c->res->finalize($c);
 
     $self->_write($self->_response_line($c) . $CRLF) if $self->should_write_response_line;
@@ -53,7 +54,7 @@ sub _output_body  {
 sub _response_line {
     my ( $self, $c ) = @_;
 
-    join(" ", $c->req->protocol, $c->res->status, HTTP::Status::status_message($c->res->status));
+    join(" ", $c->res->protocol, $c->res->status, HTTP::Status::status_message($c->res->status));
 }
 
 sub _write {

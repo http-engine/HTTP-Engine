@@ -22,6 +22,11 @@ has cookies => (
     default => sub { {} },
 );
 
+has protocol => (
+    is      => 'rw',
+#    isa     => 'Str',
+);
+
 has location => (
     is  => 'rw',
     isa => 'Str',

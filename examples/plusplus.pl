@@ -13,14 +13,15 @@ use YAML;
 HTTP::Engine->new(
     interface => HTTP::Engine::Interface::ServerSimple->new(
         {   port    => 9999,
-            handler => \&handle_request,
+            request_handler => \&handle_request,
         }
     )
 )->run;
 
 my %karma = {};
 sub handle_request {
-    my $req = shift;
+    my $c   = shift;
+    my $req = $c->req;
 
     my $method = $req->method;
     my $path = $req->uri->path;
@@ -42,20 +43,20 @@ sub handle_request {
             $karma{$name}->{$pm}++;
         }
         else {
-            return HTTP::Response->new(403);
+            return $c->res->status(403);
         }
     }
     elsif ( $method eq 'GET' || $method eq 'HEAD' ) {
         unless ( $name && $karma{$name} ) {
-            return HTTP::Response->new(404);
+            return $c->res->status(404);
         }
     }
     else {
-        return HTTP::Response->new(400);
+        return $c->res->status(400);
     }
     my $headers = HTTP::Headers->new(
         Contet_Type => 'text/html',
     );
     my $body = Dump($karma{$name});
-    return HTTP::Response->new( 200, 'OK',$headers, $body );
+    $c->res->body( $body );
 }

@@ -373,22 +373,22 @@ Shortcut to $req->headers->user_agent.
 
 A convenient method to access $req->cookies.
 
-    $cookie  = $c->request->cookie('name');
-    @cookies = $c->request->cookie;
+    $cookie  = $c->req->cookie('name');
+    @cookies = $c->req->cookie;
 
 =item param
 
 Returns GET and POST parameters with a CGI.pm-compatible param method. This 
 is an alternative method for accessing parameters in $c->req->parameters.
 
-    $value  = $c->request->param( 'foo' );
-    @values = $c->request->param( 'foo' );
-    @params = $c->request->param;
+    $value  = $c->req->param( 'foo' );
+    @values = $c->req->param( 'foo' );
+    @params = $c->req->param;
 
 Like L<CGI>, and B<unlike> earlier versions of Catalyst, passing multiple
 arguments to this method, like this:
 
-    $c->request->param( 'foo', 'bar', 'gorch', 'quxx' );
+    $c->req->param( 'foo', 'bar', 'gorch', 'quxx' );
 
 will set the parameter C<foo> to the multiple values C<bar>, C<gorch> and
 C<quxx>. Previously this would have added C<bar> as another value to C<foo>
@@ -403,11 +403,11 @@ Returns the path, i.e. the part of the URI after $req->base, for the current req
 
 A convenient method to access $req->uploads.
 
-    $upload  = $c->request->upload('field');
-    @uploads = $c->request->upload('field');
-    @fields  = $c->request->upload;
+    $upload  = $c->req->upload('field');
+    @uploads = $c->req->upload('field');
+    @fields  = $c->req->upload;
 
-    for my $upload ( $c->request->upload('field') ) {
+    for my $upload ( $c->req->upload('field') ) {
         print $upload->filename;
     }
 
@@ -431,6 +431,10 @@ convert $location to absolute uri.
 =head1 AUTHORS
 
 Kazuhiro Osawa and HTTP::Engine Authors.
+
+=head1 THANKS TO
+
+L<Catalyst::Request>
 
 =head1 SEE ALSO
 

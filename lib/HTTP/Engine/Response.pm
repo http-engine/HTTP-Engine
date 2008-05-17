@@ -154,7 +154,7 @@ Returns a reference to a hash containing cookies to be set. The keys of the
 hash are the cookies' names, and their corresponding values are hash
 references used to construct a L<CGI::Cookie> object.
 
-        $c->response->cookies->{foo} = { value => '123' };
+        $c->res->cookies->{foo} = { value => '123' };
 
 The keys of the hash reference on the right correspond to the L<CGI::Cookie>
 parameters of the same name, except they are used without a leading dash.
@@ -164,20 +164,20 @@ Possible parameters are:
 
 Sets or returns the HTTP status.
 
-    $c->response->status(404);
+    $c->res->status(404);
 
 =item headers
 
 Returns an L<HTTP::Headers> object, which can be used to set headers.
 
-    $c->response->headers->header( 'X-Catalyst' => $Catalyst::VERSION );
+    $c->res->headers->header( 'X-HTTP-Engine' => $HTTP::Engine::VERSION );
 
 =item redirect
 
 Causes the response to redirect to the specified URL.
 
-    $c->response->redirect( 'http://slashdot.org' );
-    $c->response->redirect( 'http://slashdot.org', 307 );
+    $c->res->redirect( 'http://slashdot.org' );
+    $c->res->redirect( 'http://slashdot.org', 307 );
 
 =item set_http_response
 
@@ -188,6 +188,10 @@ set a L<HTTP::Response> into $self.
 =head1 AUTHORS
 
 Kazuhiro Osawa and HTTP::Engine Authors.
+
+=head1 THANKS TO
+
+L<Catalyst::Response>
 
 =head1 SEE ALSO
 

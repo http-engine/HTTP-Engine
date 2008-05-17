@@ -68,7 +68,7 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 =head1 SYNOPSIS
 
-  use HTTP::Engine middlewares => [ qw(Session MobileAttributes) ];
+  use HTTP::Engine;
   my $engine = HTTP::Engine->new(
       interface => {
           module => 'ServerSimple',
@@ -78,12 +78,13 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
           },
           request_handler => 'main::handle_request',# or CODE ref
       },
-  };
+  );
   $engine->run;
 
+  use Data::Dumper;
   sub handle_request {
       my $c = shift;
-      $c->res->body( Dumper($e->req) );
+      $c->res->body( Dumper($c->req) );
   }
 
 
@@ -169,6 +170,8 @@ you could load it as
 
 =item load_middleware(middleware)
 
+=item load_middlewares(qw/ middleware middkeware /)
+
 Loads the given middleware into the HTTP::Engine.
 
 =back
@@ -192,6 +195,8 @@ marcus
 hidek
 
 dann
+
+typester (Interface::FCGI)
 
 =head1 SEE ALSO
 

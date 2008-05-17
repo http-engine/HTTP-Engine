@@ -5,6 +5,12 @@ use constant should_write_response_line => 1;
 use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
 
+has host => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '127.0.0.1',
+);
+
 has port => (
     is      => 'rw',
     isa     => 'Int',
@@ -14,7 +20,7 @@ has port => (
 sub run {
     my ($self, ) = @_;
 
-    Moose::Meta::Class
+    my $server = Moose::Meta::Class
         ->create_anon_class(
             superclasses => ['HTTP::Server::Simple::CGI'],
             methods => {
@@ -26,7 +32,9 @@ sub run {
         )->new_object(
         )->new(
             $self->port
-        )->run;
+        );
+    $server->host($self->host);
+    $server->run;
 }
 
 1;

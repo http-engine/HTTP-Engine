@@ -1,8 +1,0 @@
-using_frontend_proxy: 1
-plugins:
-    - module: Interface::Standalone
-      conf:
-        host: 0.0.0.0
-        port: 14000
-
-    - module: Request::ReverseProxy

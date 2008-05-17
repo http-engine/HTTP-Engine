@@ -281,6 +281,8 @@ sub _inet_addr { unpack "N*", inet_aton($_[0]) }
 1;
 __END__
 
+=for stopwords Standalone
+
 =head1 NAME
 
 HTTP::Engine::Interface::Standalone - Standalone HTTP Server

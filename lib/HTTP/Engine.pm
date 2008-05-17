@@ -19,8 +19,12 @@ has 'interface' => (
 sub import {
     my($class, %args) = @_;
     return unless $args{middlewares} && ref $args{middlewares} eq 'ARRAY';
+    $class->load_middlewares(@{ $args{middlewares} });
+}
 
-    for my $middleware (@{ $args{middlewares} }) {
+sub load_middlewares {
+    my ($class, @middlewares) = @_;
+    for my $middleware (@middlewares) {
         $class->load_middleware( $middleware );
     }
 }

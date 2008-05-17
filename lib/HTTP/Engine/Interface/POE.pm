@@ -72,9 +72,6 @@ sub run {
             close $socket;
         },
     );
-
-    warn "Running POE in http://localhost:" . $self->port . '/';
-    POE::Kernel->run;
 }
 
 1;

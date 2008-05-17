@@ -38,3 +38,5 @@ my $engine = HTTP::Engine->new(
 );
 $engine->run;
 
+print "Running POE in http://localhost:3999/\n";
+POE::Kernel->run;

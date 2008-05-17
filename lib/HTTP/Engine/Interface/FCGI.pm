@@ -138,7 +138,7 @@ sub daemon_detach {
 
 
 use HTTP::Engine::ResponseWriter;
-HTTP::Engine::ResponseWriter->meta->add_method( write => sub {
+HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
     my($self, $buffer) = @_;
 
     unless ( $self->{_prepared_write} ) {

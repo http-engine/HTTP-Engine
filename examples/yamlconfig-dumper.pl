@@ -3,9 +3,6 @@ use warnings;
 use lib 'lib';
 use Data::Dumper;
 use HTTP::Engine;
-use HTTP::Engine::Interface::ServerSimple;
-use HTTP::Response;
-use HTTP::Engine::Request;
 use String::TT qw/strip tt/;
 use YAML;
 

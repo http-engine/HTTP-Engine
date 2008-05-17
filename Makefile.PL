@@ -46,6 +46,7 @@ features(
     'Interface::FCGI' => [
         -default => 0,
         recommends_hack('FCGI'),
+        recommends_hack('FCGI::ProcManager'),
     ],
 
     'Interface::ServerSimple' => [

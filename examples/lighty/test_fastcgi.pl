@@ -4,12 +4,21 @@ use warnings;
 use FindBin '$Bin';
 use HTTP::Engine;
 use Data::Dumper;
+use Getopt::Long;
+
+GetOptions(
+    \my %option,
+    qw/listen=s/
+);
 
 HTTP::Engine->new(
     interface => {
         module => 'FCGI',
         args   => {
-#            listen => $FindBin::Bin . 'test.socket',
+            $option{listen} ? (
+                listen => $option{listen},
+                nproc  => 1,
+            ) : (),
         },
         request_handler => sub {
             my $c = shift;

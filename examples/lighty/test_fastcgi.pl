@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-warn "OKGE";
+use FindBin '$Bin';
 use HTTP::Engine;
 use Data::Dumper;
 
@@ -9,14 +9,15 @@ HTTP::Engine->new(
     interface => {
         module => 'FCGI',
         args   => {
-            request_handler => sub {
-                    my $c = shift;
-
-                    $c->res->content_type('text/html');
-
-                    $c->res->body( render_body( Dumper($c->req) ) );
-              }
+#            listen => $FindBin::Bin . 'test.socket',
         },
+        request_handler => sub {
+            my $c = shift;
+
+            $c->res->content_type('text/html');
+
+            $c->res->body( render_body( Dumper($c->req) ) );
+         }
     },
 )->run;
 

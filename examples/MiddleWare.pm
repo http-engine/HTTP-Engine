@@ -7,9 +7,9 @@ sub setup {
 }
 
 sub wrap {
-    my($next, $rp, $c) = @_;
+    my($next, $c) = @_;
     warn 'middleware before';
-    $next->($rp, $c);
+    $next->($c);
     warn 'middleware after';
     my $body = $c->res->body;
     $body =~ s/REGEXP/MIDDLEWARE/g;

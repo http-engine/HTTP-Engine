@@ -58,6 +58,7 @@ has chunk_size => (
 
 no Moose;
 
+my $rp;
 sub handle_request {
     my $self = shift;
 
@@ -71,7 +72,8 @@ sub handle_request {
     my $ret = eval {
         local *STDOUT;
         local *STDIN;
-        $self->call_handler($context);
+        $rp = sub { $self };
+        call_handler($context);
     };
     if (my $e = $@) {
         print STDERR $e;
@@ -83,8 +85,8 @@ sub handle_request {
 
 # hooked by middlewares.
 sub call_handler {
-    my ($self, $context) = @_;
-    $self->handler->($context);
+    my $context = shift;
+    $rp->()->handler->($context);
 }
 
 1;

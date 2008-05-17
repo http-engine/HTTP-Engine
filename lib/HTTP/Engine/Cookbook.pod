@@ -1,0 +1,11 @@
+=pod
+
+=head1 NAME
+
+Moose::Cookbook - How to cook a Moose
+
+=head1 DESCRIPTION
+
+TBA
+
+=cut

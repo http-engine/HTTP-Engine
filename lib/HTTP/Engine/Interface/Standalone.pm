@@ -10,15 +10,15 @@ use IO::Select       ();
 use constant should_write_response_line => 1;
 
 has host => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Str',
     default => '127.0.0.1',
 );
 
 has port => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Int',
-    default => 80,
+    default => 1978,
 );
 
 has keepalive => (

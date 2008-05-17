@@ -8,15 +8,15 @@ use POE qw/
 use HTTP::Server::Simple;
 
 has host => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Str',
     default => '127.0.0.1',
 );
 
 has port => (
-    is => 'ro',
-    isa => 'Int',
-    required => 1,
+    is       => 'ro',
+    isa      => 'Int',
+    default  => 1978,
 );
 
 my %init_env = %ENV;

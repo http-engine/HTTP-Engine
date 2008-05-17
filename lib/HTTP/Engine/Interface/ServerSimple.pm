@@ -6,15 +6,15 @@ use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
 
 has host => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Str',
     default => '127.0.0.1',
 );
 
 has port => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'Int',
-    default => 80,
+    default => 1978,
 );
 
 sub run {

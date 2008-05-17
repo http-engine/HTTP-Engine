@@ -7,6 +7,12 @@ use POE qw/
 /;
 use HTTP::Server::Simple;
 
+has host => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '127.0.0.1',
+);
+
 has port => (
     is => 'ro',
     isa => 'Int',
@@ -21,6 +27,7 @@ sub run {
     # setup poe session
     POE::Component::Server::TCP->new(
         Port     => $self->port,
+        Address  => $self->host,
         Acceptor => sub {
             my ($socket, $remote_address, $remote_port) = @_[ARG0, ARG1, ARG2];
 
@@ -94,6 +101,10 @@ internal use only
 =head1 ATTRIBUTES
 
 =over 4
+
+=item port
+
+The bind address of TCP server.
 
 =item port
 

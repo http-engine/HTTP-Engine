@@ -58,6 +58,7 @@ sub run {
                     }
                 }
             };
+            $ENV{SERVER_PORT} ||= $self->port;
             do {
                 $self->handle_request();
             };

@@ -170,7 +170,7 @@ you could load it as
 
 =item load_middleware(middleware)
 
-=item load_middlewares(qw/ middleware middkeware /)
+=item load_middlewares(qw/ middleware middleware /)
 
 Loads the given middleware into the HTTP::Engine.
 

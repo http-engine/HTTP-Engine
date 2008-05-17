@@ -66,7 +66,7 @@ sub handle_request {
         res    => $self->response_class->new(),
     );
 
-    $self->request_builder->prepare( $context );
+    $self->request_builder->prepare($context);
 
     my $ret = eval {
         local *STDOUT;
@@ -76,7 +76,7 @@ sub handle_request {
     if (my $e = $@) {
         print STDERR $e;
     }
-    $self->response_writer->finalize( $context );
+    $self->response_writer->finalize($context);
 
     $ret;
 }

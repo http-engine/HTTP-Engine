@@ -47,6 +47,7 @@ HTTP::Engine::Interface::ServerSimple - HTTP::Server::Simple interface for HTTP:
 =head1 SYNOPSIS
 
     HTTP::Engine::Interface::ServerSimple->new(
+        host => '0.0.0.0',
         port => 5963,
     );
 

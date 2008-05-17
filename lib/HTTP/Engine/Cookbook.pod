@@ -1,5 +1,7 @@
 =pod
 
+=for stopwords TBA
+
 =head1 NAME
 
 Moose::Cookbook - How to cook a Moose

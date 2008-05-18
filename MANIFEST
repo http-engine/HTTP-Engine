@@ -63,11 +63,13 @@ t/14_request_as_http_request.t
 t/15_load_middleware.t
 t/16_middleware-import-loadmethods.t
 t/16_middleware-import.t
+t/16_middleware-wrap.t
 t/17_upload-basename.t
 t/30_interface_cgi.t
 t/31_interface_test.t
 t/DummyMiddleware.pm
 t/DummyMiddlewareImport.pm
+t/DummyMiddlewareWrap.pm
 t/optional_lighttpd-fastcgi.t
 t/response/TestModPerl/Basic.pm
 t/TEST.PL

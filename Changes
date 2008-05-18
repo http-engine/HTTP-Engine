@@ -1,5 +1,7 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.8    2008-05-18T13:50:36+09:00
+         - Middleware API more simply
          - fix Interface::FCGI dont work lopnor++
 
 0.0.7    2008-05-18T02:23:57+09:00

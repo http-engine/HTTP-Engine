@@ -126,13 +126,23 @@ currently supports the following:
 
 =over 4
 
-=item HTTP::Engine::Interface::CGI
+=item HTTP::Engine::Interface::ServerSimple
 
 =item HTTP::Engine::Interface::FastCGI
 
+=item HTTP::Engine::Interface::CGI
+
+=item HTTP::Engine::Interface::Test
+
+for test code interface
+
 =item HTTP::Engine::Interface::ModPerl
 
-=item HTTP::Engine::Interface::ServerSimple
+experimental
+
+=item HTTP::Engine::Interface::Standalone
+
+old style
 
 =back
 
@@ -175,10 +185,6 @@ you could load it as
 Loads the given middleware into the HTTP::Engine.
 
 =back
-
-=head1 BRANCHES
-
-Moose branch L<http://svn.coderepos.org/share/lang/perl/HTTP-Engine/branches/moose/>
 
 =head1 AUTHOR
 

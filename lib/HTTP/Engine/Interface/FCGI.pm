@@ -142,7 +142,7 @@ HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
     my($self, $buffer) = @_;
 
     unless ( $self->{_prepared_write} ) {
-        $self->prepare_write;
+        $self->_prepare_write;
         $self->{_prepared_write} = 1;
     }
 

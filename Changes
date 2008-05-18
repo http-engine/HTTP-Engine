@@ -1,5 +1,7 @@
 Revision history for Perl extension HTTP::Engine
 
+         - fix Interface::FCGI dont work lopnor++
+
 0.0.7    2008-05-18T02:23:57+09:00
          - good by Class::Component
          - nice to meet Moose

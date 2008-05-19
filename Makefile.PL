@@ -72,6 +72,8 @@ if (HAVE_MP) {
 }
 
 build_requires 'Test::More';
+build_requires 'IO::Scalar';
+
 use_test_base;
 auto_include;
 auto_install;

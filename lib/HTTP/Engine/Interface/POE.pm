@@ -99,7 +99,7 @@ internal use only
 
 =over 4
 
-=item port
+=item host
 
 The bind address of TCP server.
 

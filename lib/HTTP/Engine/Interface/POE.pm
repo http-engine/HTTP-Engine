@@ -31,7 +31,7 @@ sub run {
         Acceptor => sub {
             my ($socket, $remote_address, $remote_port) = @_[ARG0, ARG1, ARG2];
 
-            warn "ACCEPT FROM $remote_address, $remote_port";
+            # warn "ACCEPT FROM $remote_address, $remote_port";
 
             local %ENV = (
                 %init_env,

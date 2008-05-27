@@ -46,7 +46,9 @@ sub run {
             local *STDOUT = $socket;
             select STDOUT;
             do {
-                @ENV{qw/REQUEST_METHOD PATH_INFO SERVER_PROTOCOL/} = HTTP::Server::Simple->parse_request();
+                my ( $method, $request_uri, $proto ) = HTTP::Server::Simple->parse_request();
+                @ENV{qw/REQUEST_METHOD SERVER_PROTOCOL/} = ($method, $proto);
+                ( $ENV{PATH_INFO}, $ENV{QUERY_STRING} ) = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
             };
             do {
                 my $headers = HTTP::Server::Simple->parse_headers() or die "bad request";

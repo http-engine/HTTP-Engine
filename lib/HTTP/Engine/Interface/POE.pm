@@ -48,7 +48,9 @@ sub run {
             do {
                 my ( $method, $request_uri, $proto ) = HTTP::Server::Simple->parse_request();
                 @ENV{qw/REQUEST_METHOD SERVER_PROTOCOL/} = ($method, $proto);
-                ( $ENV{PATH_INFO}, $ENV{QUERY_STRING} ) = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
+                my @uri_split      = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
+                $ENV{PATH_INFO}    = shift @uri_split;
+                $ENV{QUERY_STRING} = shift @uri_split if @uri_split && defined $uri_split[0];
             };
             do {
                 my $headers = HTTP::Server::Simple->parse_headers() or die "bad request";

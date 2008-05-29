@@ -27,7 +27,7 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Moose' => 0.40;
+requires 'Moose' => 0.46;
 requires 'MooseX::Types';
 requires 'Scalar::Util';
 requires 'UNIVERSAL::require';

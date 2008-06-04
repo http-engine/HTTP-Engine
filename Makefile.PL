@@ -74,6 +74,7 @@ if (HAVE_MP) {
 build_requires 'Test::More';
 build_requires 'IO::Scalar';
 build_requires 'File::Temp' => '0.20';
+build_requires 'HTTP::Request::AsCGI';
 
 use_test_base;
 auto_include;

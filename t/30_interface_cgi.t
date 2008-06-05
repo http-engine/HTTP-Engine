@@ -16,29 +16,22 @@ filters {
 };
 
 run {
-
-TODO: {
-    todo_skip "!!! FIX ME !!!", 1;
-
     my $block = shift;
     local %ENV = %{$block->env};
 
     HTTP::Engine->new(
         interface => {
             module => 'CGI',
-            args => {
-                request_handler => sub {
-                    my $c = shift;
-                    $c->res->header( 'X-Req-Base' => $c->req->base );
-                    $c->res->body('OK!');
-                },
+            args => { },
+            request_handler => sub {
+                my $c = shift;
+                $c->res->header( 'X-Req-Base' => $c->req->base );
+                $c->res->body('OK!');
             },
         },
     )->run;
 
     is $out, $block->response(), 'response';
-}
-
 };
 
 sub crlf {

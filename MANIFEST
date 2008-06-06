@@ -9,6 +9,7 @@ examples/plusplus.pl
 examples/poe-dumper.pl
 examples/yamlconfig-dumper.pl
 inc/File/Temp.pm
+inc/HTTP/Request/AsCGI.pm
 inc/IO/Scalar.pm
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm

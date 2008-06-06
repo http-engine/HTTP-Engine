@@ -9,11 +9,11 @@ my $engine = HTTP::Engine->new(
         module => 'CGI',
         args   => {
             port            => 9999,
-            request_handler => sub {
-                my $c = shift;
-                $c->res->status(200);
-            },
-        }
+        },
+        request_handler => sub {
+            my $c = shift;
+            $c->res->status(200);
+        },
     }
 );
 

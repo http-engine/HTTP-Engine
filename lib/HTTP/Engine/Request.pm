@@ -258,6 +258,25 @@ sub absolute_url {
     $location;
 }
 
+sub content {
+	my ( $self, @args ) = @_;
+
+	if ( @args ) {
+		croak "The HTTP::Request method 'content' is unsupported when used as a writer, use HTTP::Engine::RequestBuilder";
+	} else {
+		return $self->raw_body;
+	}
+}
+
+sub as_string {
+	my $self = shift;
+	$self->as_http_request->as_string; # FIXME not efficient
+}
+
+sub parse {
+	croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

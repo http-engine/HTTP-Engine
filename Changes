@@ -1,5 +1,9 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.10   2008-06-07T01:21:35+09:00
+         - add build_requires 'HTTP::Request::AsCGI'
+         - fixed t/30_interface_cgi.t
+ 
 0.0.9    2008-05-28T21:22:52+09:00
          - fix Interface::POE cannot get query string bug tokuhirom++
          - fix more dependence on Makefile.PL

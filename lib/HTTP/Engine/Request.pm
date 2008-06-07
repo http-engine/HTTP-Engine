@@ -93,12 +93,13 @@ has base => (
 has hostname => (
     is      => 'rw',
     isa     => 'Str',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
-    },
+    lazy_build => 1,
 );
+
+sub _build_hostname {
+    my $self = shift;
+    $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
+}
 
 has http_body => (
     is      => 'rw',

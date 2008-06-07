@@ -8,6 +8,11 @@ use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 use IO::Socket qw[AF_INET inet_aton];
 
+has request_builder => (
+    isa => "HTTP::Engine::RequestBuilder",
+    is  => "rw",
+);
+
 # the IP address of the client
 has address => (
     is  => 'rw',

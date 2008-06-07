@@ -28,6 +28,8 @@ no Moose;
 sub prepare {
     my ($self, $context) = @_;
 
+    $context->req->request_builder($self);
+
     # init.
     delete $self->{_prepared_read};
 

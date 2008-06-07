@@ -2,6 +2,7 @@ package HTTP::Engine::Interface::FCGI;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
 use constant should_write_response_line => 0;
+use constant RUNNING_IN_HELL => $^O eq 'MSWin32';
 use FCGI;
 
 has leave_umask => (
@@ -65,7 +66,7 @@ sub run {
             umask($old_umask);
         }
     }
-    elsif ( $^O ne 'MSWin32' ) {
+    elsif ( !RUNNING_IN_HELL ) {
         -S STDIN
           or die "STDIN is not a socket; specify a listen location";
     }

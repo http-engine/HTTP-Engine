@@ -7,6 +7,16 @@ use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 
+sub BUILD {
+    my ( $self, $param ) = @_;
+
+    foreach my $field qw(base path) {
+        if ( my $val = $param->{$field} ) {
+            $self->$field($val);
+        }
+    }
+}
+
 has request_builder => (
     isa => "HTTP::Engine::RequestBuilder",
     is  => "rw",
@@ -48,8 +58,13 @@ has protocol => (
 has query_parameters => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { {} },
+    lazy_build => 1,
 );
+
+sub _build_query_parameters {
+    my $self = shift;
+    $self->uri->query_form_hash;
+}
 
 # https or not?
 has secure => (
@@ -62,7 +77,19 @@ has uri => (
     is     => 'rw',
     isa    => Uri,
     coerce => 1,
+    lazy_build => 1,
+    handles => [qw(base path)],
 );
+
+sub _build_uri {
+    my $self = shift;
+
+    if ( my $rb = $self->request_builder ) {
+        $rb->_build_uri($self);
+    } else {
+        URI::WithBase->new;
+    }
+}
 
 has user => ( is => 'rw', );
 
@@ -92,17 +119,6 @@ sub _build_headers {
 
 # Contains the URI base. This will always have a trailing slash.
 # If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.
-has base => (
-    is      => 'rw',
-    isa     => Uri,
-    trigger => sub {
-        my $self = shift;
-
-        if ( $self->uri ) {
-            $self->path; # clear cache.
-        }
-    },
-);
 
 has hostname => (
     is      => 'rw',
@@ -182,25 +198,6 @@ sub param {
     }
 }
 
-
-sub path {
-    my ($self, $params) = @_;
-
-    if ($params) {
-        $self->uri->path($params);
-    } else {
-        return $self->{path} if $self->{path};
-    }
-
-    my $path     = $self->uri->path;
-    my $location = $self->base->path;
-    $path =~ s/^(\Q$location\E)?//;
-    $path =~ s/^\///;
-    $self->{path} = $path;
-
-    return $path;
-}
-
 sub upload {
     my $self = shift;
 
@@ -266,16 +263,10 @@ sub absolute_url {
     my ($self, $location) = @_;
 
     unless ($location =~ m!^https?://!) {
-        my $base = $self->base;
-        my $url = sprintf '%s://%s', $base->scheme, $base->host;
-        unless (($base->scheme eq 'http' && $base->port eq '80') ||
-               ($base->scheme eq 'https' && $base->port eq '443')) {
-            $url .= ':' . $base->port;
-        }
-        $url .= $base->path;
-        $location = URI->new_abs($location, $url);
+        return URI->new( $location )->abs( $self->base );
+    } else {
+        return $location;
     }
-    $location;
 }
 
 sub content {

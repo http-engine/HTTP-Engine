@@ -36,7 +36,7 @@ sub prepare {
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection query_parameters path body parameters uploads )) {
+    for my $method (qw( connection body parameters uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
@@ -54,23 +54,6 @@ sub _prepare_connection {
 
     $req->secure(1) if $ENV{HTTPS} && uc $ENV{HTTPS} eq 'ON';
     $req->secure(1) if $ENV{SERVER_PORT} == 443;
-}
-
-sub _prepare_query_parameters  {
-    my($self, $c) = @_;
-    my $query_string = $ENV{QUERY_STRING};
-    return unless 
-        defined $query_string && length($query_string);
-
-    # replace semi-colons
-    $query_string =~ s/;/&/g;
-
-    my $uri = URI->new('', 'http');
-    $uri->query($query_string);
-    for my $key ( $uri->query_param ) {
-        my @vals = $uri->query_param($key);
-        $c->req->query_parameters->{$key} = @vals > 1 ? [@vals] : $vals[0];
-    }
 }
 
 sub _build_headers {
@@ -102,10 +85,8 @@ sub _build_cookies {
     }
 }
 
-sub _prepare_path  {
-    my($self, $c) = @_;
-
-    my $req    = $c->req;
+sub _build_uri  {
+    my($self, $req) = @_;
 
     my $scheme = $req->secure ? 'https' : 'http';
     my $host   = $ENV{HTTP_HOST}   || $ENV{SERVER_NAME};
@@ -131,14 +112,14 @@ sub _prepare_path  {
 
     # sanitize the URI
     $uri = $uri->canonical;
-    $req->uri($uri);
 
     # set the base URI
     # base must end in a slash
     $base_path .= '/' unless $base_path =~ /\/$/;
     my $base = $uri->clone;
     $base->path_query($base_path);
-    $c->req->base($base);
+
+    return URI::WithBase->new($uri, $base);
 }
 
 sub _prepare_body  {
@@ -152,6 +133,12 @@ sub _prepare_body  {
 
     $req->http_body( HTTP::Body->new($type, $self->read_length) );
     $req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
+
+    $self->_read_to_end($c);
+}
+
+sub _read_to_end {
+    my ( $self, $c ) = @_;
 
     if ($self->read_length > 0) {
         $self->_read_all($c);

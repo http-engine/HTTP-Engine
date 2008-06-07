@@ -36,7 +36,7 @@ sub prepare {
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection body parameters uploads )) {
+    for my $method (qw( connection body uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
@@ -166,36 +166,6 @@ sub _prepare_body_chunk {
     my $req = $c->req;
     $req->raw_body($req->raw_body . $chunk);
     $req->http_body->add($chunk);
-}
-
-sub _prepare_parameters  {
-    my ($self, $c) = @_;
-
-    my $req = $c->req;
-    my $parameters = $req->parameters;
-
-    # We copy, no references
-    for my $name (keys %{ $req->query_parameters }) {
-        my $param = $req->query_parameters->{$name};
-        $param = ref $param eq 'ARRAY' ? [ @{$param} ] : $param;
-        $parameters->{$name} = $param;
-    }
-
-    # Merge query and body parameters
-    for my $name (keys %{ $req->body_parameters }) {
-        my $param = $req->body_parameters->{$name};
-        $param = ref $param eq 'ARRAY' ? [ @{$param} ] : $param;
-        if ( my $old_param = $parameters->{$name} ) {
-            if ( ref $old_param eq 'ARRAY' ) {
-                push @{ $parameters->{$name} },
-                  ref $param eq 'ARRAY' ? @$param : $param;
-            } else {
-                $parameters->{$name} = [ $old_param, $param ];
-            }
-        } else {
-            $parameters->{$name} = $param;
-        }
-    }
 }
 
 sub _prepare_uploads  {

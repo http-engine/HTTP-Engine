@@ -144,8 +144,30 @@ has http_body => (
 has parameters => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { +{} },
+    lazy_build => 1,
 );
+
+sub _build_parameters {
+    my $self = shift;
+
+    my $query = $self->query_parameters;
+    my $body = $self->body_parameters;
+
+    my %merged;
+
+    foreach my $hash ( $query, $body ) {
+        foreach my $name ( keys %$hash ) {
+            my $param = $hash->{$name};
+            push( @{ $merged{$name} ||= [] }, ( ref $param ? @$param : $param ) );
+        }
+    }
+
+    foreach my $param ( values %merged ) {
+        $param = $param->[0] if @$param == 1;
+    }
+
+    return \%merged;
+}
 
 has uploads => (
     is      => 'rw',

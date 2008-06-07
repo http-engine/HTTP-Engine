@@ -9,25 +9,27 @@ requires qw(run should_write_response_line);
 has request_handler => (
     is       => 'rw',
     isa      => Handler,
-    coerce  => 1,
+    coerce   => 1,
     required => 1,
 );
 
 has request_processor => (
-    is      => 'ro',
-    isa     => 'HTTP::Engine::RequestProcessor',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        HTTP::Engine::RequestProcessor->new(
-            handler                    => $self->request_handler,
-            response_writer            => HTTP::Engine::ResponseWriter->new(
-                should_write_response_line => $self->should_write_response_line,
-            ),
-        );
-    },
-    handles => [qw/handle_request load_plugins/],
+    is         => 'ro',
+    isa        => 'HTTP::Engine::RequestProcessor',
+    lazy_build => 1,
+    handles    => [qw/handle_request load_plugins/],
 );
+
+sub _build_request_processor {
+    my $self = shift;
+
+    HTTP::Engine::RequestProcessor->new(
+        handler                    => $self->request_handler,
+        response_writer            => HTTP::Engine::ResponseWriter->new(
+            should_write_response_line => $self->should_write_response_line,
+        ),
+    );
+}
 
 1;
 

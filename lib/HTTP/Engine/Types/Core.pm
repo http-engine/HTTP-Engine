@@ -9,12 +9,7 @@ use Class::MOP;
 use URI;
 use HTTP::Headers;
 
-subtype Interface
-    => as 'Object'
-    => where {
-        $_->does('HTTP::Engine::Role::Interface');
-    }
-;
+role_type Interface => { role => "HTTP::Engine::Role::Interface" };
 
 coerce Interface
     => from 'HashRef'
@@ -28,26 +23,20 @@ coerce Interface
                 $module = join('::', "HTTP", "Engine", "Interface", $module);
             }
 
-			Class::MOP::load_class($module);
+            Class::MOP::load_class($module);
 
             return $module->new( %$args );
         }
 ;
 
-subtype Uri
-    => as 'Object'
-    => where { $_->isa('URI') }
-;
+class_type Uri => { class => "URI" };
 
 coerce Uri
     => from 'Str'
         => via { URI->new($_) }
 ;
 
-subtype Header
-    => as 'Object'
-    => where { $_->isa('HTTP::Headers') }
-;
+class_type 'Header' => { class => "HTTP::Headers" };
 
 coerce Header
     => from 'ArrayRef'

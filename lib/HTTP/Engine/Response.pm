@@ -5,6 +5,9 @@ use HTTP::Headers;
 use HTTP::Engine::Types::Core qw( Header );
 use File::stat;
 
+# Moose role merging is borked with attributes
+#with qw(HTTP::Engine::Response);
+
 has body => (
     is      => 'rw',
     isa     => 'Any',

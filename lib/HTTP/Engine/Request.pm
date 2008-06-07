@@ -7,13 +7,16 @@ use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 
+# Moose role merging is borked with attributes
+#with qw(HTTP::Engine::Request);
+
 # this object constructs all our lazy fields for us
 has request_builder => (
     does => "HTTP::Engine::Role::RequestBuilder",
     is   => "rw",
     # handles ...
     # takes_self => 1, # add this to Moose
-    default => sub {
+    default => sub { # FIXME deprecate the default
         require HTTP::Engine::RequestBuilder::Dummy;
         HTTP::Engine::RequestBuilder::Dummy->new;
     }

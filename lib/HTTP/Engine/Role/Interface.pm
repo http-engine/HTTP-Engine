@@ -8,7 +8,7 @@ requires qw(run should_write_response_line);
 
 has request_handler => (
     is       => 'rw',
-    isa      => 'Handler',
+    isa      => Handler,
     coerce  => 1,
     required => 1,
 );

@@ -10,7 +10,7 @@ use HTTP::Engine::RequestProcessor;
 
 has 'interface' => (
     is      => 'ro',
-    does    => 'Interface',
+    does    => Interface,
     coerce  => 1,
     handles => [ qw(run load_plugins) ],
 );

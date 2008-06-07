@@ -51,7 +51,7 @@ has secure => (
 
 has uri => (
     is     => 'rw',
-    isa    => 'Uri',
+    isa    => Uri,
     coerce => 1,
 );
 
@@ -65,7 +65,7 @@ has raw_body => (
 
 has headers => (
     is      => 'rw',
-    isa     => 'Header',
+    isa     => Header,
     coerce  => 1,
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
@@ -75,7 +75,7 @@ has headers => (
 # If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.
 has base => (
     is      => 'rw',
-    isa     => 'URI',
+    isa     => Uri,
     trigger => sub {
         my $self = shift;
 

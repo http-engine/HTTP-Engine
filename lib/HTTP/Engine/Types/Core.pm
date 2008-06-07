@@ -9,49 +9,36 @@ use Class::MOP;
 use URI;
 use HTTP::Headers;
 
-role_type Interface => { role => "HTTP::Engine::Role::Interface" };
+role_type Interface, { role => "HTTP::Engine::Role::Interface" };
 
-coerce Interface
-    => from 'HashRef'
-        => via {
-            my $module  = $_->{module};
-            my $plugins = $_->{plugins} || [];
-            my $args    = $_->{args};
-            $args->{request_handler} = $_->{request_handler};
+coerce Interface, from HashRef => via {
+    my $module  = $_->{module};
+    my $plugins = $_->{plugins} || [];
+    my $args    = $_->{args};
+    $args->{request_handler} = $_->{request_handler};
 
-            if ($module !~ s{^\+}{}) {
-                $module = join('::', "HTTP", "Engine", "Interface", $module);
-            }
+    if ($module !~ s{^\+}{}) {
+        $module = join('::', "HTTP", "Engine", "Interface", $module);
+    }
 
-            Class::MOP::load_class($module);
+    Class::MOP::load_class($module);
 
-            return $module->new( %$args );
-        }
-;
+    return $module->new( %$args );
+};
 
-class_type Uri => { class => "URI" };
+class_type Uri, { class => "URI" };
 
-coerce Uri
-    => from 'Str'
-        => via { URI->new($_) }
-;
+coerce Uri, from Str => via { URI->new($_) };
 
-class_type 'Header' => { class => "HTTP::Headers" };
+class_type Header, { class => "HTTP::Headers" };
 
-coerce Header
-    => from 'ArrayRef'
-        => via { HTTP::Headers->new( @{ $_ } ) }
-    => from 'HashRef'
-        => via { HTTP::Headers->new( %{ $_ } ) };
+coerce Header,
+    from ArrayRef => via { HTTP::Headers->new( @{ $_ } ) },
+    from HashRef  => via { HTTP::Headers->new( %{ $_ } ) };
 
-subtype Handler
-    => as 'CodeRef'
-;
+subtype Handler, as 'CodeRef';
 
-coerce Handler
-    => from 'Str'
-        => via { \&{$_} }
-;
+coerce Handler, from Str => via { \&{$_} };
 
 1;
 
@@ -67,7 +54,7 @@ HTTP::Engine::Types::Core - Core HTTP::Engine Types
   use HTTP::Engine::Types::Core qw( Interface );
 
   has 'interface' => (
-    isa    => 'Interface',
+    isa    => Interface,
     coerce => 1
   );
 

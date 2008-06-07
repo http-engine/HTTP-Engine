@@ -27,19 +27,6 @@ has read_position => (
 
 no Moose;
 
-sub prepare {
-    my ($self, $context) = @_;
-
-    # init.
-    delete $self->{_prepared_read};
-
-    # do build.
-    for my $method (qw( body uploads )) {
-        my $method = "_prepare_$method";
-        $self->$method($context);
-    }
-}
-
 sub _build_connection_info {
     my($self, $req) = @_;
 
@@ -107,26 +94,39 @@ sub _build_uri  {
     return URI::WithBase->new($uri, $base);
 }
 
-sub _prepare_body  {
-    my($self, $c) = @_;
-
-    my $req = $c->req;
+sub _build_initial_http_body  {
+    my($self, $req) = @_;
 
     # TODO: catalyst のように prepare フェーズで処理せず、遅延評価できるようにする 
-    $self->read_length($req->header('Content-Length') || 0);
+    my $length = $req->header('Content-Length') || 0;
     my $type = $req->header('Content-Type');
 
-    $req->http_body( HTTP::Body->new($type, $self->read_length) );
-    $req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
+    my $body = HTTP::Body->new($type, $length);
+    $body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
-    $self->_read_to_end($c);
+    return {
+        read_length => $length,
+        body        => $body,
+    };
+}
+
+sub _build_full_http_body {
+    my ( $self, $req ) = @_;
+    $self->_read_to_end($req);
+    return $req->_http_body->{body};
+}
+
+sub _build_raw_body {
+    my ( $self, $req ) = @_;
+    $self->_read_to_end($req);
+    return $req->_raw_body;
 }
 
 sub _read_to_end {
-    my ( $self, $c ) = @_;
+    my ( $self, $req ) = @_;
 
-    if ($self->read_length > 0) {
-        $self->_read_all($c);
+    if ($req->_http_body->{read_length} > 0) {
+        $self->_read_all($req);
 
         # paranoia against wrong Content-Length header
         my $remaining = $self->read_length - $self->read_position;
@@ -138,21 +138,18 @@ sub _read_to_end {
 }
 
 sub _read_all {
-    my ( $self, $c ) = @_;
+    my ( $self, $req ) = @_;
 
     while (my $buffer = $self->_read) {
-        $self->_prepare_body_chunk($c, $buffer);
+        $self->_prepare_body_chunk($req, $buffer);
     }
 }
 
 sub _prepare_body_chunk {
-    my($self, $c, $chunk) = @_;
+    my($self, $req, $chunk) = @_;
 
-    my $req = $c->req;
-
-    $req->_raw_body($req->raw_body . $chunk);
-
-    $req->http_body->add($chunk);
+    $req->_raw_body($req->_raw_body . $chunk);
+    $req->_http_body->{body}->add($chunk);
 }
 
 sub _prepare_uploads  {

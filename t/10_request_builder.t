@@ -1,14 +1,11 @@
 use Test::Base;
 use YAML ();
 use HTTP::Engine::Context;
+use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 use IO::Scalar;
 
 plan tests => 8;
-
-can_ok(
-    'HTTP::Engine::RequestBuilder' => 'prepare'
-);
 
 filters {
     env => [qw/yaml/]
@@ -20,13 +17,17 @@ run {
     my $block = shift;
 
     local %ENV = %{ $block->env };
-    my $c = HTTP::Engine::Context->new();
 
     tie *STDIN, 'IO::Scalar', \( $block->body );
-    $builder->prepare($c);
-    untie *STDIN;
+
+    my $c = HTTP::Engine::Context->new(
+        req => HTTP::Engine::Request->new( request_builder => $builder ),
+    );
 
     eval $block->test;
+
+    untie *STDIN;
+
     die $@ if $@;
 };
 

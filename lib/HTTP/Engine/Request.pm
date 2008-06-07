@@ -146,6 +146,16 @@ sub _build_hostname {
     $self->request_builder->_build_hostname;
 }
 
+has "_http_body" => (
+    is => "rw",
+    lazy_build => 1,
+);
+
+sub _build__http_body {
+    my $self = shift;
+    $self->request_builder->_build_initial_http_body($self);
+}
+
 has http_body => (
     is         => 'rw',
     isa        => 'HTTP::Body',
@@ -158,7 +168,7 @@ has http_body => (
 
 sub _build_http_body {
     my $self = shift;
-    $self->_build_
+    $self->request_builder->_build_full_http_body($self);
 }
 
 # contains body_params and query_params

@@ -1,49 +1,18 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Interface::Standalone::RequestBuilder;
-use Moose::Role;
+use Moose;
 
-=begin nonblocking
+with qw(
+    HTTP::Engine::Role::RequestBuilder::Standard
+    HTTP::Engine::Role::RequestBuilder::HTTPBody
+);
 
-This is disabled, I don't think it's necessary
-
-use Errno 'EWOULDBLOCK';
-
-before '_read_init' => sub {
-    my ( $self, $state ) = @_;
-    warn "making nonblocking";
-    use Data::Dumper;
-    warn Dumper($state);
-    # Set the input handle to non-blocking
-
-    $state->{input_handle}->blocking(0);
-};
-
-sub _read_chunk {
-    my ( $self, $state ) = @_;
-
-    warn "Reading chunk";
-
-    my $rin = $state->{select_read_mask} ||= do {
-        my $rin = '';
-        vec($rin, (fileno $state->{input_handle}), 1) = 1;
-        $rin;
-    };
-
-    READ:
-    {
-        select($rin, undef, undef, undef); ## no critic.
-        my $rc = $self->_sysread($state->{input_handle}, my $buffer);
-        if (defined $rc) {
-           return $buffer;
-       } else {
-            next READ if $! == EWOULDBLOCK;
-            return;
-        }
-    }
-}
-
-=cut
+# all of these will be passed to handle_request
+sub _build_connection { die "explicit parameter" }
+sub _build_uri { die "explicit parameter" }
+sub _build_connection_info { die "explicit parameter" };
+sub _build_headers { die "explicit parameter" };
 
 __PACKAGE__
 

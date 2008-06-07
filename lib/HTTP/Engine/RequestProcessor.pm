@@ -36,7 +36,7 @@ has response_class => (
 
 has request_builder => (
     is       => 'ro',
-    isa      => 'HTTP::Engine::RequestBuilder',
+    does     => 'HTTP::Engine::Role::RequestBuilder',
     required => 1,
 );
 

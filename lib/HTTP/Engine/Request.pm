@@ -7,6 +7,18 @@ use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 
+# this object constructs all our lazy fields for us
+has request_builder => (
+    does => "HTTP::Engine::Role::RequestBuilder",
+    is   => "rw",
+    # handles ...
+    # takes_self => 1, # add this to Moose
+    default => sub {
+        require HTTP::Engine::RequestBuilder::Dummy;
+        HTTP::Engine::RequestBuilder::Dummy->new;
+    }
+);
+
 sub BUILD {
     my ( $self, $param ) = @_;
 
@@ -36,16 +48,6 @@ sub _build__read_state {
     my $self = shift;
     $self->request_builder->_build_read_state($self);
 }
-
-
-has request_builder => (
-    does => "HTTP::Engine::Role::RequestBuilder",
-    is   => "rw",
-    default => sub {
-        require HTTP::Engine::RequestBuilder::Dummy;
-        HTTP::Engine::RequestBuilder::Dummy->new;
-    }
-);
 
 has connection_info => (
     is => "rw",

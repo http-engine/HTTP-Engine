@@ -14,7 +14,8 @@ has request_handler => (
 );
 
 sub request_processor_class {
-    return "HTTP::Engine::RequestProcessor";
+    my $self = shift;
+    $self->_default_class("RequestProcessor");
 }
 
 sub request_processor_traits {
@@ -41,7 +42,8 @@ sub _build_request_processor {
 
 
 sub request_builder_class {
-    return "HTTP::Engine::RequestBuilder";
+    my $self = shift;
+    $self->_default_class("RequestBuilder");
 }
 
 sub request_builder_traits {
@@ -51,7 +53,7 @@ sub request_builder_traits {
 
 has request_builder => (
     is         => 'ro',
-    isa        => 'HTTP::Engine::RequestBuilder',
+    does       => 'HTTP::Engine::Role::RequestBuilder',
     lazy_build => 1,
 );
 
@@ -63,7 +65,8 @@ sub _build_request_builder {
 
 
 sub response_writer_class {
-    return "HTTP::Engine::ResponseWriter";
+    my $self = shift;
+    $self->_default_class("ResponseWriter");
 }
 
 sub response_writer_traits {
@@ -85,8 +88,25 @@ sub _build_response_writer {
     );
 }
 
+sub _default_class {
+    my ( $self, $category ) = @_;
+
+    if ( my $class = $self->_default_package($category) ) {
+        if ( $class->meta->isa("Moose::Meta::Class") ) {
+            return $class;
+        }
+    }
+
+    return "HTTP::Engine::$category";
+}
 
 sub _default_trait {
+    my ( $self, $category ) = @_;
+
+    grep { $_->meta->isa("Moose::Meta::Role") } $self->_default_package($category);
+}
+
+sub _default_package {
     my ( $self, $category ) = @_;
 
     my $name = join( "::", $self->meta->name, $category );

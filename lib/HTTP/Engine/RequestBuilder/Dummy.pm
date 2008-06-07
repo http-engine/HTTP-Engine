@@ -5,9 +5,9 @@ use Moose;
 
 use Carp qw(croak);
 
-with 'HTTP::Engine::Role::RequestBuilder::Standard' => {
-    alias => { _resolve_hostname => "_build_hostname" },
-};
+with qw(
+    HTTP::Engine::Role::RequestBuilder::Standard
+);
 
 sub _build_connection {
     return {

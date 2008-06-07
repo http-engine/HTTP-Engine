@@ -19,7 +19,7 @@ sub _build_cookies {
     }
 }
 
-sub _resolve_hostname {
+sub _build_hostname {
     my ( $self, $req ) = @_;
     gethostbyaddr( inet_aton( $req->address ), AF_INET );
 }

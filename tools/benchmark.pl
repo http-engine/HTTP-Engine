@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Benchmark qw/timethese timeit timestr/;
+use Benchmark qw/countit timethese timeit timestr/;
 use HTTP::Engine;
 use IO::Scalar;
 
@@ -22,7 +22,7 @@ $ENV{REQUEST_METHOD} = 'GET';
 $ENV{SERVER_PORT}    = 80;
 
 tie *STDOUT, 'IO::Scalar', \my $out;
-my $t = timeit 10_000 => sub {
+my $t = countit 2 => sub {
     $engine->run;
 };
 untie *STDOUT;

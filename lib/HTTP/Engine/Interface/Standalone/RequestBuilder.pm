@@ -5,7 +5,7 @@ use Moose::Role;
 
 =begin nonblocking
 
-This is disabled =(
+This is disabled, I don't think it's necessary
 
 use Errno 'EWOULDBLOCK';
 
@@ -16,8 +16,7 @@ before '_read_init' => sub {
     warn Dumper($state);
     # Set the input handle to non-blocking
 
-    warn "handle: " . $state->{handle};
-    $state->{handle}->blocking(0);
+    $state->{input_handle}->blocking(0);
 };
 
 sub _read_chunk {
@@ -27,14 +26,14 @@ sub _read_chunk {
 
     my $rin = $state->{select_read_mask} ||= do {
         my $rin = '';
-        vec($rin, (fileno $state->{handle}), 1) = 1;
+        vec($rin, (fileno $state->{input_handle}), 1) = 1;
         $rin;
     };
 
     READ:
     {
         select($rin, undef, undef, undef); ## no critic.
-        my $rc = $self->_sysread($state->{handle}, my $buffer);
+        my $rc = $self->_sysread($state->{input_handle}, my $buffer);
         if (defined $rc) {
            return $buffer;
        } else {

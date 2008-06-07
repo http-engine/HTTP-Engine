@@ -16,17 +16,23 @@ my $builder = HTTP::Engine::RequestBuilder->new;
 run {
     my $block = shift;
 
-    local %ENV = %{ $block->env };
-
-    tie *STDIN, 'IO::Scalar', \( $block->body );
+    tie *input, 'IO::Scalar', \( $block->body );
+    tie *output, 'IO::Scalar', \( $block->body );
 
     my $c = HTTP::Engine::Context->new(
-        req => HTTP::Engine::Request->new( request_builder => $builder ),
+        req => HTTP::Engine::Request->new(
+            _connection => {
+                input_handle => \*input,
+                output_handle => \*output,
+                env => $block->env,
+            },
+            request_builder => $builder ),
     );
 
     eval $block->test;
 
-    untie *STDIN;
+    untie *input;
+    untie *output;
 
     die $@ if $@;
 };

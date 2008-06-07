@@ -22,9 +22,9 @@ has _connection => (
     lazy_build => 1,
 );
 
-sub _build__request_state {
+sub _build__connection {
     my $self = shift;
-    $self->request_builder->_build_request_state($self);
+    $self->request_builder->_build_connection($self);
 }
 
 has "_read_state" => (

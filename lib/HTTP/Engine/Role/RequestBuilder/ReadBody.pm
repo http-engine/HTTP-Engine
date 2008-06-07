@@ -7,13 +7,17 @@ requires "_handle_read_chunk";
 
 sub _read_init {
     my ( $self, $read_state ) = @_;
-    warn "read init";
+
+    foreach my $key qw(input_handle content_length) {
+        confess "read initialization must set $key"
+            unless defined $read_state->{$key};
+    }
+
     return $read_state;
 }
 
 sub _read_start {
     my ( $self, $state ) = @_;
-    warn "read start";
     $state->{started} = 1;
 }
 
@@ -21,8 +25,6 @@ sub _read_to_end {
     my ( $self, $state, @args ) = @_;
 
     my $content_length = $state->{content_length};
-
-    warn "reading to end ($content_length)";
 
     if ($content_length > 0) {
         $self->_read_all($state, @args);
@@ -38,8 +40,6 @@ sub _read_to_end {
             }
         }
     }
-
-    warn "finished reading";
 }
 
 sub _read_all {
@@ -53,8 +53,6 @@ sub _read_all {
 sub _read {
     my ($self, $state, $maxlength) = @_;
 
-    warn "reading";
-    
     $self->_read_start($state) unless $state->{started};
 
     my ( $length, $pos ) = @{$state}{qw(content_length read_position)};
@@ -83,13 +81,15 @@ sub _read {
 sub _read_chunk {
     my ( $self, $state ) = ( shift, shift );
 
-    my $handle = $state->{handle};
+    my $handle = $state->{input_handle};
 
     $self->_io_read( $handle, @_ );
 }
 
 sub _io_read {
     my ( $self, $handle ) = ( shift, shift );
+
+    confess "no handle" unless defined $handle;
 
     if (blessed($handle)) {
         return $handle->read(@_);

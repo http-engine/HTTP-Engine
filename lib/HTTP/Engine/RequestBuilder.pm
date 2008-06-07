@@ -21,20 +21,19 @@ has chunk_size => (
 no Moose;
 
 sub _build_connection {
-    warn "Building default request state";
+    warn "building default request state, this should be fixed in the interface";
 
     return {
-        env    => \%ENV,
-        handle => \*STDIN,
+        env           => \%ENV,
+        input_handle  => \*STDIN,
+        output_handle => \*STDOUT,
     }
 }
 
 sub _build_connection_info {
     my($self, $req) = @_;
 
-    warn "building connection info";
-
-    my $env = $self->_connection->{env};
+    my $env = $req->_connection->{env};
 
     return {
         address    => $env->{REMOTE_ADDR},
@@ -107,9 +106,6 @@ sub _build_uri  {
 sub _build_read_state {
     my($self, $req) = @_;
 
-    use Data::Dumper;
-    warn Dumper($req->headers);
-
     my $length = $req->header('Content-Length') || 0;
     my $type   = $req->header('Content-Type');
 
@@ -117,7 +113,7 @@ sub _build_read_state {
     $body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
     return $self->_read_init({
-        handle         => $req->_connection->{handle},
+        input_handle   => $req->_connection->{input_handle},
         content_length => $length,
         read_position  => 0,
         data => {
@@ -130,7 +126,6 @@ sub _build_read_state {
 sub _build_http_body {
     my ( $self, $req ) = @_;
 
-    warn "constructing body";
     $self->_read_to_end($req->_read_state);
 
     return delete $req->_read_state->{data}{http_body};
@@ -139,7 +134,6 @@ sub _build_http_body {
 sub _build_raw_body {
     my ( $self, $req ) = @_;
 
-    warn "constructing raw";
     $self->_read_to_end($req->_read_state);
 
     return delete $req->_read_state->{data}{raw_body};

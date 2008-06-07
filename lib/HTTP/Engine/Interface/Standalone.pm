@@ -183,8 +183,9 @@ sub _handler {
             user           => undef,
             https_info     => undef,
             _connection => {
-                handle => $remote,
-                env    => {},         # no more env than what we provide
+                input_handle  => $remote,
+                output_handle => $remote,
+                env           => {}, # no more env than what we provide
             },
         );
 

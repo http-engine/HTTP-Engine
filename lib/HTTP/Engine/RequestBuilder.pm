@@ -102,11 +102,13 @@ sub _build_initial_http_body  {
     my $type = $req->header('Content-Type');
 
     my $body = HTTP::Body->new($type, $length);
+
     $body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
     return {
-        read_length => $length,
-        body        => $body,
+        read_length   => $length,
+        read_position => 0,
+        body          => $body,
     };
 }
 
@@ -125,14 +127,15 @@ sub _build_raw_body {
 sub _read_to_end {
     my ( $self, $req ) = @_;
 
-    if ($req->_http_body->{read_length} > 0) {
+    my $body = $req->_http_body;
+
+    if ($body->{read_length} > 0) {
         $self->_read_all($req);
 
         # paranoia against wrong Content-Length header
-        my $remaining = $self->read_length - $self->read_position;
+        my $remaining = $body->{read_length} - $body->{read_position};
         if ($remaining > 0) {
-            $self->_finalize_read;
-            die "Wrong Content-Length value: " . $self->read_length;
+            die "Wrong Content-Length value: " . $body->{read_length};
         }
     }
 }
@@ -140,7 +143,7 @@ sub _read_to_end {
 sub _read_all {
     my ( $self, $req ) = @_;
 
-    while (my $buffer = $self->_read) {
+    while (my $buffer = $self->_read($req) ) {
         $self->_prepare_body_chunk($req, $buffer);
     }
 }
@@ -179,32 +182,24 @@ sub _prepare_uploads  {
     }
 }
 
-sub _prepare_read {
-    my $self = shift;
-    $self->read_position(0);
-}
-
 sub _read {
-    my ($self, $maxlength) = @_;
+    my ($self, $req, $maxlength) = @_;
+    
+    my $body = $req->_http_body;
 
-    unless ($self->{_prepared_read}) {
-        $self->_prepare_read;
-        $self->{_prepared_read} = 1;
-    }
+    my $remaining = $body->{read_length} - $body->{read_position};;
 
-    my $remaining = $self->read_length - $self->read_position;
     $maxlength ||= $self->chunk_size;
 
     # Are we done reading?
     if ($remaining <= 0) {
-        $self->_finalize_read;
         return;
     }
 
     my $readlen = ($remaining > $maxlength) ? $maxlength : $remaining;
     my $rc = $self->_read_chunk(my $buffer, $readlen);
     if (defined $rc) {
-        $self->read_position($self->read_position + $rc);
+        $body->{read_position} += $rc;
         return $buffer;
     } else {
         die "Unknown error reading input: $!";
@@ -220,8 +215,6 @@ sub _read_chunk {
         STDIN->sysread(@_);
     }
 }
-
-sub _finalize_read { undef shift->{_prepared_read} }
 
 1;
 __END__

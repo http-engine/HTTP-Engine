@@ -112,7 +112,7 @@ has raw_body => (
     lazy_build => 1,
 );
 
-has _raw_body => ( is  => "rw" );
+has _raw_body => ( is  => "rw", default => '' );
 
 sub _build_raw_body {
     my $self = shift;

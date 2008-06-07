@@ -4,7 +4,7 @@ use HTTP::Engine::Context;
 use HTTP::Engine::RequestBuilder;
 use IO::Scalar;
 
-plan tests => 7;
+plan tests => 8;
 
 can_ok(
     'HTTP::Engine::RequestBuilder' => 'prepare'
@@ -41,7 +41,7 @@ REQUEST_METHOD: 'GET'
 HTTP_HOST: localhost
 --- body
 --- test
-is $c->req->address, '127.0.0.1';
+is $c->req->address, '127.0.0.1', "request address";
 
 ===
 --- env
@@ -54,7 +54,7 @@ HTTP_CONTENT_LENGTH: 7
 HTTP_CONTENT_TYPE: application/x-www-form-urlencoded
 --- body: a=b&c=d
 --- test
-is_deeply $c->req->body_params, {a => 'b', c => 'd'};
+is_deeply $c->req->body_params, {a => 'b', c => 'd'}, "body params";
 
 ===
 --- env
@@ -69,7 +69,7 @@ HTTP_CONTENT_TYPE: application/octet-stream
 --- test
 isa_ok $c->req->body, 'IO::Handle';
 $c->req->body->sysread(my $buf, $c->req->content_length);
-is $buf, 'OCTET STREAM';
+is $buf, 'OCTET STREAM', "buffer";
 
 === cookie
 --- env
@@ -83,6 +83,7 @@ HTTP_CONTENT_TYPE: application/octet-stream
 HTTP_COOKIE: foo=hoge; foo=hoge; path=/
 --- body: OCTET STREAM
 --- test
-is $c->req->cookie('unknown'), undef;
-is $c->req->cookie('foo')->value, 'hoge';
+is $c->req->cookie('unknown'), undef, "unknown cookie";
+isa_ok( $c->req->cookie('foo'), "CGI::Simple::Cookie" );
+is $c->req->cookie('foo')->value, 'hoge', "cookie value";
 

@@ -2,6 +2,8 @@ package HTTP::Engine::RequestBuilder;
 use Moose;
 use CGI::Simple::Cookie;
 
+use IO::Socket qw[AF_INET inet_aton];
+
 # tempolary file path for upload file.
 has upload_tmp => (
     is => 'rw',
@@ -81,6 +83,11 @@ sub _build_headers {
         }
         grep { /^(?:HTTP|CONTENT|COOKIE)/i } keys %ENV 
     });
+}
+
+sub _build_hostname {
+    my ( $self, $req ) = @_;
+    $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $req->address ), AF_INET );
 }
 
 sub _build_cookies {

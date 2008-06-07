@@ -6,7 +6,6 @@ use HTTP::Headers;
 use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
-use IO::Socket qw[AF_INET inet_aton];
 
 has request_builder => (
     isa => "HTTP::Engine::RequestBuilder",
@@ -113,7 +112,7 @@ has hostname => (
 
 sub _build_hostname {
     my $self = shift;
-    $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
+    $self->request_builder->_build_hostname;
 }
 
 has http_body => (

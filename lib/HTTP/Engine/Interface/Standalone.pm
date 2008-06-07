@@ -48,7 +48,7 @@ has argv => (
 sub run {
     my ( $self ) = @_;
 
-    $self->response_writer->keepalive( $self->keepalive );
+    $self->response_writer->keepalive( $self->fork && $self->keepalive );
 
     my $host = $self->host;
     my $port = $self->port;

@@ -26,6 +26,7 @@ has keepalive => (
     default => 0,
 );
 
+# fixme add preforking support using Parallel::Prefork
 has fork => (
     is      => 'ro',
     isa     => 'Bool',
@@ -192,7 +193,7 @@ sub _handler {
         my $connection = $headers->header("Connection");
 
         last
-          unless $self->keepalive
+          unless $self->fork && $self->keepalive
           && index($connection, 'keep-alive') > -1
           && index($connection, 'te') == -1          # opera stuff
           && $sel->can_read(5);

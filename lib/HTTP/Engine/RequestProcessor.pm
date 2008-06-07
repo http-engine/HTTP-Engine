@@ -35,12 +35,9 @@ has response_class => (
 );
 
 has request_builder => (
-    is      => 'ro',
-    isa     => 'HTTP::Engine::RequestBuilder',
-    lazy    => 1,
-    default => sub {
-        HTTP::Engine::RequestBuilder->new();
-    },
+    is       => 'ro',
+    isa      => 'HTTP::Engine::RequestBuilder',
+    required => 1,
 );
 
 has response_writer => (

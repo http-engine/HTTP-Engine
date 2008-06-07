@@ -13,6 +13,14 @@ has request_handler => (
     required => 1,
 );
 
+sub request_processor_class {
+    return "HTTP::Engine::RequestProcessor";
+}
+
+sub request_processor_traits {
+    return;
+}
+
 has request_processor => (
     is         => 'ro',
     isa        => 'HTTP::Engine::RequestProcessor',
@@ -23,12 +31,92 @@ has request_processor => (
 sub _build_request_processor {
     my $self = shift;
 
-    HTTP::Engine::RequestProcessor->new(
+    $self->_class_with_roles("request_processor")->new(
         handler                    => $self->request_handler,
-        response_writer            => HTTP::Engine::ResponseWriter->new(
-            should_write_response_line => $self->should_write_response_line,
-        ),
+        request_builder            => $self->request_builder,
+        response_writer            => $self->response_writer,
     );
+}
+
+
+sub request_builder_class {
+    return "HTTP::Engine::RequestBuilder";
+}
+
+sub request_builder_traits {
+    return;
+}
+
+has request_builder => (
+    is         => 'ro',
+    isa        => 'HTTP::Engine::RequestBuilder',
+    lazy_build => 1,
+);
+
+sub _build_request_builder {
+    my $self = shift;
+
+    $self->_class_with_roles("request_builder")->new;
+}
+
+
+sub response_writer_class {
+    return "HTTP::Engine::ResponseWriter";
+}
+
+sub response_writer_traits {
+    return;
+}
+
+has response_writer => (
+    is         => 'ro',
+    isa        => 'HTTP::Engine::ResponseWriter',
+    lazy_build => 1,
+);
+
+sub _build_response_writer {
+    my $self = shift;
+
+    $self->_class_with_roles("response_writer")->new(
+        should_write_response_line => $self->should_write_response_line,
+    );
+}
+
+
+
+
+my %anon_classes;
+sub _class_with_roles {
+    my ( $self, $type ) = @_;
+
+    my $m_class  = "${type}_class";
+    my $m_traits = "${type}_traits";
+
+    my $class = $self->$m_class;
+
+    if ( my @roles = $self->$m_traits ) {
+        my $class_key = join("\0", $class, sort @roles);
+
+        my $metaclass = $anon_classes{$class_key} ||= $self->_create_anon_class($class, @roles);
+
+        return $metaclass->name;
+    } else {
+        return $class;
+    }
+}
+
+sub _create_anon_class {
+    my ( $self, $class, @roles ) = @_;
+
+    # create an anonymous subclass
+    my $anon = $class->meta->create_anon_class(
+        superclasses => [ $class ],
+    );
+
+    # apply the roles to the class
+    Moose::Util::apply_all_roles( $anon->name, @roles );
+
+    return $anon->name;
 }
 
 1;

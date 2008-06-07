@@ -19,19 +19,19 @@ has handler => (
 
 has context_class => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'ClassName',
     default => 'HTTP::Engine::Context',
 );
 
 has request_class => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'ClassName',
     default => 'HTTP::Engine::Request',
 );
 
 has response_class => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'ClassName',
     default => 'HTTP::Engine::Response',
 );
 

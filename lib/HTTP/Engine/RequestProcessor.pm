@@ -10,7 +10,6 @@ use URI::QueryParam;
 use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
 
-
 has handler => (
     is       => 'rw',
     isa      => 'CodeRef',
@@ -63,11 +62,9 @@ sub handle_request {
     my $self = shift;
 
     my $context = $self->context_class->new(
-        req    => $self->request_class->new(),
+        req    => $self->request_class->new( request_builder => $self->request_builder ),
         res    => $self->response_class->new(),
     );
-
-    $self->request_builder->prepare($context);
 
     my $ret = eval {
         local *STDOUT;

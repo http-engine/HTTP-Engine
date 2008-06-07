@@ -2,7 +2,7 @@ package HTTP::Engine::RequestBuilder;
 use Moose;
 use CGI::Simple::Cookie;
 
-use IO::Socket qw[AF_INET inet_aton];
+with qw(HTTP::Engine::Role::RequestBuilder::Standard);
 
 # tempolary file path for upload file.
 has upload_tmp => (
@@ -30,30 +30,27 @@ no Moose;
 sub prepare {
     my ($self, $context) = @_;
 
-    $context->req->request_builder($self);
-
     # init.
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection body uploads )) {
+    for my $method (qw( body uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
 }
 
-sub _prepare_connection {
-    my($self, $c) = @_;
+sub _build_connection_info {
+    my($self, $req) = @_;
 
-    my $req = $c->req;
-    $req->address($ENV{REMOTE_ADDR}) unless $req->address;
-
-    $req->protocol($ENV{SERVER_PROTOCOL});
-    $req->user($ENV{REMOTE_USER});
-    $req->method($ENV{REQUEST_METHOD});
-
-    $req->secure(1) if $ENV{HTTPS} && uc $ENV{HTTPS} eq 'ON';
-    $req->secure(1) if $ENV{SERVER_PORT} == 443;
+    return {
+        address    => $ENV{REMOTE_ADDR},
+        protocol   => $ENV{SERVER_PROTOCOL},
+        method     => $ENV{REQUEST_METHOD},
+        port       => $ENV{SERVER_PORT},
+        user       => $ENV{REMOTE_USER},
+        https_info => $ENV{HTTPS},
+    }
 }
 
 sub _build_headers {
@@ -70,19 +67,7 @@ sub _build_headers {
 
 sub _build_hostname {
     my ( $self, $req ) = @_;
-    $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $req->address ), AF_INET );
-}
-
-sub _build_cookies {
-    my($self, $req) = @_;
-
-    if (my $header = $req->header('Cookie')) {
-        #warn "headeR: $header";
-        #warn "headers: @{[ $c->req->header('Cookie') ]}";
-        return { CGI::Simple::Cookie->parse($header) };
-    } else {
-        return {};
-    }
+    $ENV{REMOTE_HOST} || $self->_resolve_hostname($req);
 }
 
 sub _build_uri  {
@@ -164,7 +149,9 @@ sub _prepare_body_chunk {
     my($self, $c, $chunk) = @_;
 
     my $req = $c->req;
-    $req->raw_body($req->raw_body . $chunk);
+
+    $req->_raw_body($req->raw_body . $chunk);
+
     $req->http_body->add($chunk);
 }
 

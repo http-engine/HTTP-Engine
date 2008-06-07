@@ -16,17 +16,25 @@ sub BUILD {
         }
     }
 }
-
 has request_builder => (
-    isa => "HTTP::Engine::RequestBuilder",
-    is  => "rw",
+    does => "HTTP::Engine::Role::RequestBuilder",
+    is   => "rw",
+    default => sub {
+        require HTTP::Engine::RequestBuilder::Dummy;
+        HTTP::Engine::RequestBuilder::Dummy->new;
+    }
 );
 
-# the IP address of the client
-has address => (
-    is  => 'rw',
-    isa => 'Str',
+has connection_info => (
+    is => "rw",
+    isa => "HashRef",
+    lazy_build => 1,
 );
+
+sub _build_connection_info {
+    my $self = shift;
+    $self->request_builder->_build_connection_info($self);
+}
 
 has context => (
     is       => 'rw',
@@ -45,16 +53,14 @@ sub _build_cookies {
     $self->request_builder->_build_cookies($self);
 }
 
-has method => (
-    is  => 'rw',
-    # isa => 'Str',
-);
-
-has protocol => (
-    is  => 'rw',
-    # isa => 'Str',
-);
-
+foreach my $attr qw(address method protocol user port https_info) {
+    has $attr => (
+        is => 'rw',
+        # isa => "Str",
+        lazy => 1,
+        default => sub { shift->connection_info->{$attr} },
+    );
+}
 has query_parameters => (
     is      => 'rw',
     isa     => 'HashRef',
@@ -70,8 +76,22 @@ sub _build_query_parameters {
 has secure => (
     is      => 'rw',
     isa     => 'Bool',
-    default => 0,
+    lazy_build => 1,
 );
+
+sub _build_secure {
+    my $self = shift;
+
+    if ( my $https = $self->https_info ) {
+        return 1 if uc($https) eq 'ON';
+    }
+
+    if ( my $port = $self->port ) {
+        return 1 if $port == 443;
+    }
+
+    return 0;
+}
 
 has uri => (
     is     => 'rw',
@@ -83,21 +103,21 @@ has uri => (
 
 sub _build_uri {
     my $self = shift;
-
-    if ( my $rb = $self->request_builder ) {
-        $rb->_build_uri($self);
-    } else {
-        URI::WithBase->new;
-    }
+    $self->request_builder->_build_uri($self);
 }
-
-has user => ( is => 'rw', );
 
 has raw_body => (
     is      => 'rw',
     isa     => 'Str',
-    default => '',
+    lazy_build => 1,
 );
+
+has _raw_body => ( is  => "rw" );
+
+sub _build_raw_body {
+    my $self = shift;
+    $self->request_builder->_build_raw_body($self);
+}
 
 has headers => (
     is      => 'rw',
@@ -109,12 +129,7 @@ has headers => (
 
 sub _build_headers {
     my $self = shift;
-
-    if ( my $rb = $self->request_builder ) {
-        return $rb->_build_headers($self);
-    } else {
-        return HTTP::Headers->new;
-    }
+    $self->request_builder->_build_headers($self);
 }
 
 # Contains the URI base. This will always have a trailing slash.
@@ -132,13 +147,19 @@ sub _build_hostname {
 }
 
 has http_body => (
-    is      => 'rw',
-    isa     => 'HTTP::Body',
+    is         => 'rw',
+    isa        => 'HTTP::Body',
+    lazy_build => 1,
     handles => {
         body_parameters => 'param',
         body            => 'body',
     },
 );
+
+sub _build_http_body {
+    my $self = shift;
+    $self->_build_
+}
 
 # contains body_params and query_params
 has parameters => (

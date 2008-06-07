@@ -141,17 +141,6 @@ sub _handler {
         # FIXME refactor an HTTP push parser
         my($path, $query_string) = split /\?/, $uri, 2;
 
-        my %env = (
-            PATH_INFO       => $path         || '',
-            QUERY_STRING    => $query_string || '',
-            REMOTE_ADDR     => $sockdata->{peeraddr},
-            REMOTE_HOST     => $sockdata->{peername},
-            REQUEST_METHOD  => $method || '',
-            SERVER_NAME     => $sockdata->{localname},
-            SERVER_PORT     => $port,
-            SERVER_PROTOCOL => "HTTP/$protocol",
-        );
-
         my $headers;
 
         # Parse headers

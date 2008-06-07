@@ -28,8 +28,13 @@ has context => (
 has cookies => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { {} },
+    lazy_build => 1,
 );
+
+sub _build_cookies {
+    my $self = shift;
+    $self->request_builder->_build_cookies($self);
+}
 
 has method => (
     is  => 'rw',

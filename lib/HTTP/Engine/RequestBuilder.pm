@@ -34,7 +34,7 @@ sub prepare {
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection query_parameters headers cookie path body parameters uploads )) {
+    for my $method (qw( connection query_parameters headers path body parameters uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
@@ -82,11 +82,15 @@ sub _prepare_headers  {
     }
 }
 
-sub _prepare_cookie  {
-    my($self, $c) = @_;
+sub _build_cookies {
+    my($self, $req) = @_;
 
-    if (my $header = $c->req->header('Cookie')) {
-        $c->req->cookies( { CGI::Simple::Cookie->parse($header) } );
+    if (my $header = $req->header('Cookie')) {
+        #warn "headeR: $header";
+        #warn "headers: @{[ $c->req->header('Cookie') ]}";
+        return { CGI::Simple::Cookie->parse($header) };
+    } else {
+        return {};
     }
 }
 

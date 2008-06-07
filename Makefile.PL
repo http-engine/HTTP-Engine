@@ -28,7 +28,7 @@ name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
 requires 'Moose' => 0.48;
-requires 'MooseX::Types';
+requires 'MooseX::Types' => 0.04;
 requires 'Scalar::Util';
 
 requires 'IO::Socket';

@@ -43,13 +43,13 @@ sub _build_connection_info {
 sub _build_headers {
     my ($self, $req) = @_;
 
-    HTTP::Headers->new({
+    HTTP::Headers->new(
         map {
             (my $field = $_) =~ s/^HTTPS?_//;
             ( $field => $ENV{$_} );
         }
         grep { /^(?:HTTP|CONTENT|COOKIE)/i } keys %ENV 
-    });
+    );
 }
 
 sub _build_hostname {

@@ -147,9 +147,7 @@ sub _prepare_body  {
     $req->http_body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
     if ($self->read_length > 0) {
-        while (my $buffer = $self->_read) {
-            $self->_prepare_body_chunk($c, $buffer);
-        }
+        $self->_read_all($c);
 
         # paranoia against wrong Content-Length header
         my $remaining = $self->read_length - $self->read_position;
@@ -157,6 +155,14 @@ sub _prepare_body  {
             $self->_finalize_read;
             die "Wrong Content-Length value: " . $self->read_length;
         }
+    }
+}
+
+sub _read_all {
+    my ( $self, $c ) = @_;
+
+    while (my $buffer = $self->_read) {
+        $self->_prepare_body_chunk($c, $buffer);
     }
 }
 

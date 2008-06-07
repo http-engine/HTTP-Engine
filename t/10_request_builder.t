@@ -5,7 +5,7 @@ use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 use IO::Scalar;
 
-plan tests => 8;
+plan tests => 7;
 
 filters {
     env => [qw/yaml/]

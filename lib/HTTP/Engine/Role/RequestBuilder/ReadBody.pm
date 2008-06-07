@@ -13,6 +13,9 @@ sub _read_init {
             unless defined $read_state->{$key};
     }
 
+    bless $read_state, "IO::Handle"
+        unless blessed $read_state->{input_handle};
+
     return $read_state;
 }
 
@@ -91,11 +94,7 @@ sub _io_read {
 
     confess "no handle" unless defined $handle;
 
-    if (blessed($handle)) {
-        return $handle->read(@_);
-    } else {
-        return read $handle, $_[0], $_[1], $_[2];
-    }
+    return $handle->read(@_);
 }
 
 __PACKAGE__

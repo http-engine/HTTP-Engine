@@ -130,7 +130,6 @@ sub _handler {
     $protocol = '1.0';
 
     my $sockdata    = $self->_socket_data($remote);
-    my %copy_of_env = %ENV;
 
     my $sel = IO::Select->new;
     $sel->add($remote);

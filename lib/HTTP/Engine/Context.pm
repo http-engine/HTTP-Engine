@@ -12,8 +12,8 @@ has req => (
         HTTP::Engine::Request->new( context => $self );
     },
     trigger => sub {
-        my $self = shift;
-        $self->req->context($self);
+        my ( $self, $new_req ) = @_;
+        $new_req->context($self);
     },
 );
 

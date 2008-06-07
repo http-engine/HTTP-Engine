@@ -31,16 +31,14 @@ sub load_middlewares {
 sub load_middleware {
     my ($class, $middleware) = @_;
 
-    require UNIVERSAL::require;
-
     my $pkg;
     if (($pkg = $middleware) =~ s/^(\+)//) {
-        $pkg->require or die $@;
+        Class::MOP::load_class($pkg) or die $@;
     } else {
         $pkg = 'HTTP::Engine::Middleware::' . $middleware;
-        unless ($pkg->require) {
+        unless (eval { Class::MOP::load_class($pkg) }) {
             $pkg = 'HTTPEx::Middleware::' . $middleware;
-            $pkg->require or die $@;
+            Class::MOP::load_class($pkg);
         }
     }
 

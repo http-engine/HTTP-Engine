@@ -6,7 +6,6 @@ use MooseX::Types
 use MooseX::Types::Moose qw( Object HashRef ArrayRef CodeRef );
 
 use Class::MOP;
-use UNIVERSAL::require;
 use URI;
 use HTTP::Headers;
 
@@ -28,9 +27,9 @@ coerce Interface
             if ($module !~ s{^\+}{}) {
                 $module = join('::', "HTTP", "Engine", "Interface", $module);
             }
-            if (! Class::MOP::is_class_loaded($module)) {
-                $module->require or die;
-            }
+
+			Class::MOP::load_class($module);
+
             return $module->new( %$args );
         }
 ;

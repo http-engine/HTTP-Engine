@@ -3,7 +3,6 @@ use Moose;
 with 'HTTP::Engine::Role::Interface';
 use constant should_write_response_line => 0;
 use FCGI;
-use UNIVERSAL::require;
 
 has leave_umask => (
     is      => 'ro',

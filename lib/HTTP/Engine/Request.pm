@@ -16,6 +16,28 @@ sub BUILD {
         }
     }
 }
+
+has _connection => (
+    is => "ro",
+    lazy_build => 1,
+);
+
+sub _build__request_state {
+    my $self = shift;
+    $self->request_builder->_build_request_state($self);
+}
+
+has "_read_state" => (
+    is => "rw",
+    lazy_build => 1,
+);
+
+sub _build__read_state {
+    my $self = shift;
+    $self->request_builder->_build_read_state($self);
+}
+
+
 has request_builder => (
     does => "HTTP::Engine::Role::RequestBuilder",
     is   => "rw",
@@ -142,16 +164,6 @@ has hostname => (
 sub _build_hostname {
     my $self = shift;
     $self->request_builder->_build_hostname;
-}
-
-has "_read_state" => (
-    is => "rw",
-    lazy_build => 1,
-);
-
-sub _build__read_state {
-    my $self = shift;
-    $self->request_builder->_build_read_state($self);
 }
 
 has http_body => (

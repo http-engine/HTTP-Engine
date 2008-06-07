@@ -18,64 +18,71 @@ has chunk_size => (
     default => 4096,
 );
 
-has read_length => (
-    is  => 'rw',
-    isa => 'Int',
-);
-
-has read_position => (
-    is  => 'rw',
-    isa => 'Int',
-);
-
 no Moose;
+
+sub _build_connection {
+    warn "Building default request state";
+
+    return {
+        env    => \%ENV,
+        handle => \*STDIN,
+    }
+}
 
 sub _build_connection_info {
     my($self, $req) = @_;
 
+    warn "building connection info";
+
+    my $env = $self->_connection->{env};
+
     return {
-        address    => $ENV{REMOTE_ADDR},
-        protocol   => $ENV{SERVER_PROTOCOL},
-        method     => $ENV{REQUEST_METHOD},
-        port       => $ENV{SERVER_PORT},
-        user       => $ENV{REMOTE_USER},
-        https_info => $ENV{HTTPS},
+        address    => $env->{REMOTE_ADDR},
+        protocol   => $env->{SERVER_PROTOCOL},
+        method     => $env->{REQUEST_METHOD},
+        port       => $env->{SERVER_PORT},
+        user       => $env->{REMOTE_USER},
+        https_info => $env->{HTTPS},
     }
 }
 
 sub _build_headers {
     my ($self, $req) = @_;
 
+    my $env = $req->_connection->{env};
+
     HTTP::Headers->new(
         map {
             (my $field = $_) =~ s/^HTTPS?_//;
-            ( $field => $ENV{$_} );
+            ( $field => $env->{$_} );
         }
-        grep { /^(?:HTTP|CONTENT|COOKIE)/i } keys %ENV 
+        grep { /^(?:HTTP|CONTENT|COOKIE)/i } keys %$env
     );
 }
 
 sub _build_hostname {
     my ( $self, $req ) = @_;
-    $ENV{REMOTE_HOST} || $self->_resolve_hostname($req);
+    $req->_connection->{env}{REMOTE_HOST} || $self->_resolve_hostname($req);
 }
 
 sub _build_uri  {
     my($self, $req) = @_;
 
+    my $env = $req->_connection->{env};
+
     my $scheme = $req->secure ? 'https' : 'http';
-    my $host   = $ENV{HTTP_HOST}   || $ENV{SERVER_NAME};
-    my $port   = $ENV{SERVER_PORT} || ( $req->secure ? 443 : 80 );
+    my $host   = $env->{HTTP_HOST}   || $env->{SERVER_NAME};
+    my $port   = $env->{SERVER_PORT} || ( $req->secure ? 443 : 80 );
 
     my $base_path;
-    if (exists $ENV{REDIRECT_URL}) {
-        $base_path = $ENV{REDIRECT_URL};
-        $base_path =~ s/$ENV{PATH_INFO}$//;
+    if (exists $env->{REDIRECT_URL}) {
+        $base_path = $env->{REDIRECT_URL};
+        $base_path =~ s/$env->{PATH_INFO}$//;
     } else {
-        $base_path = $ENV{SCRIPT_NAME} || '/';
+        $base_path = $env->{SCRIPT_NAME} || '/';
     }
 
-    my $path = $base_path . ($ENV{PATH_INFO} || '');
+    my $path = $base_path . ($env->{PATH_INFO} || '');
     $path =~ s{^/+}{};
 
     my $uri = URI->new;
@@ -83,7 +90,7 @@ sub _build_uri  {
     $uri->host($host);
     $uri->port($port);
     $uri->path($path);
-    $uri->query($ENV{QUERY_STRING}) if $ENV{QUERY_STRING};
+    $uri->query($env->{QUERY_STRING}) if $env->{QUERY_STRING};
 
     # sanitize the URI
     $uri = $uri->canonical;
@@ -100,26 +107,30 @@ sub _build_uri  {
 sub _build_read_state {
     my($self, $req) = @_;
 
+    use Data::Dumper;
+    warn Dumper($req->headers);
+
     my $length = $req->header('Content-Length') || 0;
     my $type   = $req->header('Content-Type');
 
     my $body = HTTP::Body->new($type, $length);
     $body->{tmpdir} = $self->upload_tmp if $self->upload_tmp;
 
-    return {
-        handle         => *STDIN,
+    return $self->_read_init({
+        handle         => $req->_connection->{handle},
         content_length => $length,
         read_position  => 0,
         data => {
             raw_body      => "",
             http_body     => $body,
         },
-    };
+    });
 }
 
 sub _build_http_body {
     my ( $self, $req ) = @_;
 
+    warn "constructing body";
     $self->_read_to_end($req->_read_state);
 
     return delete $req->_read_state->{data}{http_body};
@@ -128,6 +139,7 @@ sub _build_http_body {
 sub _build_raw_body {
     my ( $self, $req ) = @_;
 
+    warn "constructing raw";
     $self->_read_to_end($req->_read_state);
 
     return delete $req->_read_state->{data}{raw_body};

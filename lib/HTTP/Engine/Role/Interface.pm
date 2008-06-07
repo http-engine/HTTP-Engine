@@ -18,7 +18,8 @@ sub request_processor_class {
 }
 
 sub request_processor_traits {
-    return;
+    my $self = shift;
+    $self->_default_trait("RequestProcessor");
 }
 
 has request_processor => (
@@ -44,7 +45,8 @@ sub request_builder_class {
 }
 
 sub request_builder_traits {
-    return;
+    my $self = shift;
+    $self->_default_trait("RequestBuilder");
 }
 
 has request_builder => (
@@ -65,7 +67,8 @@ sub response_writer_class {
 }
 
 sub response_writer_traits {
-    return;
+    my $self = shift;
+    $self->_default_trait("ResponseWriter");
 }
 
 has response_writer => (
@@ -83,7 +86,30 @@ sub _build_response_writer {
 }
 
 
+sub _default_trait {
+    my ( $self, $category ) = @_;
 
+    my $name = join( "::", $self->meta->name, $category );
+
+    my $e;
+
+    # don't overwrite external $@
+    {
+        local $@;
+        if ( eval { Class::MOP::load_class($name) } ) {
+            return $name;
+        } else {
+            ( my $file = "$name.pm" ) =~ s{::}{/}g;
+            if ( $@ =~ /Can't locate \Q$file\E in \@INC/ ) {
+                return;
+            } else {
+                $e = $@;
+            }
+        }
+    }
+
+    die $e;
+}
 
 my %anon_classes;
 sub _class_with_roles {
@@ -116,7 +142,7 @@ sub _create_anon_class {
     # apply the roles to the class
     Moose::Util::apply_all_roles( $anon->name, @roles );
 
-    return $anon->name;
+    return $anon;
 }
 
 1;

@@ -6,14 +6,23 @@ use Moose::Role;
 requires "_handle_read_chunk";
 
 sub _read_init {
+    my ( $self, $read_state ) = @_;
+    warn "read init";
+    return $read_state;
+}
+
+sub _read_start {
     my ( $self, $state ) = @_;
-    $state->{initialized} = 1;
+    warn "read start";
+    $state->{started} = 1;
 }
 
 sub _read_to_end {
     my ( $self, $state, @args ) = @_;
 
     my $content_length = $state->{content_length};
+
+    warn "reading to end ($content_length)";
 
     if ($content_length > 0) {
         $self->_read_all($state, @args);
@@ -29,6 +38,8 @@ sub _read_to_end {
             }
         }
     }
+
+    warn "finished reading";
 }
 
 sub _read_all {
@@ -41,8 +52,10 @@ sub _read_all {
 
 sub _read {
     my ($self, $state, $maxlength) = @_;
+
+    warn "reading";
     
-    $self->_read_init($state) unless $state->{initialized};
+    $self->_read_start($state) unless $state->{started};
 
     my ( $length, $pos ) = @{$state}{qw(content_length read_position)};
 
@@ -72,10 +85,16 @@ sub _read_chunk {
 
     my $handle = $state->{handle};
 
+    $self->_io_read( $handle, @_ );
+}
+
+sub _io_read {
+    my ( $self, $handle ) = ( shift, shift );
+
     if (blessed($handle)) {
-        return $handle->sysread(@_);
+        return $handle->read(@_);
     } else {
-        return sysread $handle, $_[0], $_[1], $_[2];
+        return read $handle, $_[0], $_[1], $_[2];
     }
 }
 

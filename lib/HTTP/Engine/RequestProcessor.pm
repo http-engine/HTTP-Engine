@@ -56,11 +56,15 @@ no Moose;
 
 my $rp;
 sub handle_request {
-    my $self = shift;
+    my ( $self, @args ) = @_;
 
     my $context = $self->context_class->new(
-        req    => $self->request_class->new( request_builder => $self->request_builder ),
-        res    => $self->response_class->new(),
+        req => $self->request_class->new(
+            request_builder => $self->request_builder,
+            @args,
+        ),
+        res => $self->response_class->new(@args),
+        @args,
     );
 
     my $ret = eval {
@@ -72,6 +76,7 @@ sub handle_request {
     if (my $e = $@) {
         print STDERR $e;
     }
+
     $self->response_writer->finalize($context);
 
     $ret;

@@ -22,6 +22,8 @@ my $CRLF = "\015\012";
 
 sub finalize {
     my($self, $c) = @_;
+
+    local *STDOUT = $c->req->_connection->{handle};
     croak "argument missing" unless $c;
 
     delete $self->{_prepared_write};

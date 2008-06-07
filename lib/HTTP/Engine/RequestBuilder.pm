@@ -34,7 +34,7 @@ sub prepare {
     delete $self->{_prepared_read};
 
     # do build.
-    for my $method (qw( connection query_parameters headers path body parameters uploads )) {
+    for my $method (qw( connection query_parameters path body parameters uploads )) {
         my $method = "_prepare_$method";
         $self->$method($context);
     }
@@ -71,15 +71,16 @@ sub _prepare_query_parameters  {
     }
 }
 
-sub _prepare_headers  {
-    my($self, $c) = @_;
+sub _build_headers {
+    my ($self, $req) = @_;
 
-    # Read headers from env
-    for my $header (keys %ENV) {
-        next unless $header =~ /^(?:HTTP|CONTENT|COOKIE)/i;
-        (my $field = $header) =~ s/^HTTPS?_//;
-        $c->req->headers->header($field => $ENV{$header});
-    }
+    HTTP::Headers->new({
+        map {
+            (my $field = $_) =~ s/^HTTPS?_//;
+            ( $field => $ENV{$_} );
+        }
+        grep { /^(?:HTTP|CONTENT|COOKIE)/i } keys %ENV 
+    });
 }
 
 sub _build_cookies {

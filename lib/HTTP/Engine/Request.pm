@@ -77,9 +77,19 @@ has headers => (
     is      => 'rw',
     isa     => Header,
     coerce  => 1,
-    default => sub { HTTP::Headers->new },
+    lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );
+
+sub _build_headers {
+    my $self = shift;
+
+    if ( my $rb = $self->request_builder ) {
+        return $rb->_build_headers($self);
+    } else {
+        return HTTP::Headers->new;
+    }
+}
 
 # Contains the URI base. This will always have a trailing slash.
 # If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.

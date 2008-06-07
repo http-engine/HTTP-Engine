@@ -4,6 +4,8 @@ use File::stat;
 use Carp;
 use HTTP::Status ();
 
+with qw(HTTP::Engine::Role::ResponseWriter);
+
 has 'should_write_response_line' => (
     is       => 'rw',
     isa      => 'Bool',

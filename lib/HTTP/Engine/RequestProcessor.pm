@@ -10,6 +10,9 @@ use URI::QueryParam;
 use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
 
+with qw(HTTP::Engine::Role::RequestProcessor);
+
+
 has handler => (
     is       => 'rw',
     isa      => 'CodeRef',
@@ -42,7 +45,7 @@ has request_builder => (
 
 has response_writer => (
     is       => 'ro',
-    isa      => 'HTTP::Engine::ResponseWriter',
+    does     => 'HTTP::Engine::Role::ResponseWriter',
     required => 1,
 );
 

@@ -25,7 +25,7 @@ sub request_processor_traits {
 
 has request_processor => (
     is         => 'ro',
-    isa        => 'HTTP::Engine::RequestProcessor',
+    does       => 'HTTP::Engine::Role::RequestProcessor',
     lazy_build => 1,
     handles    => [qw/handle_request load_plugins/],
 );
@@ -76,7 +76,7 @@ sub response_writer_traits {
 
 has response_writer => (
     is         => 'ro',
-    isa        => 'HTTP::Engine::ResponseWriter',
+    does       => 'HTTP::Engine::Role::ResponseWriter',
     lazy_build => 1,
 );
 

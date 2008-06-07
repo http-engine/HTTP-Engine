@@ -112,8 +112,6 @@ has raw_body => (
     lazy_build => 1,
 );
 
-has _raw_body => ( is  => "rw", default => '' );
-
 sub _build_raw_body {
     my $self = shift;
     $self->request_builder->_build_raw_body($self);
@@ -146,14 +144,14 @@ sub _build_hostname {
     $self->request_builder->_build_hostname;
 }
 
-has "_http_body" => (
+has "_read_state" => (
     is => "rw",
     lazy_build => 1,
 );
 
-sub _build__http_body {
+sub _build__read_state {
     my $self = shift;
-    $self->request_builder->_build_initial_http_body($self);
+    $self->request_builder->_build_read_state($self);
 }
 
 has http_body => (
@@ -168,7 +166,7 @@ has http_body => (
 
 sub _build_http_body {
     my $self = shift;
-    $self->request_builder->_build_full_http_body($self);
+    $self->request_builder->_build_http_body($self);
 }
 
 # contains body_params and query_params

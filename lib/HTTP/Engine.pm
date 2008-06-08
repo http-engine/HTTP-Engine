@@ -56,7 +56,7 @@ sub load_middleware {
 1;
 __END__
 
-=for stopwords middlewares Middleware middleware
+=for stopwords middlewares Middleware middleware nothingmuch
 
 =encoding utf8
 
@@ -203,6 +203,8 @@ dann
 typester (Interface::FCGI)
 
 lopnor
+
+nothingmuch
 
 =head1 SEE ALSO
 

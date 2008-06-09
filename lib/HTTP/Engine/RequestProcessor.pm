@@ -67,7 +67,15 @@ sub handle_request {
         res    => $self->response_class->new(),
     );
 
-    $self->request_builder->prepare($context);
+    eval {
+        $self->request_builder->prepare($context);
+    };
+    if (my $e = $@) {
+        print STDERR $e;
+
+        $context->res->status(500);
+        $context->res->body('internal server error');
+    }
 
     my $ret = eval {
         local *STDOUT;

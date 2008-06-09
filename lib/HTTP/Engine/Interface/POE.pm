@@ -47,6 +47,7 @@ sub run {
             select STDOUT;
             do {
                 my ( $method, $request_uri, $proto ) = HTTP::Server::Simple->parse_request();
+                $proto ||= 'HTTP/0.9';
                 @ENV{qw/REQUEST_METHOD SERVER_PROTOCOL/} = ($method, $proto);
                 my @uri_split      = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
                 $ENV{PATH_INFO}    = shift @uri_split;

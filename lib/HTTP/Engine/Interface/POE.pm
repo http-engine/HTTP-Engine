@@ -5,7 +5,6 @@ use constant should_write_response_line => 1;
 use POE qw/
     Component::Server::TCP
 /;
-use HTTP::Server::Simple;
 use POE::Filter::HTTPD;
 use HTTP::Request::AsCGI;
 
@@ -20,8 +19,6 @@ has port => (
     isa      => 'Int',
     default  => 1978,
 );
-
-my %init_env = %ENV;
 
 sub run {
     my ($self) = @_;

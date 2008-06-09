@@ -6,6 +6,8 @@ use POE qw/
     Component::Server::TCP
 /;
 use HTTP::Server::Simple;
+use POE::Filter::HTTPD;
+use HTTP::Request::AsCGI;
 
 has host => (
     is      => 'ro',
@@ -26,55 +28,31 @@ sub run {
 
     # setup poe session
     POE::Component::Server::TCP->new(
-        Port     => $self->port,
-        Address  => $self->host,
-        Acceptor => sub {
-            my ($socket, $remote_address, $remote_port) = @_[ARG0, ARG1, ARG2];
+        Port         => $self->port,
+        Address      => $self->host,
+        ClientFilter => 'POE::Filter::HTTPD',
+        ClientInput  => sub {
+            my ( $kernel, $heap, $request ) = @_[ KERNEL, HEAP, ARG0 ];
 
-            # warn "ACCEPT FROM $remote_address, $remote_port";
+            # Filter::HTTPD sometimes generates HTTP::Response objects.
+            # They indicate (and contain the response for) errors that occur
+            # while parsing the client's HTTP request.  It's easiest to send
+            # the responses as they are and finish up.
+            if ( $request->isa('HTTP::Response') ) {
+                $heap->{client}->put($request);
+                $kernel->yield('shutdown');
+                return;
+            }
 
-            local %ENV = (
-                %init_env,
-                SERVER_SOFTWARE   => __PACKAGE__,
-                GATEWAY_INTERFACE => 'CGI/1.1',
-            );
-
-            $ENV{REMOTE_ADDR} = $remote_address;
-            $ENV{REMOTE_PORT} = $remote_port;
-
-            local *STDIN  = $socket;
-            local *STDOUT = $socket;
-            select STDOUT;
-            do {
-                my ( $method, $request_uri, $proto ) = HTTP::Server::Simple->parse_request();
-                $proto ||= 'HTTP/0.9';
-                @ENV{qw/REQUEST_METHOD SERVER_PROTOCOL/} = ($method, $proto);
-                my @uri_split      = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
-                $ENV{PATH_INFO}    = shift @uri_split;
-                $ENV{QUERY_STRING} = shift @uri_split if @uri_split && defined $uri_split[0];
-            };
-            do {
-                my $headers = HTTP::Server::Simple->parse_headers() or die "bad request";
-                while ( my ( $tag, $value ) = splice @$headers, 0, 2 ) {
-                    $tag = uc($tag);
-                    $tag =~ s/^COOKIES$/COOKIE/;
-                    $tag =~ s/-/_/g;
-                    $tag = "HTTP_" . $tag
-                        unless $tag =~ m/^(?:CONTENT_(?:LENGTH|TYPE)|COOKIE)$/;
-
-                    if ( exists $ENV{$tag} ) {
-                        $ENV{$tag} .= "; $value";
-                    }
-                    else {
-                        $ENV{$tag} = $value;
-                    }
-                }
-            };
-            $ENV{SERVER_PORT} ||= $self->port;
+            # follow is normal workflow.
+            my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
             do {
                 $self->handle_request();
             };
-            close $socket;
+            $ascgi->restore;
+
+            $heap->{client}->put($ascgi->response);
+            $kernel->yield('shutdown');
         },
     );
 }

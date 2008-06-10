@@ -20,6 +20,11 @@ has port => (
     default  => 1978,
 );
 
+has alias => (
+    is       => 'ro',
+    isa      => 'Str | Undef',
+);
+
 sub run {
     my ($self) = @_;
 
@@ -28,6 +33,7 @@ sub run {
         Port         => $self->port,
         Address      => $self->host,
         ClientFilter => 'POE::Filter::HTTPD',
+        ( $self->alias ? ( Alias => $self->alias ) : () ),
         ClientInput  => sub {
             my ( $kernel, $heap, $request ) = @_[ KERNEL, HEAP, ARG0 ];
 

@@ -66,6 +66,7 @@ features(
     'Interface::POE' => [
         -default => 0,
         recommends_hack('POE' => '1.0002'),
+        recommends_hack('POE::Filter::HTTPD'),
     ],
 );
 

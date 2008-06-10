@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+         - Interface::POE fix the many problems tokuhirom++
+         - Interface::ServerSimple support Net::Server tokuhirom++
+         - fix die on request_builder phase tokuhirom++
+         - more lazy hacks, faster hacks and more mooose way hacks nothingmuch++
+
 0.0.10   2008-06-07T01:21:35+09:00
          - add build_requires 'HTTP::Request::AsCGI'
          - fixed t/30_interface_cgi.t

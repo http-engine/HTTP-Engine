@@ -56,7 +56,7 @@ sub load_middleware {
 1;
 __END__
 
-=for stopwords middlewares Middleware middleware nothingmuch
+=for stopwords middlewares Middleware middleware nothingmuch kan
 
 =encoding utf8
 

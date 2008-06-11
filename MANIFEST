@@ -68,6 +68,7 @@ t/16_middleware-import-loadmethods.t
 t/16_middleware-import.t
 t/16_middleware-wrap.t
 t/17_upload-basename.t
+t/18_request-body.t
 t/30_interface_cgi.t
 t/31_interface_test.t
 t/DummyMiddleware.pm

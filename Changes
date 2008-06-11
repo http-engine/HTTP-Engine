@@ -1,5 +1,6 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.11   2008-06-11T11:00:44+09:00
          - Interface::POE fix the many problems tokuhirom++
          - Interface::ServerSimple support Net::Server tokuhirom++
          - fix die on request_builder phase tokuhirom++

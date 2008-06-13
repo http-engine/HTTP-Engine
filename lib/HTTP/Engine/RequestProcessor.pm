@@ -59,15 +59,15 @@ no Moose;
 
 my $rp;
 sub handle_request {
-    my ( $self, @args ) = @_;
+    my ( $self, %args ) = @_;
 
     my $context = $self->context_class->new(
-        req => $self->request_class->new(
+        req => $args{req} || $self->request_class->new(
             request_builder => $self->request_builder,
-            @args,
+            %args,
         ),
-        res => $self->response_class->new(@args),
-        @args,
+        res => $args{res} || $self->response_class->new(%args),
+        %args,
     );
 
     my $ret = eval {

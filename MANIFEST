@@ -30,8 +30,6 @@ inc/Test/Builder.pm
 inc/Test/Builder/Module.pm
 inc/Test/More.pm
 lib/HTTP/Engine.pm
-lib/HTTP/Engine/.RequestBuilder.pm.swp
-lib/HTTP/Engine/.ResponseWriter.pm.swp
 lib/HTTP/Engine/Context.pm
 lib/HTTP/Engine/Cookbook.pod
 lib/HTTP/Engine/Interface/CGI.pm

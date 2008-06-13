@@ -71,8 +71,6 @@ sub handle_request {
     );
 
     my $ret = eval {
-        local *STDOUT;
-        local *STDIN;
         $rp = sub { $self };
         call_handler($context);
     };

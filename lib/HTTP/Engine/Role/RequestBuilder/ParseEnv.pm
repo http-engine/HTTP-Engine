@@ -7,16 +7,6 @@ with 'HTTP::Engine::Role::RequestBuilder::Standard' => {
     alias => { _build_hostname => "_resolve_hostname" }, # we might be able to get it from the env
 };
 
-sub _build_connection {
-    #warn "building default request state, this should be fixed in the interface";
-
-    return {
-        env           => \%ENV,
-        input_handle  => \*STDIN,
-        output_handle => \*STDOUT,
-    }
-}
-
 sub _build_connection_info {
     my($self, $req) = @_;
 

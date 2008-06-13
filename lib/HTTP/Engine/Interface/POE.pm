@@ -34,30 +34,36 @@ sub run {
         Address      => $self->host,
         ClientFilter => 'POE::Filter::HTTPD',
         ( $self->alias ? ( Alias => $self->alias ) : () ),
-        ClientInput  => sub {
-            my ( $kernel, $heap, $request ) = @_[ KERNEL, HEAP, ARG0 ];
-
-            # Filter::HTTPD sometimes generates HTTP::Response objects.
-            # They indicate (and contain the response for) errors that occur
-            # while parsing the client's HTTP request.  It's easiest to send
-            # the responses as they are and finish up.
-            if ( $request->isa('HTTP::Response') ) {
-                $heap->{client}->put($request);
-                $kernel->yield('shutdown');
-                return;
-            }
-
-            # follow is normal workflow.
-            my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
-            do {
-                $self->handle_request();
-            };
-            $ascgi->restore;
-
-            $heap->{client}->put($ascgi->response);
-            $kernel->yield('shutdown');
-        },
+        ClientInput  => _client_input($self),
     );
+}
+
+sub _client_input {
+    my $self = shift;
+
+    sub {
+        my ( $kernel, $heap, $request ) = @_[ KERNEL, HEAP, ARG0 ];
+
+        # Filter::HTTPD sometimes generates HTTP::Response objects.
+        # They indicate (and contain the response for) errors that occur
+        # while parsing the client's HTTP request.  It's easiest to send
+        # the responses as they are and finish up.
+        if ( $request->isa('HTTP::Response') ) {
+            $heap->{client}->put($request);
+            $kernel->yield('shutdown');
+            return;
+        }
+
+        # follow is normal workflow.
+        my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
+        do {
+            $self->handle_request();
+        };
+        $ascgi->restore;
+
+        $heap->{client}->put($ascgi->response);
+        $kernel->yield('shutdown');
+    }
 }
 
 1;

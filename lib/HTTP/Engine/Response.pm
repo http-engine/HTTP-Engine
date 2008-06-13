@@ -130,6 +130,18 @@ sub _finalize_cookies  {
     }
 }
 
+sub as_http_response {
+    my $self = shift;
+
+    require HTTP::Response;
+    HTTP::Response->new(
+        $self->status,
+        '',
+        $self->headers->clone,
+        $self->body, # FIXME slurp file handles
+    );
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

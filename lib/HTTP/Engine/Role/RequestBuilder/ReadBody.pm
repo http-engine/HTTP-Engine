@@ -3,6 +3,8 @@
 package HTTP::Engine::Role::RequestBuilder::ReadBody;
 use Moose::Role;
 
+use IO::Handle;
+
 requires "_handle_read_chunk";
 
 sub _read_init {
@@ -12,9 +14,6 @@ sub _read_init {
         confess "read initialization must set $key"
             unless defined $read_state->{$key};
     }
-
-    bless $read_state, "IO::Handle"
-        unless blessed $read_state->{input_handle};
 
     return $read_state;
 }

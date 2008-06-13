@@ -78,6 +78,8 @@ sub handle_request {
     };
     if (my $e = $@) {
         print STDERR $e;
+        $context->res->status(500);
+        $context->res->body('internal server error');
     }
 
     $self->response_writer->finalize($context);

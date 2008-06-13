@@ -17,6 +17,12 @@ has port => (
     default => 1978,
 );
 
+has net_server => (
+    is      => 'ro',
+    isa     => 'Str | Undef',
+    default => undef,
+);
+
 sub run {
     my ($self, ) = @_;
 
@@ -27,6 +33,7 @@ sub run {
                 handler => sub {
                     $self->handle_request();
                 },
+                net_server => sub { $self->net_server },
             },
             cache => 1
         )->new_object(

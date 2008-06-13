@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-our $VERSION = '0.0.10';
+our $VERSION = '0.0.11';
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
@@ -56,7 +56,7 @@ sub load_middleware {
 1;
 __END__
 
-=for stopwords middlewares Middleware middleware nothingmuch
+=for stopwords middlewares Middleware middleware nothingmuch kan
 
 =encoding utf8
 
@@ -205,6 +205,8 @@ typester (Interface::FCGI)
 lopnor
 
 nothingmuch
+
+kan
 
 =head1 SEE ALSO
 

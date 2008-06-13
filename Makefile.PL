@@ -62,6 +62,12 @@ features(
         -default => 0,
         recommends_hack('HTTP::Request::AsCGI'),
     ],
+
+    'Interface::POE' => [
+        -default => 0,
+        recommends_hack('POE' => '1.0002'),
+        recommends_hack('POE::Filter::HTTPD'),
+    ],
 );
 
 if (HAVE_MP) {

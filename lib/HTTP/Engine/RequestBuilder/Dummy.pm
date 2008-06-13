@@ -11,9 +11,9 @@ with qw(
 
 sub _build_connection {
     return {
+        env           => \%ENV,
         input_handle  => \*STDIN,
         output_handle => \*STDOUT,
-        env    => \%ENV,
     }
 }
 

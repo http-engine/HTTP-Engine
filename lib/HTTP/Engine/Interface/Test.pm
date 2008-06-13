@@ -2,19 +2,30 @@ package HTTP::Engine::Interface::Test;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
 
-use HTTP::Request::AsCGI;
+use URI::WithBase;
 
 use constant should_write_response_line => 0;
 
 sub run {
-    my($self, $request, $env) = @_;
+    my ( $self, $request, $env ) = @_;
     $env ||= \%ENV;
 
-    my $cgi = HTTP::Request::AsCGI->new( $request, %$env )->setup;
+    $self->handle_request(
+        uri        => URI::WithBase->new( $request->uri ),
+        headers    => $request->headers,
+        raw_body   => $request->content,
+        method     => $request->method,
+        address    => "127.0.0.1",
+        port       => "80",
+        protocol   => "HTTP/1.0",
+        user       => undef,
+        https_info => undef,
+        _builder_params => {
+            request => $request,
+        },
+    );
 
-    $self->handle_request;
-
-    $cgi->restore->response;
+    $self->response_writer->get_response; # FIXME yuck, should be a ret from handle_request
 }
 
 1;

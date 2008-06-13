@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 4;
 use HTTP::Engine;
 use HTTP::Request;
 
@@ -24,11 +24,14 @@ my $engine = HTTP::Engine->new(
         args => { },
         request_handler => sub {
             my $c = shift;
-            is $c->req->raw_body, 'foo=bar';
-            is_deeply $c->req->body_params, { foo => 'bar' };
+            is $c->req->raw_body, 'foo=bar', 'req body';
+            is_deeply $c->req->body_params, { foo => 'bar' }, 'http body';
+            $c->res->body("the output");
         },
     },
 );
 
-$engine->run($req, $env);
+my $res = $engine->run($req, $env);
 
+isa_ok $res, "HTTP::Response";
+is $res->content, "the output", "res body";

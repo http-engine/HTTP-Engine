@@ -7,6 +7,15 @@ with qw(
     HTTP::Engine::Role::RequestBuilder::HTTPBody
 );
 
+
+sub _build_connection {
+    return {
+        env           => \%ENV,
+        input_handle  => \*STDIN,
+        output_handle => \*STDOUT,
+    }
+}
+
 no Moose;
 
 1;

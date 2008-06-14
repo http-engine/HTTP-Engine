@@ -1,6 +1,7 @@
 package HTTP::Engine::Response;
 use Moose;
 
+use HTTP::Status;
 use HTTP::Headers;
 use HTTP::Engine::Types::Core qw( Header );
 use File::stat;
@@ -44,6 +45,11 @@ has headers => (
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header) ],
 );
+
+sub is_info     { HTTP::Status::is_info     (shift->status) }
+sub is_success  { HTTP::Status::is_success  (shift->status) }
+sub is_redirect { HTTP::Status::is_redirect (shift->status) }
+sub is_error    { HTTP::Status::is_error    (shift->status) }
 
 *output = \&body;
 

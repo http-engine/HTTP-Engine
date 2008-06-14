@@ -71,7 +71,7 @@ HTTP_CONTENT_TYPE: application/octet-stream
 --- body: OCTET STREAM
 --- test
 isa_ok $c->req->body, 'IO::Handle';
-$c->req->body->sysread(my $buf, $c->req->content_length);
+$c->req->body->read(my $buf, $c->req->content_length);
 is $buf, 'OCTET STREAM';
 
 === cookie

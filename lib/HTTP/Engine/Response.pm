@@ -1,7 +1,7 @@
 package HTTP::Engine::Response;
 use Moose;
 
-use HTTP::Status;
+use HTTP::Status ();
 use HTTP::Headers;
 use HTTP::Engine::Types::Core qw( Header );
 use File::stat;

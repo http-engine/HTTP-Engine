@@ -87,7 +87,7 @@ sub run {
         $self->daemon_fork() if $self->detach;
 
         if ( $self->manager ) {
-            $self->manager->use or die $@;
+            Class::MOP::load_class($self->manager);
             $proc_manager = $self->manager->new(
                 {
                     n_processes => $self->nproc,

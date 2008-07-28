@@ -18,6 +18,7 @@ has chunk_size => (
     default => 4096,
 );
 
+__PACKAGE__->meta->make_immutable;
 no Moose;
 
 my $CRLF = "\015\012";

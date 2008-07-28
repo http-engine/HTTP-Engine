@@ -2,6 +2,7 @@ use inc::Module::Install;
 BEGIN
 {
     eval { 
+        die "not testing mod_perl" unless $ENV{TEST_MODPERL};
         require mod_perl2;
         require Apache::Test;
     };

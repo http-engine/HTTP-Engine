@@ -1,10 +1,9 @@
 use strict;
 use warnings;
-use Test::Base;
 use Test::More tests => 2;
 use HTTP::Engine::Context;
 
-test_req( gen_context()->req->as_http_request );
+test_req( gen_context()->req );
 
 sub gen_context {
     my $c = HTTP::Engine::Context->new;
@@ -17,7 +16,7 @@ sub gen_context {
 
 sub test_req {
     my $req = shift;
-    isa_ok $req, 'HTTP::Request';
+    isa_ok $req, 'HTTP::Engine::Request';
     is $req->as_string, "POST /foo
 Content-Type: application/octet-stream
 

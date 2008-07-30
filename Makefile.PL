@@ -41,6 +41,7 @@ requires 'CGI::Simple::Cookie';
 requires 'HTTP::Body' => '0.9';
 requires 'HTTP::Headers';
 requires 'URI';
+requires 'URI::QueryParam';
 
 features(
     'Interface::FCGI' => [

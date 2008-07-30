@@ -7,6 +7,7 @@ use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 use IO::Socket qw[AF_INET inet_aton];
+use URI::QueryParam;
 
 # the IP address of the client
 has address => (

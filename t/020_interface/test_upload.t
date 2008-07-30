@@ -4,8 +4,10 @@ use HTTP::Engine;
 use HTTP::Headers;
 use HTTP::Request;
 use Test::Base;
+use File::Temp qw( tempdir );
+use File::Spec;
 
-plan tests => 1*blocks;
+plan tests => 3*blocks;
 
 filters {
     response => [qw/chop/],
@@ -27,6 +29,7 @@ run {
         $test = HTTP::Request->new( GET => 'http://localhost/');
     }
 
+    my $upload;
     my $response = HTTP::Engine->new(
         interface => {
             module => 'Test',
@@ -35,8 +38,10 @@ run {
                 $c->res->header( 'X-Req-Base' => $c->req->base );
                 $c->res->body('OK!');
                 return unless $body;
-                return unless $c->req->upload('test_upload_file');
-                unless ($body eq $c->req->upload('test_upload_file')->slurp) {
+
+                return unless $upload = $c->req->upload('test_upload_file');
+                my $upload_body = $upload->slurp;
+                unless ($body eq $upload_body) {
                     $c->res->body('NG');
                 }
             },
@@ -46,7 +51,26 @@ run {
     $response->headers->remove_header('Date');
     my $data = $response->headers->as_string."\n".$response->content;
     is $data, $block->response;
+
+    unless ($upload) {
+        ok 1;
+        ok 1;
+        return;
+    };
+
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    is slurp( copy => $tmpdir => $upload ), $body;
+    is slurp( link => $tmpdir => $upload ), $body;
 };
+
+sub slurp {
+    my($action, $tmpdir, $upload) = @_;
+    my $method = "${action}_to";
+    my $path = File::Spec->catfile( $tmpdir, $action );
+    $upload->$method($path);
+    open my $fh, '<', $path or die $!;
+    eval { local $/; <$fh> };
+}
 
 sub crlf {
     my $in = shift;

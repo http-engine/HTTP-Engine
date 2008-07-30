@@ -184,6 +184,30 @@ Loads the given middleware into the HTTP::Engine.
 
 =back
 
+=head1 CONCEPT
+
+=over 4
+
+=item HTTP::Engine is Not
+
+    session manager
+    authentication manager
+    URL dispatcher
+    model manager
+    toy
+    black magick
+
+=item HTTP::Engine is
+
+    HTTP abstraction layer
+
+=item HTTP::Engine's ancestry
+
+    WSGI
+    Rack
+
+=back
+
 =head1 AUTHOR
 
 Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>

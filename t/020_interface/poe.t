@@ -15,6 +15,7 @@ my $interface = HTTP::Engine::Interface::POE->new(
         $c->res->body('ok');
     },
 );
+$interface->run;
 HTTP::Engine::Interface::POE::_client_input($interface)->(_create_args());
 
 sub _create_args {

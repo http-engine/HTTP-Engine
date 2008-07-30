@@ -35,8 +35,8 @@ run {
                 $c->res->header( 'X-Req-Base' => $c->req->base );
                 $c->res->body('OK!');
                 return unless $body;
-                return unless $c->req->uploads->{test_upload_file};
-                unless ($body eq $c->req->uploads->{test_upload_file}->slurp) {
+                return unless $c->req->upload('test_upload_file');
+                unless ($body eq $c->req->upload('test_upload_file')->slurp) {
                     $c->res->body('NG');
                 }
             },

@@ -65,9 +65,11 @@ sub handle_request {
     my $context = $self->context_class->new(
         req => $args{req} || $self->request_class->new(
             request_builder => $self->request_builder,
-            %args,
+            ($args{request_args} ? %{ $args{request_args} } : ()),
         ),
-        res => $args{res} || $self->response_class->new(%args),
+        res => $args{res} || $self->response_class->new(
+            ($args{response_args} ? %{ $args{response_args} } : ()),
+        ),
         %args,
     );
 

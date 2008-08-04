@@ -11,8 +11,8 @@ sub run {
     $env ||= \%ENV;
 
     $self->handle_request(
-        uri        => URI::WithBase->new( $request->uri ),
         request_args => {
+            uri        => URI::WithBase->new( $request->uri ),
             headers    => $request->headers,
             raw_body   => $request->content,
             method     => $request->method,

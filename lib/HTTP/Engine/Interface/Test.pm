@@ -13,6 +13,11 @@ sub run {
     $self->handle_request(
         request_args => {
             uri        => URI::WithBase->new( $request->uri ),
+            base       => do {
+                my $base = $request->uri->clone;
+                $base->path_query('/');
+                $base;
+            },
             headers    => $request->headers,
             raw_body   => $request->content,
             method     => $request->method,

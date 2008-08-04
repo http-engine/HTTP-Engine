@@ -13,6 +13,7 @@ has '_response' => (
 sub finalize {
     my ( $self, $c ) = @_;
 
+    $c->res->finalize($c);
     $self->_response($c->res->as_http_response);
 }
 

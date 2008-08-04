@@ -18,7 +18,7 @@ run {
             module => 'Test',
             request_handler => sub {
                 my $c = shift;
-                $c->res->header( 'X-Req-Base' => $c->req->base );
+                $c->res->header( 'X-Req-Test' => "ping" );
                 $c->res->body('OK!');
             },
         },
@@ -42,6 +42,6 @@ __END__
 Content-Length: 3
 Content-Type: text/html
 Status: 200
-X-Req-Base: http://localhost/
+X-Req-Test: ping
 
 OK!

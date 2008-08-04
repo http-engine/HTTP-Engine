@@ -3,45 +3,54 @@ use warnings;
 use Test::More;
 use HTTP::Engine;
 
-eval "use POE;use POE::Session;";
+eval "use POE;use POE::Session;use POE::Component::Client::HTTP;";
 plan skip_all => "this test requires POE" if $@;
-plan tests => 4;
+plan tests => 3;
 
 use_ok 'HTTP::Engine::Interface::POE';
 
-my $interface = HTTP::Engine::Interface::POE->new(
+my $port = 3535;
+
+HTTP::Engine::Interface::POE->new(
     request_handler => sub {
         my $c = shift;
         $c->res->body('ok');
     },
-);
-$interface->run;
-HTTP::Engine::Interface::POE::_client_input($interface)->(_create_args());
+    alias => 'he',
+    port => $port,
+)->run;
 
-sub _create_args {
-    my @args = ();
-    $args[POE::Session::KERNEL()] = Moose::Meta::Class->create_anon_class(
-        methods => {
-            yield => sub {
-                my ($class, $type) = @_;
-                is $type, 'shutdown';
-            },
+POE::Component::Client::HTTP->spawn(
+    Alias => 'ua',
+);
+
+POE::Session->create(
+    inline_states => {
+        _start => sub {
+            my ($kernel, ) = @_[POE::Session::KERNEL()];
+            my $req = HTTP::Request->new(
+                'GET',
+                "http://localhost:$port/",
+            );
+            $kernel->post(
+                'ua',
+                'request',
+                'response',
+                $req
+            );
         },
-    )->new_object;
-    $args[POE::Session::HEAP()] = {
-        client => Moose::Meta::Class->create_anon_class(
-            methods => {
-                put => sub {
-                    my ($class, $response) = @_;
-                    is $response->code, 200;
-                    is $response->content, 'ok';
-                },
-            },
-        )->new_object()
-    };
-    $args[POE::Session::ARG0()] = HTTP::Request->new(
-        'GET',
-        '/',
-    );
-    @args;
-}
+        'response' => sub {
+            my ($kernel, ) = @_[POE::Session::KERNEL()];
+            my $req = @_[POE::Session::ARG0()]->[0];
+            my $res = @_[POE::Session::ARG1()]->[0];
+
+            is $res->code, 200;
+            is $res->content, 'ok';
+
+            $kernel->stop;
+        },
+    },
+);
+
+POE::Kernel->run;
+

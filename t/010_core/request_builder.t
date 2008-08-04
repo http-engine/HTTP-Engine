@@ -2,10 +2,13 @@ use Test::Base;
 use YAML ();
 use HTTP::Engine::Context;
 use HTTP::Engine::RequestBuilder;
-use HTTP::Engine::Request;
 use IO::Scalar;
 
-plan tests => 6;
+plan tests => 7;
+
+can_ok(
+    'HTTP::Engine::RequestBuilder' => 'prepare'
+);
 
 filters {
     env => [qw/yaml/]
@@ -17,20 +20,14 @@ run {
     my $block = shift;
 
     local %ENV = %{ $block->env };
+    my $c = HTTP::Engine::Context->new();
 
     tie *STDIN, 'IO::Scalar', \( $block->body );
-
-    my $c = HTTP::Engine::Context->new(
-        req => HTTP::Engine::Request->new(
-           request_builder => $builder,
-        ),
-    );
+    $builder->prepare($c);
+    untie *STDIN;
 
     eval $block->test;
-
     die $@ if $@;
-
-    untie *STDIN;
 };
 
 __END__
@@ -71,7 +68,7 @@ HTTP_CONTENT_TYPE: application/octet-stream
 --- body: OCTET STREAM
 --- test
 isa_ok $c->req->body, 'IO::Handle';
-$c->req->body->read(my $buf, $c->req->content_length);
+$c->req->body->sysread(my $buf, $c->req->content_length);
 is $buf, 'OCTET STREAM';
 
 === cookie

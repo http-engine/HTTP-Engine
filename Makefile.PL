@@ -87,6 +87,5 @@ build_requires 'HTTP::Request::AsCGI';
 
 use_test_base;
 auto_include;
-auto_install;
 WriteAll;
 

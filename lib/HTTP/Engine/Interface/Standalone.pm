@@ -2,7 +2,6 @@ package HTTP::Engine::Interface::Standalone;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
 
-use Errno 'EWOULDBLOCK';
 use Socket qw(:all);
 use IO::Socket::INET ();
 use IO::Select       ();
@@ -27,6 +26,7 @@ has keepalive => (
     default => 0,
 );
 
+# fixme add preforking support using Parallel::Prefork
 has fork => (
     is      => 'ro',
     isa     => 'Bool',
@@ -45,48 +45,10 @@ has argv => (
     default => sub { [] },
 );
 
-
-use HTTP::Engine::ResponseWriter;
-HTTP::Engine::RequestBuilder->meta->add_method( _read_chunk  => sub {
-    shift;
-    # support for non-blocking IO
-    my $rin = '';
-    vec($rin, *STDIN->fileno, 1) = 1;
-
-    READ:
-    {
-        select($rin, undef, undef, undef); ## no critic.
-        my $rc = *STDIN->sysread(@_);
-        if (defined $rc) {
-           return $rc;
-       } else {
-            next READ if $! == EWOULDBLOCK;
-            return;
-        }
-    }
-});
-
-HTTP::Engine::RequestBuilder->meta->add_before_method_modifier( _prepare_read => sub {
-    my $self = shift;
-    # Set the input handle to non-blocking
-    *STDIN->blocking(0);
-});
-
-use HTTP::Engine::ResponseWriter;
-my $is_keepalive;
-HTTP::Engine::ResponseWriter->meta->add_before_method_modifier( finalize => sub {
-    my($self, $c) = @_;
-
-    $c->res->headers->date(time);
-    $c->res->headers->header(
-        Connection => $is_keepalive ? 'keep-alive' : 'close'
-    );
-});
-
 sub run {
-    my($self, ) = @_;
+    my ( $self ) = @_;
 
-    $is_keepalive = sub { $self->keepalive };
+    $self->response_writer->keepalive( $self->fork && $self->keepalive );
 
     my $host = $self->host;
     my $port = $self->port;
@@ -118,22 +80,19 @@ sub run {
     my $parent = $$;
     my $pid    = undef;
     local $SIG{CHLD} = 'IGNORE';
-    while (accept(Remote, $daemon)) {
+
+    while (my $remote = $daemon->accept) {
         # TODO (Catalyst): get while ( my $remote = $daemon->accept ) to work
         delete $self->{_sigpipe};
-        select Remote;
 
-        # Request data
-        Remote->blocking(1);
-
-        next unless my($method, $uri, $protocol) = $self->_parse_request_line(\*Remote);
+        next unless my($method, $uri, $protocol) = $self->_parse_request_line($remote);
         unless (uc $method eq 'RESTART') {
             # Fork
             next if $self->fork && ($pid = fork);
-            $self->_handler($port, $method, $uri, $protocol);
+            $self->_handler($remote, $port, $method, $uri, $protocol);
             $daemon->close if defined $pid;
         } else {
-            my $sockdata = $self->_socket_data(\*Remote);
+            my $sockdata = $self->_socket_data($remote);
             my $ipaddr   = _inet_addr($sockdata->{peeraddr});
             my $ready    = 0;
             for my $ip (keys %{ $allowed }) {
@@ -148,7 +107,7 @@ sub run {
         }
         exit if defined $pid;
     } continue {
-        close Remote;
+        close $remote;
     }
     $daemon->close;
 
@@ -162,72 +121,76 @@ sub run {
 }
 
 sub _handler {
-    my($self, $port, $method, $uri, $protocol) = @_;
+    my($self, $remote, $port, $method, $uri, $protocol) = @_;
 
     # Ignore broken pipes as an HTTP server should
-    local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close Remote };
-
-    local *STDIN  = \*Remote;
-    local *STDOUT = \*Remote;
+    local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close $remote };
 
     # We better be careful and just use 1.0
     $protocol = '1.0';
 
-    my $sockdata    = $self->_socket_data(\*Remote);
-    my %copy_of_env = %ENV;
+    my $sockdata    = $self->_socket_data($remote);
 
     my $sel = IO::Select->new;
-    $sel->add(\*STDIN);
+    $sel->add($remote);
+
+    $remote->autoflush(1);
 
     while (1) {
+        # FIXME refactor an HTTP push parser
         my($path, $query_string) = split /\?/, $uri, 2;
 
-        # Initialize CGI environment
-        local %ENV = (
-            PATH_INFO       => $path         || '',
-            QUERY_STRING    => $query_string || '',
-            REMOTE_ADDR     => $sockdata->{peeraddr},
-            REMOTE_HOST     => $sockdata->{peername},
-            REQUEST_METHOD  => $method || '',
-            SERVER_NAME     => $sockdata->{localname},
-            SERVER_PORT     => $port,
-            SERVER_PROTOCOL => "HTTP/$protocol",
-            %copy_of_env,
-        );
+        my $headers;
 
         # Parse headers
+        # taken from HTTP::Message, which is unfortunately not really reusable
         if ($protocol >= 1) {
-            while (1) {
-                my $line = $self->_get_line(\*STDIN);
-                last if $line eq '';
-                next unless my ( $name, $value ) = $line =~ m/\A(\w(?:-?\w+)*):\s(.+)\z/;
-
-                $name = uc $name;
-                $name = 'COOKIE' if $name eq 'COOKIES';
-                $name =~ tr/-/_/;
-                $name = 'HTTP_' . $name unless $name =~ m/\A(?:CONTENT_(?:LENGTH|TYPE)|COOKIE)\z/;
-                if (exists $ENV{$name}) {
-                    $ENV{$name} .= "; $value";
+            my @hdr;
+            while ( length(my $line = $self->_get_line($remote)) ) {
+                if ($line =~ s/^([^\s:]+)[ \t]*: ?(.*)//) {
+                    push(@hdr, $1, $2);
+                }
+                elsif (@hdr && $line =~ s/^([ \t].*)//) {
+                    $hdr[-1] .= "\n$1";
                 } else {
-                    $ENV{$name} = $value;
+                    last;
                 }
             }
+            $headers = HTTP::Headers->new(@hdr);
+        } else {
+            $headers = HTTP::Headers->new;
         }
-        # Pass flow control to HTTP::Engine
-        $self->handle_request;
 
-        my $connection = lc $ENV{HTTP_CONNECTION};
+        # Pass flow control to HTTP::Engine
+        $self->handle_request(
+            uri            => URI::WithBase->new($uri),
+            headers        => $headers,
+            method         => $method,
+            address        => $sockdata->{peeraddr},
+            port           => $port,
+            protocol       => "HTTP/$protocol",
+            user           => undef,
+            https_info     => undef,
+            _connection => {
+                input_handle  => $remote,
+                output_handle => $remote,
+                env           => {}, # no more env than what we provide
+            },
+        );
+
+        my $connection = $headers->header("Connection");
+
         last
-          unless $self->keepalive
+          unless $self->fork && $self->keepalive
           && index($connection, 'keep-alive') > -1
           && index($connection, 'te') == -1          # opera stuff
           && $sel->can_read(5);
 
-        last unless ($method, $uri, $protocol) = $self->_parse_request_line(\*STDIN, 1);
+        last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
-    sysread(Remote, my $buf, 4096) if $sel->can_read(0); # IE bk
-    close Remote;
+    $self->request_builder->_io_read($remote, my $buf, 4096) if $sel->can_read(0); # IE bk
+    close $remote;
 }
 
 sub _parse_request_line {
@@ -253,9 +216,7 @@ sub _socket_data {
     my(undef, $localiaddr) = sockaddr_in($local_sockaddr);
 
     my $data = {
-        peername => gethostbyaddr($iaddr, AF_INET) || "localhost",
         peeraddr => inet_ntoa($iaddr) || "127.0.0.1",
-        localname => gethostbyaddr($localiaddr, AF_INET) || "localhost",
         localaddr => inet_ntoa($localiaddr) || "127.0.0.1",
     };
 
@@ -265,12 +226,15 @@ sub _socket_data {
 sub _get_line {
     my($self, $handle) = @_;
 
+    # FIXME use bufferred but nonblocking IO? this is a lot of calls =(
     my $line = '';
-    while (sysread($handle, my $byte, 1)) {
+    while ($self->request_builder->_io_read($handle, my $byte, 1)) {
         last if $byte eq "\012";    # eol
         $line .= $byte;
     }
-    1 while $line =~ s/\s\z//;
+
+    # strip \r, \n was already stripped
+    $line =~ s/\015$//s;
 
     $line;
 }

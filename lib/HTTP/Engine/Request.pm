@@ -6,14 +6,70 @@ use HTTP::Headers;
 use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
-use IO::Socket qw[AF_INET inet_aton];
+use URI::QueryParam;
 use URI::QueryParam;
 
-# the IP address of the client
-has address => (
-    is  => 'rw',
-    isa => 'Str',
+# Moose role merging is borked with attributes
+#with qw(HTTP::Engine::Request);
+
+# this object constructs all our lazy fields for us
+has request_builder => (
+    does => "HTTP::Engine::Role::RequestBuilder",
+    is   => "rw",
+    # handles ...
+    # takes_self => 1, # add this to Moose
+    default => sub { # FIXME deprecate the default
+        require HTTP::Engine::RequestBuilder::Dummy;
+        HTTP::Engine::RequestBuilder::Dummy->new;
+    }
 );
+
+sub BUILD {
+    my ( $self, $param ) = @_;
+
+    foreach my $field qw(base path) {
+        if ( my $val = $param->{$field} ) {
+            $self->$field($val);
+        }
+    }
+}
+
+has _builder_params => (
+    is => "ro",
+    isa => "HashRef",
+    default => sub { {} },
+);
+
+has _connection => (
+    is => "ro",
+    lazy_build => 1,
+);
+
+sub _build__connection {
+    my $self = shift;
+    $self->request_builder->_build_connection($self);
+}
+
+has "_read_state" => (
+    is => "rw",
+    lazy_build => 1,
+);
+
+sub _build__read_state {
+    my $self = shift;
+    $self->request_builder->_build_read_state($self);
+}
+
+has connection_info => (
+    is => "rw",
+    isa => "HashRef",
+    lazy_build => 1,
+);
+
+sub _build_connection_info {
+    my $self = shift;
+    $self->request_builder->_build_connection_info($self);
+}
 
 has context => (
     is       => 'rw',
@@ -24,93 +80,148 @@ has context => (
 has cookies => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { {} },
+    lazy_build => 1,
 );
 
-has method => (
-    is  => 'rw',
-    # isa => 'Str',
-);
+sub _build_cookies {
+    my $self = shift;
+    $self->request_builder->_build_cookies($self);
+}
 
-has protocol => (
-    is  => 'rw',
-    # isa => 'Str',
-);
-
+foreach my $attr qw(address method protocol user port https_info) {
+    has $attr => (
+        is => 'rw',
+        # isa => "Str",
+        lazy => 1,
+        default => sub { shift->connection_info->{$attr} },
+    );
+}
 has query_parameters => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { {} },
+    lazy_build => 1,
 );
+
+sub _build_query_parameters {
+    my $self = shift;
+    $self->uri->query_form_hash;
+}
 
 # https or not?
 has secure => (
     is      => 'rw',
     isa     => 'Bool',
-    default => 0,
+    lazy_build => 1,
 );
+
+sub _build_secure {
+    my $self = shift;
+
+    if ( my $https = $self->https_info ) {
+        return 1 if uc($https) eq 'ON';
+    }
+
+    if ( my $port = $self->port ) {
+        return 1 if $port == 443;
+    }
+
+    return 0;
+}
 
 has uri => (
     is     => 'rw',
     isa    => Uri,
     coerce => 1,
+    lazy_build => 1,
+    handles => [qw(base path)],
 );
 
-has user => ( is => 'rw', );
+sub _build_uri {
+    my $self = shift;
+    $self->request_builder->_build_uri($self);
+}
 
 has raw_body => (
     is      => 'rw',
     isa     => 'Str',
-    default => '',
+    lazy_build => 1,
 );
+
+sub _build_raw_body {
+    my $self = shift;
+    $self->request_builder->_build_raw_body($self);
+}
 
 has headers => (
     is      => 'rw',
     isa     => Header,
     coerce  => 1,
-    default => sub { HTTP::Headers->new },
+    lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );
 
+sub _build_headers {
+    my $self = shift;
+    $self->request_builder->_build_headers($self);
+}
+
 # Contains the URI base. This will always have a trailing slash.
 # If your application was queried with the URI C<http://localhost:3000/some/path> then C<base> is C<http://localhost:3000/>.
-has base => (
-    is      => 'rw',
-    isa     => Uri,
-    trigger => sub {
-        my $self = shift;
-
-        if ( $self->uri ) {
-            $self->path; # clear cache.
-        }
-    },
-);
 
 has hostname => (
     is      => 'rw',
     isa     => 'Str',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        $ENV{REMOTE_HOST} || gethostbyaddr( inet_aton( $self->address ), AF_INET );
-    },
+    lazy_build => 1,
 );
 
+sub _build_hostname {
+    my $self = shift;
+    $self->request_builder->_build_hostname;
+}
+
 has http_body => (
-    is      => 'rw',
-    isa     => 'HTTP::Body',
+    is         => 'rw',
+    isa        => 'HTTP::Body',
+    lazy_build => 1,
     handles => {
         body_parameters => 'param',
         body            => 'body',
     },
 );
 
+sub _build_http_body {
+    my $self = shift;
+    $self->request_builder->_build_http_body($self);
+}
+
 # contains body_params and query_params
 has parameters => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { +{} },
+    lazy_build => 1,
 );
+
+sub _build_parameters {
+    my $self = shift;
+
+    my $query = $self->query_parameters;
+    my $body = $self->body_parameters;
+
+    my %merged;
+
+    foreach my $hash ( $query, $body ) {
+        foreach my $name ( keys %$hash ) {
+            my $param = $hash->{$name};
+            push( @{ $merged{$name} ||= [] }, ( ref $param ? @$param : $param ) );
+        }
+    }
+
+    foreach my $param ( values %merged ) {
+        $param = $param->[0] if @$param == 1;
+    }
+
+    return \%merged;
+}
 
 has uploads => (
     is      => 'rw',
@@ -161,25 +272,6 @@ sub param {
         my $field = shift;
         $self->parameters->{$field} = [@_];
     }
-}
-
-
-sub path {
-    my ($self, $params) = @_;
-
-    if ($params) {
-        $self->uri->path($params);
-    } else {
-        return $self->{path} if $self->{path};
-    }
-
-    my $path     = $self->uri->path;
-    my $location = $self->base->path;
-    $path =~ s/^(\Q$location\E)?//;
-    $path =~ s/^\///;
-    $self->{path} = $path;
-
-    return $path;
 }
 
 sub upload {
@@ -247,16 +339,10 @@ sub absolute_url {
     my ($self, $location) = @_;
 
     unless ($location =~ m!^https?://!) {
-        my $base = $self->base;
-        my $url = sprintf '%s://%s', $base->scheme, $base->host;
-        unless (($base->scheme eq 'http' && $base->port eq '80') ||
-               ($base->scheme eq 'https' && $base->port eq '443')) {
-            $url .= ':' . $base->port;
-        }
-        $url .= $base->path;
-        $location = URI->new_abs($location, $url);
+        return URI->new( $location )->abs( $self->base );
+    } else {
+        return $location;
     }
-    $location;
 }
 
 sub content {

@@ -47,9 +47,11 @@ sub load_middleware {
     }
 
     if ($pkg->meta->has_method('wrap')) {
+        HTTP::Engine::RequestProcessor->meta->make_mutable;
         HTTP::Engine::RequestProcessor->meta->add_around_method_modifier(
             call_handler => $pkg->meta->get_method('wrap')->body
         );
+        HTTP::Engine::RequestProcessor->meta->make_immutable;
     }
 }
 

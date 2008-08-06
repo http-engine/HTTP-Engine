@@ -2,6 +2,7 @@ use inc::Module::Install;
 BEGIN
 {
     eval { 
+        die "not testing mod_perl" unless $ENV{TEST_MODPERL};
         require mod_perl2;
         require Apache::Test;
     };
@@ -76,7 +77,7 @@ if (HAVE_MP) {
     Apache::TestMM::generate_script('t/TEST');
     tests('t/*.t t/*/*.t t/modperl/basic.t');
 } else {
-    tests('t/*.t t/*/*.t');
+    tests('t/*.t t/*/*.t ');
 }
 
 build_requires 'Test::More';

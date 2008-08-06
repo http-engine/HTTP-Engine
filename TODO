@@ -1,0 +1,37 @@
+=head1 NAME
+
+TODO
+
+=head1 LAZY BRANCH
+
+=head2 TESTS TESTS TESTS
+
+Most interfaces have no tests... Mock tests would be nice
+
+=head2 Request Writer
+
+Cleanup much like RequestBuilder, many small things to do here
+
+=head2 Standalone
+
+L<Parallel::Prefork> ?
+
+=head2 FCGI
+
+FCGI::Request can build the _connection structure directly, and use the normal RequestBuilder
+
+pass params to handle_request explicitly a la Standalone
+
+=head2 ModPerl
+
+HTTP::Engine::Interface::Apache::RequestBuilder should delegate everything to
+$request->_connection->{apache_request}. Should be very simple and efficient
+
+=head2 POE
+
+Like Standalone
+
+=head2 Test
+
+Use the Dummy request builder instead of HTTP::Request::AsCGI
+

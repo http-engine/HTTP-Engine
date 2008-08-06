@@ -6,6 +6,9 @@ use HTTP::Headers;
 use HTTP::Engine::Types::Core qw( Header );
 use File::stat;
 
+# Moose role merging is borked with attributes
+#with qw(HTTP::Engine::Response);
+
 has body => (
     is      => 'rw',
     isa     => 'Any',
@@ -131,6 +134,18 @@ sub _finalize_cookies  {
 
         $self->headers->push_header('Set-Cookie' => $cookie->as_string);
     }
+}
+
+sub as_http_response {
+    my $self = shift;
+
+    require HTTP::Response;
+    HTTP::Response->new(
+        $self->status,
+        '',
+        $self->headers->clone,
+        $self->body, # FIXME slurp file handles
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

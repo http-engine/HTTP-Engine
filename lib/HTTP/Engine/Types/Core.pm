@@ -7,6 +7,8 @@ use MooseX::Types::Moose qw( Object HashRef ArrayRef CodeRef );
 
 use Class::MOP;
 use URI;
+use URI::WithBase;
+use URI::QueryParam;
 use HTTP::Headers;
 
 role_type Interface, { role => "HTTP::Engine::Role::Interface" };
@@ -26,9 +28,9 @@ coerce Interface, from HashRef => via {
     return $module->new( %$args );
 };
 
-class_type Uri, { class => "URI" };
+class_type Uri, { class => "URI::WithBase" };
 
-coerce Uri, from Str => via { URI->new($_) };
+coerce Uri, from Str => via { URI::WithBase->new($_) };
 
 class_type Header, { class => "HTTP::Headers" };
 

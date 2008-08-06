@@ -13,9 +13,19 @@ has request_handler => (
     required => 1,
 );
 
+sub request_processor_class {
+    my $self = shift;
+    $self->_default_class("RequestProcessor");
+}
+
+sub request_processor_traits {
+    my $self = shift;
+    $self->_default_trait("RequestProcessor");
+}
+
 has request_processor => (
     is         => 'ro',
-    isa        => 'HTTP::Engine::RequestProcessor',
+    does       => 'HTTP::Engine::Role::RequestProcessor',
     lazy_build => 1,
     handles    => [qw/handle_request load_plugins/],
 );
@@ -23,12 +33,136 @@ has request_processor => (
 sub _build_request_processor {
     my $self = shift;
 
-    HTTP::Engine::RequestProcessor->new(
+    $self->_class_with_roles("request_processor")->new(
         handler                    => $self->request_handler,
-        response_writer            => HTTP::Engine::ResponseWriter->new(
-            should_write_response_line => $self->should_write_response_line,
-        ),
+        request_builder            => $self->request_builder,
+        response_writer            => $self->response_writer,
     );
+}
+
+
+sub request_builder_class {
+    my $self = shift;
+    $self->_default_class("RequestBuilder");
+}
+
+sub request_builder_traits {
+    my $self = shift;
+    $self->_default_trait("RequestBuilder");
+}
+
+has request_builder => (
+    is         => 'ro',
+    does       => 'HTTP::Engine::Role::RequestBuilder',
+    lazy_build => 1,
+);
+
+sub _build_request_builder {
+    my $self = shift;
+
+    $self->_class_with_roles("request_builder")->new;
+}
+
+
+sub response_writer_class {
+    my $self = shift;
+    $self->_default_class("ResponseWriter");
+}
+
+sub response_writer_traits {
+    my $self = shift;
+    $self->_default_trait("ResponseWriter");
+}
+
+has response_writer => (
+    is         => 'ro',
+    does       => 'HTTP::Engine::Role::ResponseWriter',
+    lazy_build => 1,
+);
+
+sub _build_response_writer {
+    my $self = shift;
+
+    $self->_class_with_roles("response_writer")->new(
+        should_write_response_line => $self->should_write_response_line,
+    );
+}
+
+sub _default_class {
+    my ( $self, $category ) = @_;
+
+    if ( my $class = $self->_default_package($category) ) {
+        if ( $class->meta->isa("Moose::Meta::Class") ) {
+            return $class;
+        }
+    }
+
+    return "HTTP::Engine::$category";
+}
+
+sub _default_trait {
+    my ( $self, $category ) = @_;
+
+    grep { $_->meta->isa("Moose::Meta::Role") } $self->_default_package($category);
+}
+
+sub _default_package {
+    my ( $self, $category ) = @_;
+
+    my $name = join( "::", $self->meta->name, $category );
+
+    my $e;
+
+    # don't overwrite external $@
+    {
+        local $@;
+        if ( eval { Class::MOP::load_class($name) } ) {
+            return $name;
+        } else {
+            ( my $file = "$name.pm" ) =~ s{::}{/}g;
+            if ( $@ =~ /Can't locate \Q$file\E in \@INC/ ) {
+                return;
+            } else {
+                $e = $@;
+            }
+        }
+    }
+
+    die $e;
+}
+
+my %anon_classes;
+sub _class_with_roles {
+    my ( $self, $type ) = @_;
+
+    my $m_class  = "${type}_class";
+    my $m_traits = "${type}_traits";
+
+    my $class = $self->$m_class;
+
+    if ( my @roles = $self->$m_traits ) {
+        my $class_key = join("\0", $class, sort @roles);
+
+        my $metaclass = $anon_classes{$class_key} ||= $self->_create_anon_class($class, @roles);
+
+        return $metaclass->name;
+    } else {
+        return $class;
+    }
+}
+
+sub _create_anon_class {
+    my ( $self, $class, @roles ) = @_;
+
+    # create an anonymous subclass
+    my $anon = $class->meta->create_anon_class(
+        superclasses => [ $class ],
+    );
+
+    # apply the roles to the class
+    Moose::Util::apply_all_roles( $anon->name, @roles );
+
+    return $anon;
 }
 
 1;

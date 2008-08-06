@@ -35,7 +35,6 @@ run {
             module => 'Test',
             request_handler => sub {
                 my $c = shift;
-                $c->res->header( 'X-Req-Base' => $c->req->base );
                 $c->res->body('OK!');
                 return unless $body;
 
@@ -97,7 +96,6 @@ body: SHOGUN
 Content-Length: 3
 Content-Type: text/html
 Status: 200
-X-Req-Base: http://localhost/
 
 OK!
 ===
@@ -106,6 +104,5 @@ OK!
 Content-Length: 3
 Content-Type: text/html
 Status: 200
-X-Req-Base: http://localhost/
 
 OK!

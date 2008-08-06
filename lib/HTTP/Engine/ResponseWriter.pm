@@ -4,6 +4,8 @@ use File::stat;
 use Carp;
 use HTTP::Status ();
 
+with qw(HTTP::Engine::Role::ResponseWriter);
+
 has 'should_write_response_line' => (
     is       => 'rw',
     isa      => 'Bool',
@@ -16,12 +18,15 @@ has chunk_size => (
     default => 4096,
 );
 
+__PACKAGE__->meta->make_immutable;
 no Moose;
 
 my $CRLF = "\015\012";
 
 sub finalize {
     my($self, $c) = @_;
+
+    local *STDOUT = $c->req->_connection->{output_handle};
     croak "argument missing" unless $c;
 
     delete $self->{_prepared_write};

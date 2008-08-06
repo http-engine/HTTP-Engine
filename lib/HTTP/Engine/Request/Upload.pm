@@ -62,7 +62,7 @@ sub slurp {
 
     binmode( $handle, $layer );
 
-    while ( $handle->sysread( my $buffer, 8192 ) ) {
+    while ( $handle->read( my $buffer, 8192 ) ) {
         $content .= $buffer;
     }
 

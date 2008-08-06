@@ -18,6 +18,8 @@ run {
             module => 'Test',
             request_handler => sub {
                 my $c = shift;
+                eval $block->code;
+                die $@ if $@;
                 $c->res->header( 'X-Req-Test' => "ping" );
                 $c->res->body('OK!');
             },
@@ -38,6 +40,7 @@ sub crlf {
 __END__
 
 ===
+--- code
 --- response
 Content-Length: 3
 Content-Type: text/html
@@ -45,3 +48,16 @@ Status: 200
 X-Req-Test: ping
 
 OK!
+
+=== $c->req->base
+--- code
+$c->res->header('X-Req-Base' => $c->req->base);
+--- response
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+X-Req-Base: http://localhost/
+X-Req-Test: ping
+
+OK!
+

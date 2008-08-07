@@ -51,7 +51,7 @@ run {
     my $data = $response->headers->as_string."\n".$response->content;
     is $data, $block->response;
 
-    unless ($upload) {
+    unless ($body) {
         ok 1;
         ok 1;
         return;

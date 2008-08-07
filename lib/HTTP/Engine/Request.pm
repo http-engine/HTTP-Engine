@@ -7,7 +7,6 @@ use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use HTTP::Request;
 use URI::QueryParam;
-use URI::QueryParam;
 
 # Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Request);

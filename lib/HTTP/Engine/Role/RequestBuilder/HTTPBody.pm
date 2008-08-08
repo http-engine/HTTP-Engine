@@ -70,6 +70,7 @@ sub _prepare_uploads  {
 
     my $req     = $c->req;
     my $uploads = $req->http_body->upload;
+    my %uploads;
     for my $name (keys %{ $uploads }) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
@@ -84,12 +85,13 @@ sub _prepare_uploads  {
             $u->filename($upload->{filename});
             push @uploads, $u;
         }
-        $req->uploads->{$name} = @uploads > 1 ? \@uploads : $uploads[0];
+        $uploads{$name} = @uploads > 1 ? \@uploads : $uploads[0];
 
         # support access to the filename as a normal param
         my @filenames = map { $_->{filename} } @uploads;
         $req->parameters->{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
     }
+    return \%uploads;
 }
 
 __PACKAGE__

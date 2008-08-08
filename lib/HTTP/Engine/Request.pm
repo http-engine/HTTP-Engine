@@ -225,8 +225,13 @@ sub _build_parameters {
 has uploads => (
     is      => 'rw',
     isa     => 'HashRef',
-    default => sub { +{} },
+    lazy_build => 1,
 );
+
+sub _build_uploads {
+    my $self = shift;
+    $self->request_builder->_prepare_uploads($self->context);
+}
 
 no Moose;
 

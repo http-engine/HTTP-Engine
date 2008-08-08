@@ -163,18 +163,20 @@ sub _handler {
 
         # Pass flow control to HTTP::Engine
         $self->handle_request(
-            uri            => URI::WithBase->new($uri),
-            headers        => $headers,
-            method         => $method,
-            address        => $sockdata->{peeraddr},
-            port           => $port,
-            protocol       => "HTTP/$protocol",
-            user           => undef,
-            https_info     => undef,
-            _connection => {
-                input_handle  => $remote,
-                output_handle => $remote,
-                env           => {}, # no more env than what we provide
+            request_args => {
+                uri            => URI::WithBase->new($uri),
+                headers        => $headers,
+                method         => $method,
+                address        => $sockdata->{peeraddr},
+                port           => $port,
+                protocol       => "HTTP/$protocol",
+                user           => undef,
+                https_info     => undef,
+                _connection => {
+                    input_handle  => $remote,
+                    output_handle => $remote,
+                    env           => {}, # no more env than what we provide
+                },
             },
         );
 

@@ -43,6 +43,7 @@ has headers => (
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header) ],
 );
+no Moose;
 
 sub is_info     { HTTP::Status::is_info     (shift->status) }
 sub is_success  { HTTP::Status::is_success  (shift->status) }

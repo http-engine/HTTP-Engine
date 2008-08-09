@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Role::RequestBuilder::Standard;
 use Moose::Role;
 
@@ -39,6 +37,8 @@ HTTP::Engine::Role::RequestBuilder::Standard -
 	use HTTP::Engine::Role::RequestBuilder::Standard;
 
 =head1 DESCRIPTION
+
+    INTERNAL USE ONLY
 
 =cut
 

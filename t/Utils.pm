@@ -23,6 +23,7 @@ sub empty_port {
         );
         return $port if $sock;
     }
+    die "empty port not found";
 }
 
 sub daemonize (&@) { goto _daemonize }

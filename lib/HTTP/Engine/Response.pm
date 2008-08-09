@@ -15,11 +15,6 @@ has body => (
     default => '',
 );
 
-has context => (
-    is  => 'rw',
-    isa => 'HTTP::Engine::Context',
-);
-
 has cookies => (
     is      => 'rw',
     isa     => 'HashRef',

@@ -1,17 +1,20 @@
 use strict;
 use warnings;
 use Test::More tests => 5;
-use HTTP::Engine::Context;
+use HTTP::Engine::Request;
+use HTTP::Engine::RequestBuilder;
 
-test_req( gen_context()->req->as_http_request );
+test_req( gen_request()->as_http_request );
 
-sub gen_context {
-    my $c = HTTP::Engine::Context->new;
-    $c->req->method('POST');
-    $c->req->uri('/foo');
-    $c->req->content_type('application/octet-stream');
-    $c->req->raw_body('foo=bar');
-    $c;
+sub gen_request {
+    my $req = HTTP::Engine::Request->new(
+        request_builder => HTTP::Engine::RequestBuilder->new,
+    );
+    $req->method('POST');
+    $req->uri('/foo');
+    $req->content_type('application/octet-stream');
+    $req->raw_body('foo=bar');
+    $req;
 }
 
 sub test_req {

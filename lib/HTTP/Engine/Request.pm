@@ -175,7 +175,7 @@ has hostname => (
 
 sub _build_hostname {
     my $self = shift;
-    $self->request_builder->_build_hostname;
+    $self->request_builder->_build_hostname($self);
 }
 
 has http_body => (

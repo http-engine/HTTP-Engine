@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Interface::ServerSimple::ResponseWriter;
 use Moose::Role;
 
@@ -20,11 +18,9 @@ __END__
 
 HTTP::Engine::Interface::ServerSimple::ResponseWriter - 
 
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Interface::ServerSimple::ResponseWriter;
-
 =head1 DESCRIPTION
+
+INTERNAL USE ONLY
 
 =cut
 

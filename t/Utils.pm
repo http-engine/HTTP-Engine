@@ -6,7 +6,7 @@ use warnings;
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize daemonize_all /],
+    exports => [qw/ empty_port daemonize daemonize_all interfaces /],
     groups  => { default => [':all'] }
 };
 
@@ -48,11 +48,22 @@ sub _daemonize {
     }
 }
 
+my @interfaces; # memoize.
+sub interfaces() {
+    unless (@interfaces) {
+        push @interfaces, 'Standalone';
+        push @interfaces, 'ServerSimple' if eval "use HTTP::Server::Simple; 1;";
+        push @interfaces, 'POE'          if eval "use POE; 1;";
+    }
+    return @interfaces;
+}
+
 sub daemonize_all (&@) {
     my($client, %args) = @_;
 
     my $poe_kernel_run = delete $args{poe_kernel_run};
-    for my $interface (qw/ Standalone ServerSimple POE /) {
+
+    for my $interface (interfaces) {
         $args{interface}->{module} = $interface;
         $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
         _daemonize $client => %args;

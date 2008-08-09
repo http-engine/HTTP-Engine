@@ -3,7 +3,7 @@ use warnings;
 use t::Utils;
 use Test::More;
 
-plan tests => 2*3;
+plan tests => 2*interfaces;
 
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);

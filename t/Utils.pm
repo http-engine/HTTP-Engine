@@ -6,7 +6,7 @@ use warnings;
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize  /],
+    exports => [qw/ empty_port daemonize daemonize_all /],
     groups  => { default => [':all'] }
 };
 
@@ -25,7 +25,8 @@ sub empty_port {
     }
 }
 
-sub daemonize (&@) {
+sub daemonize (&@) { goto _daemonize }
+sub _daemonize {
     my($client, %args) = @_;
 
     if (my $pid = fork()) {
@@ -43,6 +44,17 @@ sub daemonize (&@) {
         POE::Kernel->run() if $poe_kernel_run;
     } else {
         die "cannot fork";
+    }
+}
+
+sub daemonize_all (&@) {
+    my($client, %args) = @_;
+
+    my $poe_kernel_run = delete $args{poe_kernel_run};
+    for my $interface (qw/ Standalone ServerSimple POE /) {
+        $args{interface}->{module} = $interface;
+        $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
+        _daemonize $client => %args;
     }
 }
 

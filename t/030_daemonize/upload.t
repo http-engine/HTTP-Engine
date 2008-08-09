@@ -11,21 +11,18 @@ use HTTP::Engine;
 
 my $port = empty_port;
 
-for my $interface (qw/ Standalone ServerSimple POE /) {
-    daemonize \&do_request => (
-        poe_kernel_run => ($interface eq 'POE'),
-        interface => {
-            module => $interface,
-            args => {
-                port => $port,
-            },
-            request_handler => sub {
-                my $c = shift;
-                $c->res->body($c->req->upload("test")->slurp());
-            },
+daemonize_all \&do_request => (
+    poe_kernel_run => 1,
+    interface => {
+        args => {
+            port => $port,
         },
-    );
-}
+        request_handler => sub {
+            my $c = shift;
+            $c->res->body($c->req->upload("test")->slurp());
+        },
+    },
+);
 
 sub do_request {
     my $ua = LWP::UserAgent->new(timeout => 10);

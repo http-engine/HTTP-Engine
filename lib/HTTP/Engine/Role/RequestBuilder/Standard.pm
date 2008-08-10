@@ -9,8 +9,6 @@ sub _build_cookies {
     my($self, $req) = @_;
 
     if (my $header = $req->header('Cookie')) {
-        #warn "headeR: $header";
-        #warn "headers: @{[ $c->req->header('Cookie') ]}";
         return { CGI::Simple::Cookie->parse($header) };
     } else {
         return {};

@@ -1,7 +1,8 @@
 use strict;
 use warnings;
 use lib '.';
-use HTTP::Engine middlewares => ['+t::DummyMiddlewareImport'];
+use lib 't/testlib';
+use HTTP::Engine middlewares => ['+t::DummyMiddlewareImport', 'Foo', 'Bar'];
 use Test::More tests => 1;
 
 our $setup;

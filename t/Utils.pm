@@ -2,11 +2,12 @@ package t::Utils;
 
 use strict;
 use warnings;
+use HTTP::Engine;
 
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize daemonize_all interfaces /],
+    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine /],
     groups  => { default => [':all'] }
 };
 
@@ -68,6 +69,18 @@ sub daemonize_all (&@) {
         $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
         _daemonize $client => %args;
     }
+}
+
+sub run_engine {
+    my ($req, $cb) = @_;
+
+    HTTP::Engine->new(
+        interface => {
+            module => 'Test',
+            args => { },
+            request_handler => $cb,
+        },
+    )->run($req);
 }
 
 1;

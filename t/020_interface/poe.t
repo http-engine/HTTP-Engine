@@ -5,16 +5,18 @@ use HTTP::Engine;
 
 eval "use POE;use POE::Session;use POE::Component::Client::HTTP;";
 plan skip_all => "this test requires POE" if $@;
-plan tests => 3;
+plan tests => 5;
 
 use_ok 'HTTP::Engine::Interface::POE';
 
 my $port = 3535;
 
+my $test_case_counter = 0;
+
 HTTP::Engine::Interface::POE->new(
     request_handler => sub {
         my $c = shift;
-        $c->res->body('ok');
+        $c->res->body($c->req->method);
     },
     alias => 'he',
     port => $port,
@@ -28,26 +30,47 @@ POE::Session->create(
     inline_states => {
         _start => sub {
             my ($kernel, ) = @_[POE::Session::KERNEL()];
-            my $req = HTTP::Request->new(
-                'GET',
-                "http://localhost:$port/",
-            );
             $kernel->post(
                 'ua',
                 'request',
                 'response',
-                $req
+                HTTP::Request->new(
+                    'GET',
+                    "http://localhost:$port/",
+                )
             );
+            do {
+                my $req = HTTP::Request->new(
+                    'POST',
+                    "http://localhost:$port/",
+                    HTTP::Headers->new(),
+                    "FOO=BAR",
+                );
+                $req->protocol('HTTP/0.9'); # POST request in HTTP/0.9 is invalid.
+                $kernel->post(
+                    'ua',
+                    'request',
+                    'response',
+                    $req,
+                );
+            }
         },
         'response' => sub {
             my ($kernel, ) = @_[POE::Session::KERNEL()];
             my $req = @_[POE::Session::ARG0()]->[0];
             my $res = @_[POE::Session::ARG1()]->[0];
 
-            is $res->code, 200;
-            is $res->content, 'ok';
-
-            $kernel->stop;
+            {
+                0 => sub {
+                    is $res->code, 400;
+                    like $res->content, qr{POST request detected in an HTTP 0.9 transaction};
+                },
+                1 => sub {
+                    is $res->code, 200;
+                    is $res->content, 'GET';
+                    $kernel->stop;
+                }
+            }->{$test_case_counter++}->();
         },
     },
 );

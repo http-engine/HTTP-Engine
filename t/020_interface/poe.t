@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use t::Utils;
 use HTTP::Engine;
 
 eval "use POE;use POE::Session;use POE::Component::Client::HTTP;";
@@ -9,7 +10,7 @@ plan tests => 5;
 
 use_ok 'HTTP::Engine::Interface::POE';
 
-my $port = 3535;
+my $port = empty_port;
 
 my $test_case_counter = 0;
 

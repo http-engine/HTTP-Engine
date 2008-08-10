@@ -7,6 +7,7 @@ use File::Path;
 use FindBin;
 use IO::Socket;
 use Test::More;
+use t::Utils;
 
 plan skip_all => 'set TEST_LIGHTTPD to enable this test' 
     unless $ENV{TEST_LIGHTTPD};
@@ -38,7 +39,7 @@ rmtree 't/tmp/TestApp/t';
 
 # Create a temporary lighttpd config
 my $docroot = "$FindBin::Bin/../t/tmp";
-my $port    = 8529;
+my $port    = empty_port;
 
 # Clean up docroot path
 $docroot =~ s{/t/..}{};

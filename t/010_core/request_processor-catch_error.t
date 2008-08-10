@@ -1,24 +1,22 @@
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More tests => 2;
+use t::Utils;
 use HTTP::Engine;
 use HTTP::Request;
 use IO::Scalar;
 
 tie *STDERR, 'IO::Scalar';
 
-eval {
-    HTTP::Engine->new(
-        interface => {
-            module => 'Test',
-            args => {
-            },
-            request_handler => sub {
-                die "orz";
-            }
+my $res = eval {
+    run_engine(
+        HTTP::Request->new( GET => 'http://localhost/'),
+        sub {
+            die "orz";
         },
-    )->run(HTTP::Request->new( GET => 'http://localhost/'));
+    );
 };
 ok !$@;
+is $res->code, 500;
 
 untie *STDERR;

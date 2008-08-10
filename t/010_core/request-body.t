@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 2;
+use t::Utils;
 use HTTP::Engine;
 use HTTP::Request;
 
@@ -15,19 +16,14 @@ my $req = HTTP::Request->new(
     ),
     $body,
 );
-my $env = {};
 
 # do test
-my $engine = HTTP::Engine->new(
-    interface => {
-        module => 'Test',
-        args => { },
-        request_handler => sub {
-            my $c = shift;
-            is $c->req->raw_body, 'foo=bar';
-            is_deeply $c->req->body_params, { foo => 'bar' };
-        },
+run_engine(
+    $req,
+    sub {
+        my $c = shift;
+        is $c->req->raw_body, 'foo=bar';
+        is_deeply $c->req->body_params, { foo => 'bar' };
     },
 );
-$engine->run($req, $env);
 

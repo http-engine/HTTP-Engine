@@ -12,8 +12,6 @@ use_ok 'HTTP::Engine::Interface::POE';
 
 my $port = empty_port;
 
-my $test_case_counter = 0;
-
 HTTP::Engine::Interface::POE->new(
     request_handler => sub {
         my $c = shift;
@@ -27,18 +25,33 @@ POE::Component::Client::HTTP->spawn(
     Alias => 'ua',
 );
 
+my %case = (
+    'HTTP/0.9' => sub {
+        my($req, $res) = @_;
+        is $res->code, 400;
+        like $res->content, qr{POST request detected in an HTTP 0.9 transaction};
+    },
+    'HTTP/1.1' => sub {
+        my($req, $res) = @_;
+        is $res->code, 200;
+        is $res->content, 'GET';
+    },
+);
+
 POE::Session->create(
     inline_states => {
         _start => sub {
             my ($kernel, ) = @_[POE::Session::KERNEL()];
+            my $req = HTTP::Request->new(
+                'GET',
+                "http://localhost:$port/",
+            );
+            $req->protocol('HTTP/1.1'); # POST request in HTTP/1.1 is valid.
             $kernel->post(
                 'ua',
                 'request',
                 'response',
-                HTTP::Request->new(
-                    'GET',
-                    "http://localhost:$port/",
-                )
+                $req,
             );
             do {
                 my $req = HTTP::Request->new(
@@ -54,24 +67,15 @@ POE::Session->create(
                     'response',
                     $req,
                 );
-            }
+            };
         },
         'response' => sub {
             my ($kernel, ) = @_[POE::Session::KERNEL()];
             my $req = @_[POE::Session::ARG0()]->[0];
             my $res = @_[POE::Session::ARG1()]->[0];
 
-            {
-                0 => sub {
-                    is $res->code, 400;
-                    like $res->content, qr{POST request detected in an HTTP 0.9 transaction};
-                },
-                1 => sub {
-                    is $res->code, 200;
-                    is $res->content, 'GET';
-                    $kernel->stop;
-                }
-            }->{$test_case_counter++}->();
+            (delete $case{$req->protocol})->($req, $res);
+            $kernel->stop unless %case;
         },
     },
 );

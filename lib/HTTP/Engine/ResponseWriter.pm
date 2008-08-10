@@ -3,6 +3,7 @@ use Moose;
 use File::stat;
 use Carp;
 use HTTP::Status ();
+use HTTP::Engine::ResponseFinalizer;
 
 with qw(HTTP::Engine::Role::ResponseWriter);
 
@@ -32,7 +33,7 @@ sub finalize {
     delete $self->{_prepared_write};
 
     $c->res->protocol( $c->req->protocol ) unless $c->res->protocol;
-    $c->res->finalize($c);
+    HTTP::Engine::ResponseFinalizer->finalize( $c->req => $c->res );
 
     $self->_write($self->_response_line($c) . $CRLF) if $self->should_write_response_line;
     $self->_write($c->res->headers->as_string($CRLF));

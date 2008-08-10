@@ -2,6 +2,7 @@
 
 package HTTP::Engine::Interface::Test::ResponseWriter;
 use Moose;
+use HTTP::Engine::ResponseFinalizer;
 
 with qw(HTTP::Engine::Role::ResponseWriter);
 
@@ -13,7 +14,7 @@ has '_response' => (
 sub finalize {
     my ( $self, $c ) = @_;
 
-    $c->res->finalize($c);
+    HTTP::Engine::ResponseFinalizer->finalize($c->req => $c->res);
     $self->_response($c->res->as_http_response);
 }
 

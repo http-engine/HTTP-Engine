@@ -24,4 +24,6 @@ perl Makefile.PL
 HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,inc,-coverage,statement,branch,condition,path,subroutine make test
 cover
 rm t/00_allload.t
-open cover_db/coverage.html
+rm -rf cover_db_view
+mv cover_db cover_db_view
+open cover_db_view/coverage.html

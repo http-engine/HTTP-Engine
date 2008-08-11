@@ -58,11 +58,10 @@ has chunk_size => (
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
-my $rp;
-sub handle_request {
+sub make_context {
     my ( $self, %args ) = @_;
 
-    my $context = $self->context_class->new(
+    $self->context_class->new(
         req => $args{req} || $self->request_class->new(
             request_builder => $self->request_builder,
             ($args{request_args} ? %{ $args{request_args} } : ()),
@@ -72,6 +71,13 @@ sub handle_request {
         ),
         %args,
     );
+}
+
+my $rp;
+sub handle_request {
+    my ( $self, %args ) = @_;
+
+    my $context = $self->make_context(%args);
 
     my $ret = eval {
         $rp = sub { $self };

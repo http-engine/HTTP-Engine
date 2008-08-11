@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 9;
 use HTTP::Engine::Request;
+use HTTP::Engine::Request::Upload;
 use HTTP::Engine::RequestBuilder;
 
 my $req = HTTP::Engine::Request->new(

@@ -21,11 +21,12 @@ HTTP::Engine->new(
             ) : (),
         },
         request_handler => sub {
-            my $c = shift;
+            my $req = shift;
 
-            $c->res->content_type('text/html');
-
-            $c->res->body( render_body( Dumper($c->req) ) );
+            my $res = HTTP::Engine::Response->new;
+            $res->content_type('text/html');
+            $res->body( render_body( Dumper($req) ) );
+            $res;
          }
     },
 )->run;

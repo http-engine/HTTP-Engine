@@ -30,6 +30,11 @@ sub finalize {
 
     delete $self->{_prepared_write};
 
+    # HTTP/1.1's default Connection: close
+    if ($res->protocol =~ m!1.1! && !$res->headers->header('Connection')) {
+        $res->headers->header( Connection => 'close' );
+    }
+
     local *STDOUT = $req->_connection->{output_handle};
     $self->_write($self->_response_line($res) . $CRLF) if $self->should_write_response_line;
     $self->_write($res->headers->as_string($CRLF));

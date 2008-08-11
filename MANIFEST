@@ -75,6 +75,7 @@ t/010_core/request-params.t
 t/010_core/request-parse.t
 t/010_core/request-raw_body.t
 t/010_core/request-secure.t
+t/010_core/request-upload.t
 t/010_core/request-uri.t
 t/010_core/request.t
 t/010_core/request_builder_dummy.t

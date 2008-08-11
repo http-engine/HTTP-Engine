@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-our $VERSION = '0.0.13_1';
+our $VERSION = '0.0.13_2';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;

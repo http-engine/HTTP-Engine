@@ -7,7 +7,7 @@ use Test::Base;
 use File::Temp qw( tempdir );
 use File::Spec;
 
-plan tests => 3*blocks;
+plan tests => 4*blocks;
 
 filters {
     response => [qw/chop/],
@@ -30,15 +30,16 @@ run {
     }
 
     my $upload;
+    my $res = HTTP::Engine::Response->new(
+        status => 200,
+        body   => 'OK!',
+    );
     my $response = HTTP::Engine->new(
         interface => {
             module => 'Test',
             request_handler => sub {
                 my $req = shift;
-                my $res = HTTP::Engine::Response->new(
-                    status => 200,
-                    body   => 'OK!',
-                );
+                my $res = $res;
                 return $res unless $body;
 
                 return $res unless $upload = $req->upload('test_upload_file');
@@ -53,6 +54,27 @@ run {
 
     $response->headers->remove_header('Date');
     my $data = $response->headers->as_string."\n".$response->content;
+    is $data, $block->response;
+
+    my $response2 = HTTP::Engine->new(
+        interface => {
+            module => 'Test',
+            request_handler => sub {
+                my $req = shift;
+                my $res = $res;
+                return $res unless $body;
+
+                return $res unless $upload = $req->upload('test_upload_file');
+                my $upload_body_with_layer = $upload->slurp(':raw');
+                unless ($body eq $upload_body_with_layer) {
+                    $res->body('NG');
+                }
+                return $res;
+            },
+        },
+    )->run($test);
+    $response->headers->remove_header('Date');
+    $data = $response->headers->as_string."\n".$response->content;
     is $data, $block->response;
 
     unless ($body) {

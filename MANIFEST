@@ -3,8 +3,6 @@ examples/dumper.pl
 examples/lighty/lighty.conf
 examples/lighty/lighty_external_fcgi.conf
 examples/lighty/test_fastcgi.pl
-examples/middleware-dumper.pl
-examples/MiddleWare.pm
 examples/plusplus.pl
 examples/poe-dumper.pl
 examples/yamlconfig-dumper.pl
@@ -34,7 +32,6 @@ lib/HTTP/Engine/Interface/FCGI.pm
 lib/HTTP/Engine/Interface/ModPerl.pm
 lib/HTTP/Engine/Interface/POE.pm
 lib/HTTP/Engine/Interface/ServerSimple.pm
-lib/HTTP/Engine/Interface/ServerSimple/ResponseWriter.pm
 lib/HTTP/Engine/Interface/Standalone.pm
 lib/HTTP/Engine/Interface/Standalone/RequestBuilder.pm
 lib/HTTP/Engine/Interface/Standalone/ResponseWriter.pm

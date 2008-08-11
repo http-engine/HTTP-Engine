@@ -7,8 +7,9 @@ use CGI::Simple::Cookie;
 my $res = run_engine(
     HTTP::Request->new('GET', '/'),
     sub {
-        my $c = shift;
-        $c->res->cookies({
+        my $req = shift;
+        my $res = HTTP::Engine::Response->new();
+        $res->cookies({
             'Foo' => CGI::Simple::Cookie->new(
                 -name    => 'Foo',
                 -value   => 'foo',
@@ -25,6 +26,7 @@ my $res = run_engine(
                 secure => 1,
             },
         });
+        $res;
     },
 );
 ok grep /Foo=foo/,    $res->header('Set-Cookie');

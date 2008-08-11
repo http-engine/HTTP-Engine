@@ -27,8 +27,11 @@ HTTP::Engine::Interface::POE->new(
 
 HTTP::Engine::Interface::POE->new(
     request_handler => sub {
-        my $c = shift;
-        $c->res->body($c->req->method);
+        my $req = shift;
+        HTTP::Engine::Response->new(
+            status => 200,
+            body   => $req->method,
+        );
     },
     port => $port2,
 )->run;

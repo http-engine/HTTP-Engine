@@ -3,7 +3,7 @@ use warnings;
 use t::Utils;
 use Test::More;
 
-plan tests => 2*interfaces;
+plan tests => 10*interfaces;
 
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
@@ -28,6 +28,14 @@ daemonize_all \&do_request => (
 );
 
 sub do_request {
+    _do_request();
+    _do_request();
+    _do_request();
+    _do_request();
+    _do_request();
+}
+
+sub _do_request {
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $req = POST("http://localhost:$port/", Content_Type => 'multipart/form-data;', Content => ['test' => ["README"]]);
     my $res = $ua->request($req);

@@ -31,7 +31,7 @@ sub finalize {
     delete $self->{_prepared_write};
 
     # HTTP/1.1's default Connection: close
-    if ($res->protocol =~ m!1.1! && !$res->headers->header('Connection')) {
+    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->headers->header('Connection')) {
         $res->headers->header( Connection => 'close' );
     }
 

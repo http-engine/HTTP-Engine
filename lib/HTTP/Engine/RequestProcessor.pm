@@ -48,14 +48,13 @@ __PACKAGE__->meta->make_immutable;
 no Moose;
 
 my $rp;
-sub make_context {
+sub handle_request {
     my ( $self, %args ) = @_;
 
     my $req = $args{req} || $self->request_class->new(
         request_builder => $self->request_builder,
         ($args{request_args} ? %{ $args{request_args} } : ()),
     );
-}
 
     my $res;
     my $ret = eval {

@@ -11,7 +11,7 @@ no Moose;
 package main;
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use HTTP::Engine::Context;
 use HTTP::Engine::Request;
@@ -34,7 +34,6 @@ do {
    isa_ok $c->res, 'HTTP::Engine::Response';
 };
 
-
 do {
    my $c = $rp->make_context(
        req => t::HTTP::Engine::Request->new,
@@ -44,4 +43,12 @@ do {
    isa_ok $c->res, 't::HTTP::Engine::Response';
 };
 
-
+do {
+   no strict 'refs';
+   no warnings 'redefine';
+   local *HTTP::Engine::Request::new = sub {};
+   local *HTTP::Engine::Response::new = sub {};
+   local $@;
+   eval { $rp->make_context };
+   like $@, qr/Validation failed/;
+};

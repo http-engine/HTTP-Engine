@@ -7,8 +7,7 @@ use URI::WithBase;
 use constant should_write_response_line => 0;
 
 sub run {
-    my ( $self, $request, $env ) = @_;
-    $env ||= \%ENV;
+    my ( $self, $request ) = @_;
 
     $self->handle_request(
         request_args => {

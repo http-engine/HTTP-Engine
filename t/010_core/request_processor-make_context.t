@@ -20,7 +20,6 @@ use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
 
 use HTTP::Engine::RequestProcessor;
-use Data::Dumper;
 
 my $rp = HTTP::Engine::RequestProcessor->new(
     response_writer => HTTP::Engine::ResponseWriter->new( should_write_response_line => 0 ),

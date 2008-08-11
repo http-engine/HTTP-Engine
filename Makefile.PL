@@ -39,7 +39,7 @@ requires 'IO::File';
 requires 'File::Spec::Unix';
 
 requires 'CGI::Simple::Cookie';
-requires 'HTTP::Body' => '0.9';
+requires 'HTTP::Body' => '1.04';
 requires 'HTTP::Headers';
 requires 'URI';
 requires 'URI::QueryParam';

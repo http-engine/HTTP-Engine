@@ -27,8 +27,7 @@ do {
             my $req = shift;
             isa_ok $req, 'HTTP::Engine::Request';
             HTTP::Engine::Response->new( body => '' );
-        },
-        ()
+        }
     );
 };
 
@@ -45,7 +44,7 @@ do {
                 ok !!!$req;
                 HTTP::Engine::Response->new( body => '' );
             },
-            ()
+            ( request_args => undef )
         );
     };
     like $@, qr/Can't call method/;

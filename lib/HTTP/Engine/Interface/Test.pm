@@ -10,7 +10,6 @@ sub run {
     my ( $self, $request, %args ) = @_;
 
     $self->handle_request(
-        %args,
         request_args => {
             uri        => URI::WithBase->new( $request->uri ),
             base       => do {
@@ -32,6 +31,7 @@ sub run {
         },
         response_args => {
         },
+        %args,
     );
 
     $self->response_writer->get_response; # FIXME yuck, should be a ret from handle_request

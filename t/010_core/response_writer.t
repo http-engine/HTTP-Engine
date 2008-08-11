@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 use IO::Scalar;
 use_ok "HTTP::Engine::ResponseWriter";
 use HTTP::Engine::Request;
@@ -18,6 +18,13 @@ my $res = HTTP::Engine::Response->new(status => '200', body => 'OK');
 tie *STDOUT, 'IO::Scalar', \my $out;
 my $rw = HTTP::Engine::ResponseWriter->new(should_write_response_line => 1);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+
+do {
+    local $@;
+    eval { $rw->finalize( $req ); };
+    like $@, qr/^argument missing/, 'argument missing';
+};
+
 $rw->finalize($req, $res);
 untie *STDOUT;
 

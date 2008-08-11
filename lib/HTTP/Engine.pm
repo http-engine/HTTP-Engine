@@ -44,8 +44,8 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
   use Data::Dumper;
   sub handle_request {
-      my $c = shift;
-      $c->res->body( Dumper($c->req) );
+      my $req = shift;
+      HTTP::Engine::Response->new( body => Dumper($req) );
   }
 
 
@@ -53,6 +53,14 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 Version 0.0.x is a concept release, the internal interface is still fluid. 
 It is mostly based on the code of Catalyst::Engine.
+
+=head1 COMPATIBILITY
+
+version over 0.0.13_1 is uncompatible of version under 0.0.13_1.
+
+useing L<HTTP::Engine::Conpat> module if you want compatibility of version under 0.0.13_1.
+
+version over 0.0.13_1 is unsupported of context and middleware.
 
 =head1 DESCRIPTION
 
@@ -126,26 +134,6 @@ Or you can let HTTP::Engine instantiate the interface for you:
       }
     }
   )->run();
-
-=head1 MIDDLEWARES
-
-For all non-core middlewares (consult #codrepos first), use the HTTPEx::
-namespace. For example, if you have a plugin module named "HTTPEx::Middleware::Foo",
-you could load it as
-
-  use HTTP::Engine middlewares => [ qw( +HTTPEx::Plugin::Foo ) ];
-
-=head1 METHODS
-
-=over 4
-
-=item load_middleware(middleware)
-
-=item load_middlewares(qw/ middleware middleware /)
-
-Loads the given middleware into the HTTP::Engine.
-
-=back
 
 =head1 CONCEPT
 

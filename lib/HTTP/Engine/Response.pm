@@ -79,7 +79,12 @@ HTTP::Engine::Response - HTTP response object
 
 =head1 SYNOPSIS
 
-    $c->res
+    sub handle_request {
+        my $req = shift;
+        my $res = HTTP::Engine::Response->new;
+        $res->body('foo');
+        return $res;
+    }
 
 =head1 ATTRIBUTES
 
@@ -98,7 +103,7 @@ Returns a reference to a hash containing cookies to be set. The keys of the
 hash are the cookies' names, and their corresponding values are hash
 references used to construct a L<CGI::Cookie> object.
 
-        $c->res->cookies->{foo} = { value => '123' };
+        $res->cookies->{foo} = { value => '123' };
 
 The keys of the hash reference on the right correspond to the L<CGI::Cookie>
 parameters of the same name, except they are used without a leading dash.
@@ -108,20 +113,20 @@ Possible parameters are:
 
 Sets or returns the HTTP status.
 
-    $c->res->status(404);
+    $res->status(404);
 
 =item headers
 
 Returns an L<HTTP::Headers> object, which can be used to set headers.
 
-    $c->res->headers->header( 'X-HTTP-Engine' => $HTTP::Engine::VERSION );
+    $res->headers->header( 'X-HTTP-Engine' => $HTTP::Engine::VERSION );
 
 =item redirect
 
 Causes the response to redirect to the specified URL.
 
-    $c->res->redirect( 'http://slashdot.org' );
-    $c->res->redirect( 'http://slashdot.org', 307 );
+    $res->redirect( 'http://slashdot.org' );
+    $res->redirect( 'http://slashdot.org', 307 );
 
 =item set_http_response
 

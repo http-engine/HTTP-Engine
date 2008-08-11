@@ -56,8 +56,8 @@ HTTP::Engine::Interface::Test - HTTP::Engine Test Interface
           module => 'Test',
       },
       request_handler => sub {
-          my $c = shift;
-          $c->res->body( Dumper($c) );
+          my $req = shift;
+          HTTP::Engine::Response->new( body => Dumper($req) );
       }
   )->run(HTTP::Request->new( GET => 'http://localhost/'), \%ENV);
 

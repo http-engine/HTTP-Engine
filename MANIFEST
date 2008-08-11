@@ -1,7 +1,5 @@
 Changes
 examples/dumper.pl
-examples/lighty/access.log
-examples/lighty/error.log
 examples/lighty/lighty.conf
 examples/lighty/lighty_external_fcgi.conf
 examples/lighty/test_fastcgi.pl

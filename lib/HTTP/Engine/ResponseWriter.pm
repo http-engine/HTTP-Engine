@@ -31,8 +31,8 @@ sub finalize {
     delete $self->{_prepared_write};
 
     # HTTP/1.1's default Connection: close
-    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->headers->header('Connection')) {
-        $res->headers->header( Connection => 'close' );
+    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->header('Connection')) {
+        $res->header( Connection => 'close' );
     }
 
     local *STDOUT = $req->_connection->{output_handle};
@@ -47,7 +47,7 @@ sub _output_body  {
     my $body = $res->body;
 
     no warnings 'uninitialized';
-    if (Scalar::Util::blessed($body) && $body->can('read') or ref($body) eq 'GLOB') {
+    if (Scalar::Util::blessed($body) && ($body->can('read') || (ref($body) eq 'GLOB'))) {
         while (!eof $body) {
             read $body, my ($buffer), $self->chunk_size;
             last unless $self->_write($buffer);

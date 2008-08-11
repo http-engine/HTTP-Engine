@@ -2,7 +2,7 @@ use Test::Base;
 use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine;
 
-plan tests => 9;
+plan tests => 9+(1*blocks);
 
 filters {
     req => [qw/yaml/],
@@ -21,6 +21,12 @@ run {
     HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
     eval $block->test;
     die $@ if $@;
+
+    do {
+        local $@;
+        eval { HTTP::Engine::ResponseFinalizer->finalize( $req ) };
+        like $@, qr/argument missing: \$res/;
+    };
 };
 
 __END__

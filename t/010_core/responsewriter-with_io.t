@@ -57,3 +57,32 @@ Content-Type: text/html
 Status: 200
 
 OK!
+
+===
+--- input
+my $writer = HTTP::Engine::ResponseWriter->new(
+    should_write_response_line => 1,
+);
+
+tie *STDOUT, 'IO::Scalar', \my $out;
+
+my $req = HTTP::Engine::Request->new(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
+);
+my $res = HTTP::Engine::Response->new(body => 'OK!', status => 200);
+$res->header( Connection => 'keepalive' );
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+$writer->finalize($req, $res);
+
+untie *STDOUT;
+
+$out;
+--- expected
+HTTP/1.1 200 OK
+Connection: keepalive
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+
+OK!

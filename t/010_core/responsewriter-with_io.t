@@ -51,6 +51,7 @@ untie *STDOUT;
 $out;
 --- expected
 HTTP/1.1 200 OK
+Connection: close
 Content-Length: 3
 Content-Type: text/html
 Status: 200

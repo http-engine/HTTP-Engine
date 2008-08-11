@@ -23,6 +23,7 @@ untie *STDOUT;
 
 my $expected = <<'...';
 HTTP/1.1 200 OK
+Connection: close
 Content-Length: 2
 Content-Type: text/html
 Status: 200

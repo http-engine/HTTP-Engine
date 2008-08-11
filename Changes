@@ -2,7 +2,7 @@ Revision history for Perl extension HTTP::Engine
 
 0.0.13_2 2008-08-11T16:47:38+09:00
          - !!! incompatible of version under 0.0.13_1 !!!
-           using HTTP::Engine::Conpat module if you want compatibility of version under 0.0.13_1
+           using HTTP::Engine::Compat module if you want compatibility of version under 0.0.13_1
          - delete HTTP::Engine::Context tokuhirom++
            unsupported of context and middleware
          - fix $req->uploads dont work

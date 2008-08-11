@@ -3,7 +3,7 @@ use warnings;
 use lib '.';
 use lib 't/testlib';
 use HTTP::Engine middlewares => ['+t::DummyMiddlewareImport', 'Foo', 'Bar'];
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 our $setup;
 is $main::setup, 'ok';
@@ -28,4 +28,13 @@ do {
         HTTP::Engine->load_middlewares(qw/ Die /);
     };
     like $@, qr|Can't locate HTTPEx/Middleware/Die.pm|;
+};
+
+
+do {
+    local $@;
+    eval {
+        HTTP::Engine->load_middlewares(qw/ +Die /);
+    };
+    like $@, qr|Can't locate Die.pm|;
 };

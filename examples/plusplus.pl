@@ -20,8 +20,8 @@ HTTP::Engine->new(
 
 my %karma = {};
 sub handle_request {
-    my $c   = shift;
-    my $req = $c->req;
+    my $req = shift;
+    my $res = HTTP::Engine::Response->new;
 
     my $method = $req->method;
     my $path = $req->uri->path;
@@ -43,20 +43,20 @@ sub handle_request {
             $karma{$name}->{$pm}++;
         }
         else {
-            return $c->res->status(403);
+            return $res->status(403);
         }
     }
     elsif ( $method eq 'GET' || $method eq 'HEAD' ) {
         unless ( $name && $karma{$name} ) {
-            return $c->res->status(404);
+            return $res->status(404);
         }
     }
     else {
-        return $c->res->status(400);
+        return $res->status(400);
     }
     my $headers = HTTP::Headers->new(
         Contet_Type => 'text/html',
     );
     my $body = Dump($karma{$name});
-    $c->res->body( $body );
+    $res->body( $body );
 }

@@ -1,7 +1,8 @@
 use strict;
 use warnings;
 use Test::More tests => 6;
-use HTTP::Engine::Context;
+use HTTP::Engine::Compat;
+use HTTP::Engine::Compat::Context;
 use HTTP::Engine::ResponseFinalizer;
 
 do {

@@ -2,7 +2,7 @@ use Test::Base;
 use IO::Scalar;
 use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::Response;
-use HTTP::Engine::Context;
+use HTTP::Engine::Request;
 use HTTP::Response;
 use File::Temp qw/:seekable/;
 
@@ -38,15 +38,13 @@ $tmp->seek(0, File::Temp::SEEK_SET);
 
 tie *STDOUT, 'IO::Scalar', \my $out;
 
-my $c = HTTP::Engine::Context->new(
-    req => HTTP::Engine::Request->new,
-    res => HTTP::Engine::Response->new,
-    env => {},
+my $req = HTTP::Engine::Request->new(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
 );
-$c->req->protocol('HTTP/1.1');
-$c->req->method('GET');
-$c->res->body( $tmp );
-$writer->finalize($c);
+my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+$writer->finalize($req, $res);
 
 untie *STDOUT;
 

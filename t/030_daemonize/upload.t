@@ -18,8 +18,11 @@ daemonize_all \&do_request => (
             port => $port,
         },
         request_handler => sub {
-            my $c = shift;
-            $c->res->body($c->req->upload("test")->slurp());
+            my $req = shift;
+            HTTP::Engine::Response->new(
+                status => 200,
+                body   => $req->upload("test")->slurp(),
+            );
         },
     },
 );

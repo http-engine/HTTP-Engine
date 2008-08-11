@@ -7,6 +7,7 @@ plan tests => 2;
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 use HTTP::Engine;
+use t::Utils;
 
 my $port = empty_port;
 
@@ -45,8 +46,8 @@ sub run_server {
                 port => $port,
             },
             request_handler => sub {
-                my $c = shift;
-                $c->res->body($c->req->upload("test")->slurp());
+                my $req = shift;
+                HTTP::Engine::Response->new(body => $req->upload("test")->slurp(), status => 200);
             },
         },
     )->run;

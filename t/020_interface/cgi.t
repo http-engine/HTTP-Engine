@@ -24,9 +24,12 @@ run {
             module => 'CGI',
             args => { },
             request_handler => sub {
-                my $c = shift;
-                $c->res->header( 'X-Req-Base' => $c->req->base );
-                $c->res->body('OK!');
+                my $req = shift;
+                HTTP::Engine::Response->new(
+                    status  => 200,
+                    headers => HTTP::Headers->new( 'X-Req-Base' => $req->base, ),
+                    body    => 'OK!',
+                );
             },
         },
     )->run;

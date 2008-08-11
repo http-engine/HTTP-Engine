@@ -2,8 +2,8 @@ package HTTP::Engine::Interface::ServerSimple::ResponseWriter;
 use Moose::Role;
 
 before finalize => sub {
-    my($self, $c) = @_;
-    $c->res->headers->header(
+    my($self, $req, $res) = @_;
+    $res->headers->header(
         Connection => 'close'
     );
 };

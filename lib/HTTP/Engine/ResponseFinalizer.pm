@@ -9,11 +9,8 @@ sub finalize {
     my ($class, $req, $res) = @_;
     Carp::confess 'argument missing: $res' unless $res;
 
-    # Handle redirects
-    if (my $location = $res->location ) {
-        $res->header( Location => $req->absolute_url($location) );
-        $res->body($res->status . ': Redirect') unless $res->body;
-    }
+    # protocol
+    $res->protocol( $req->protocol ) unless $res->protocol;
 
     # Content-Length
     $res->content_length(0);

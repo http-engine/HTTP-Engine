@@ -12,11 +12,11 @@ my $engine = HTTP::Engine->new(
             port    => 9999,
         },
         request_handler => sub {
-            my $c = shift;
+            my $req = shift;
             local $Data::Dumper::Sortkeys = 1;
-            die "OK!" if ($c->req->body_params->{'foo'} || '') eq 'ok';
-            my $req_dump = Dumper( $c->req );
-            my $raw      = $c->req->raw_body;
+            die "OK!" if ($req->body_params->{'foo'} || '') eq 'ok';
+            my $req_dump = Dumper( $req );
+            my $raw      = $req->raw_body;
             my $body     = strip tt q{ 
                 <form method="post">
                     <input type="text" name="foo" />
@@ -32,7 +32,10 @@ my $engine = HTTP::Engine->new(
                 <pre>[% req_dump | html %]</pre>
             };
 
-            $c->res->body($body);
+            HTTP::Engine::Response->new(
+                status => 200,
+                body   => $body,
+            );
         },
     },
 );

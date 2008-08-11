@@ -70,12 +70,6 @@ sub _build_connection_info {
     $self->request_builder->_build_connection_info($self);
 }
 
-has context => (
-    is       => 'rw',
-    isa      => 'HTTP::Engine::Context',
-    weak_ref => 1,
-);
-
 has cookies => (
     is      => 'rw',
     isa     => 'HashRef',
@@ -230,7 +224,7 @@ has uploads => (
 
 sub _build_uploads {
     my $self = shift;
-    $self->request_builder->_prepare_uploads($self->context);
+    $self->request_builder->_prepare_uploads($self);
 }
 
 no Moose;

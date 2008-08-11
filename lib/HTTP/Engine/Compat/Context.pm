@@ -1,4 +1,4 @@
-package HTTP::Engine::Context;
+package HTTP::Engine::Compat::Context;
 use Moose;
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Context - Context object
+HTTP::Engine::Compat::Context - Context object
 
 =head1 SYNOPSIS
 

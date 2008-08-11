@@ -19,3 +19,4 @@
 ^\.shipit$
 ^nytprof
 ^cover_db
+\.sw[po]$

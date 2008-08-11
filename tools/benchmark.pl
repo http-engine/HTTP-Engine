@@ -11,8 +11,10 @@ my $engine = HTTP::Engine->new(
             port            => 9999,
         },
         request_handler => sub {
-            my $c = shift;
-            $c->res->status(200);
+            my $req = shift;
+            HTTP::Engine::Response->new(
+                status => 200,
+            )
         },
     }
 );

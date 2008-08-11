@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib '.';
 use lib 't/testlib';
-use HTTP::Engine middlewares => ['+t::DummyMiddlewareImport', 'Foo', 'Bar'];
+use HTTP::Engine::Compat middlewares => ['+t::DummyMiddlewareImport', 'Foo', 'Bar'];
 use Test::More tests => 5;
 
 our $setup;

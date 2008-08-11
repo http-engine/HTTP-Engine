@@ -9,6 +9,7 @@ use URI;
 use URI::QueryParam;
 use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
+use HTTP::Engine::ResponseFinalizer;
 
 with qw(HTTP::Engine::Role::RequestProcessor);
 
@@ -17,12 +18,6 @@ has handler => (
     is       => 'rw',
     isa      => 'CodeRef',
     required => 1,
-);
-
-has context_class => (
-    is => 'rw',
-    isa => 'ClassName',
-    default => 'HTTP::Engine::Context',
 );
 
 has request_class => (
@@ -49,55 +44,44 @@ has response_writer => (
     required => 1,
 );
 
-has chunk_size => (
-    is      => 'ro',
-    isa     => 'Int',
-    default => 4096,
-);
-
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
 sub make_context {
     my ( $self, %args ) = @_;
 
-    $self->context_class->new(
-        req => $args{req} || $self->request_class->new(
-            request_builder => $self->request_builder,
-            ($args{request_args} ? %{ $args{request_args} } : ()),
-        ),
-        res => $args{res} || $self->response_class->new(
-            ($args{response_args} ? %{ $args{response_args} } : ()),
-        ),
-        %args,
+    my $req = $args{req} || $self->request_class->new(
+        request_builder => $self->request_builder,
+        ($args{request_args} ? %{ $args{request_args} } : ()),
     );
 }
 
-my $rp;
-sub handle_request {
-    my ( $self, %args ) = @_;
-
-    my $context = $self->make_context(%args);
-
+    my $res;
     my $ret = eval {
         $rp = sub { $self };
-        call_handler($context);
+        $res = call_handler($req);
+        unless (Scalar::Util::blessed($res) && $res->isa('HTTP::Engine::Response')) {
+            die "You should return instance of HTTP::Engine::Response.";
+        }
     };
     if (my $e = $@) {
         print STDERR $e;
-        $context->res->status(500);
-        $context->res->body('internal server error');
+        $res = HTTP::Engine::Response->new(
+            status => 500,
+            body => 'internal server errror',
+        );
     }
 
-    $self->response_writer->finalize($context);
+    HTTP::Engine::ResponseFinalizer->finalize( $req => $res );
+    $self->response_writer->finalize($req, $res);
 
     $ret;
 }
 
 # hooked by middlewares.
 sub call_handler {
-    my $context = shift;
-    $rp->()->handler->($context);
+    my $req = shift;
+    $rp->()->handler->($req);
 }
 
 1;

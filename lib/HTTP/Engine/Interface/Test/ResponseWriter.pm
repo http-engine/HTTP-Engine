@@ -12,10 +12,10 @@ has '_response' => (
 );
 
 sub finalize {
-    my ( $self, $c ) = @_;
+    my ( $self, $req, $res ) = @_;
 
-    HTTP::Engine::ResponseFinalizer->finalize($c->req => $c->res);
-    $self->_response($c->res->as_http_response);
+    HTTP::Engine::ResponseFinalizer->finalize($req => $res);
+    $self->_response($res->as_http_response);
 }
 
 sub get_response {

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use lib '.';
-use HTTP::Engine middlewares => ['+t::DummyMiddlewareWrap'];
+use HTTP::Engine::Compat middlewares => ['+t::DummyMiddlewareWrap'];
 use Test::More tests => 2;
 use t::Utils;
 

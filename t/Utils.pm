@@ -7,7 +7,7 @@ use HTTP::Engine;
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine /],
+    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine ok_response check_port wait_port /],
     groups  => { default => [':all'] }
 };
 
@@ -81,6 +81,41 @@ sub run_engine {
             request_handler => $cb,
         },
     )->run($req);
+}
+
+sub ok_response {
+    HTTP::Engine::Response->new(
+        status => 200,
+        body => 'ok',
+    );
+}
+
+sub check_port {
+    my ( $port ) = @_;
+
+    my $remote = IO::Socket::INET->new(
+        Proto    => "tcp",
+        PeerAddr => '127.0.0.1',
+        PeerPort => $port
+    );
+    if ($remote) {
+        close $remote;
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+sub wait_port {
+    my $port = shift;
+
+    my $retry = 10;
+    while ($retry--) {
+        return if check_port($port);
+        sleep 1;
+    }
+    die "cannot open port: $port";
 }
 
 1;

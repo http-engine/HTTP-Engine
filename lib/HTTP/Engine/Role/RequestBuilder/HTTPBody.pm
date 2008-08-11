@@ -66,9 +66,8 @@ sub _handle_read_chunk {
 }
 
 sub _prepare_uploads  {
-    my($self, $c) = @_;
+    my($self, $req) = @_;
 
-    my $req     = $c->req;
     my $uploads = $req->http_body->upload;
     my %uploads;
     for my $name (keys %{ $uploads }) {

@@ -34,15 +34,19 @@ run {
         interface => {
             module => 'Test',
             request_handler => sub {
-                my $c = shift;
-                $c->res->body('OK!');
-                return unless $body;
+                my $req = shift;
+                my $res = HTTP::Engine::Response->new(
+                    status => 200,
+                    body   => 'OK!',
+                );
+                return $res unless $body;
 
-                return unless $upload = $c->req->upload('test_upload_file');
+                return $res unless $upload = $req->upload('test_upload_file');
                 my $upload_body = $upload->slurp;
                 unless ($body eq $upload_body) {
-                    $c->res->body('NG');
+                    $res->body('NG');
                 }
+                return $res;
             },
         },
     )->run($test);

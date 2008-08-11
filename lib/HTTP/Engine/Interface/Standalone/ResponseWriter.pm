@@ -9,10 +9,10 @@ has keepalive => (
 );
 
 before finalize => sub {
-    my($self, $c) = @_;
+    my($self, $req, $res) = @_;
 
-    $c->res->headers->date(time);
-    $c->res->headers->header(
+    $res->headers->date(time);
+    $res->headers->header(
         Connection => $self->keepalive ? 'keep-alive' : 'close'
     );
 };

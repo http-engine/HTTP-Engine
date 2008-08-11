@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 4;
 use t::Utils;
-use HTTP::Engine;
+use HTTP::Engine::Compat;
 use HTTP::Request;
 use CGI::Simple::Cookie;
 
@@ -19,11 +19,10 @@ do {
 
     # do test
     run_engine($req, sub {
-        my $req = shift;
-        is $req->cookie('Foo')->value, 'Bar';
-        is $req->cookie('Bar')->value, 'Baz';
-        is_deeply $req->cookies, {Foo => 'Foo=Bar; path=/', Bar => 'Bar=Baz; path=/'};
-        return ok_response;
+        my $c = shift;
+        is $c->req->cookie('Foo')->value, 'Bar';
+        is $c->req->cookie('Bar')->value, 'Baz';
+        is_deeply $c->req->cookies, {Foo => 'Foo=Bar; path=/', Bar => 'Bar=Baz; path=/'};
     });
 };
 
@@ -37,9 +36,8 @@ do {
 
     # do test
     run_engine($req, sub {
-        my $req = shift;
-        is_deeply $req->cookies, {};
-        return ok_response;
+        my $c = shift;
+        is_deeply $c->req->cookies, {};
     });
 };
 

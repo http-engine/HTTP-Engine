@@ -2,7 +2,6 @@ package HTTP::Engine;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
 our $VERSION = '0.0.13_1';
-use HTTP::Engine::Context;
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
@@ -14,46 +13,6 @@ has 'interface' => (
     coerce  => 1,
     handles => [ qw(run load_plugins) ],
 );
-
-sub import {
-    my($class, %args) = @_;
-    return unless $args{middlewares} && ref $args{middlewares} eq 'ARRAY';
-    $class->load_middlewares(@{ $args{middlewares} });
-}
-
-sub load_middlewares {
-    my ($class, @middlewares) = @_;
-    for my $middleware (@middlewares) {
-        $class->load_middleware( $middleware );
-    }
-}
-
-sub load_middleware {
-    my ($class, $middleware) = @_;
-
-    my $pkg;
-    if (($pkg = $middleware) =~ s/^(\+)//) {
-        Class::MOP::load_class($pkg);
-    } else {
-        $pkg = 'HTTP::Engine::Middleware::' . $middleware;
-        unless (eval { Class::MOP::load_class($pkg) }) {
-            $pkg = 'HTTPEx::Middleware::' . $middleware;
-            Class::MOP::load_class($pkg);
-        }
-    }
-
-    if ($pkg->meta->has_method('setup')) {
-        $pkg->setup();
-    }
-
-    if ($pkg->meta->has_method('wrap')) {
-        HTTP::Engine::RequestProcessor->meta->make_mutable;
-        HTTP::Engine::RequestProcessor->meta->add_around_method_modifier(
-            call_handler => $pkg->meta->get_method('wrap')->body
-        );
-        HTTP::Engine::RequestProcessor->meta->make_immutable;
-    }
-}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

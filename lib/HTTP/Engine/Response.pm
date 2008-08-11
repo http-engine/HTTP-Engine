@@ -25,11 +25,6 @@ has protocol => (
 #    isa     => 'Str',
 );
 
-has location => (
-    is  => 'rw',
-    isa => 'Str',
-);
-
 has status => (
     is      => 'rw',
     isa     => 'Int',
@@ -50,17 +45,6 @@ sub is_redirect { HTTP::Status::is_redirect (shift->status) }
 sub is_error    { HTTP::Status::is_error    (shift->status) }
 
 *output = \&body;
-
-sub redirect {
-    my $self = shift;
-
-    if (@_) {
-        $self->location( shift );
-        $self->status( shift || 302 );
-    }
-
-    $self->location;
-}
 
 sub set_http_response {
     my ($self, $res) = @_;

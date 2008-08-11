@@ -138,6 +138,7 @@ sub daemon_detach {
 
 
 use HTTP::Engine::ResponseWriter;
+HTTP::Engine::ResponseWriter->meta->make_mutable;
 HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
     my($self, $buffer) = @_;
 
@@ -154,6 +155,7 @@ HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
     # but a syswrite appears to work properly.
     *STDOUT->syswrite($buffer);
 });
+HTTP::Engine::ResponseWriter->meta->make_immutable;
 
 1;
 __END__

@@ -17,11 +17,16 @@ run {
         interface => {
             module => 'Test',
             request_handler => sub {
-                my $c = shift;
+                my $req = shift;
+                my $res = HTTP::Engine::Response->new(
+                    headers => HTTP::Headers->new(
+                        'X-Req-Test' => "ping"
+                    ),
+                    body => 'OK!',
+                );
                 eval $block->code;
                 die $@ if $@;
-                $c->res->header( 'X-Req-Test' => "ping" );
-                $c->res->body('OK!');
+                return $res;
             },
         },
     )->run(HTTP::Request->new( GET => 'http://localhost/'));
@@ -49,9 +54,9 @@ X-Req-Test: ping
 
 OK!
 
-=== $c->req->base
+=== $req->base
 --- code
-$c->res->header('X-Req-Base' => $c->req->base);
+$res->header('X-Req-Base' => $req->base);
 --- response
 Content-Length: 3
 Content-Type: text/html

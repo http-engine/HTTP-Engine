@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 2;
 use t::Utils;
-use HTTP::Engine;
+use HTTP::Engine::Compat;
 use HTTP::Request;
 
 # prepare
@@ -21,10 +21,9 @@ my $req = HTTP::Request->new(
 run_engine(
     $req,
     sub {
-        my $req = shift;
-        is $req->raw_body, 'foo=bar';
-        is_deeply $req->body_params, { foo => 'bar' };
-        return ok_response;
+        my $c = shift;
+        is $c->req->raw_body, 'foo=bar';
+        is_deeply $c->req->body_params, { foo => 'bar' };
     },
 );
 

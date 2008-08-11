@@ -55,7 +55,7 @@ sub _finalize_cookies  {
                 -expires => $val->{expires},
                 -domain  => $val->{domain},
                 -path    => $val->{path},
-                -secure  => $val->{secure} || 0
+                -secure  => ($val->{secure} || 0)
             )
         );
 

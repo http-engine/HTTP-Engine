@@ -47,6 +47,7 @@ has response_writer => (
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
+my $rp;
 sub make_context {
     my ( $self, %args ) = @_;
 

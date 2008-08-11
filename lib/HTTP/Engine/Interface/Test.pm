@@ -7,9 +7,10 @@ use URI::WithBase;
 use constant should_write_response_line => 0;
 
 sub run {
-    my ( $self, $request ) = @_;
+    my ( $self, $request, %args ) = @_;
 
     $self->handle_request(
+        %args,
         request_args => {
             uri        => URI::WithBase->new( $request->uri ),
             base       => do {

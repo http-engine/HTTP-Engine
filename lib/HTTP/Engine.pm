@@ -33,7 +33,7 @@ sub load_middleware {
 
     my $pkg;
     if (($pkg = $middleware) =~ s/^(\+)//) {
-        Class::MOP::load_class($pkg) or die $@;
+        Class::MOP::load_class($pkg);
     } else {
         $pkg = 'HTTP::Engine::Middleware::' . $middleware;
         unless (eval { Class::MOP::load_class($pkg) }) {

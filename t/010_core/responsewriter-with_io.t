@@ -1,3 +1,8 @@
+package DummyIO;
+use overload qw{""} => sub { 'bless' };
+sub new { bless {}, shift }
+
+package main;
 use Test::Base;
 use IO::Scalar;
 use HTTP::Engine::ResponseWriter;
@@ -58,6 +63,71 @@ Status: 200
 
 OK!
 
+===
+--- input
+my $writer = HTTP::Engine::ResponseWriter->new(
+    should_write_response_line => 1,
+);
+
+my $tmp = DummyIO->new;
+
+tie *STDOUT, 'IO::Scalar', \my $out;
+
+my $req = HTTP::Engine::Request->new(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
+);
+my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+$writer->finalize($req, $res);
+
+untie *STDOUT;
+
+$out;
+--- expected
+HTTP/1.1 200 OK
+Connection: close
+Content-Length: 5
+Content-Type: text/html
+Status: 200
+
+bless
+
+===
+--- input
+my $writer = HTTP::Engine::ResponseWriter->new(
+    should_write_response_line => 1,
+);
+
+
+my $ftmp = File::Temp->new();
+$ftmp->write('dummy'x5000);
+$ftmp->flush();
+$ftmp->seek(0, File::Temp::SEEK_SET);
+
+open my $tmp, '<', $ftmp->filename or die $!;
+tie *STDOUT, 'IO::Scalar', \my $out;
+
+my $req = HTTP::Engine::Request->new(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
+);
+my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+$writer->finalize($req, $res);
+
+untie *STDOUT;
+
+$out;
+
+--- expected eval
+"HTTP/1.1 200 OK
+Connection: close
+Content-Length: 25000
+Content-Type: text/html
+Status: 200
+
+".('dummy'x5000)
 ===
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(

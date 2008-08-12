@@ -34,6 +34,8 @@ coerce Uri, from Str => via {
     # generate base uri
     my $uri = URI->new($_);
     my $base = $uri->path;
+    $base =~ s{^/+}{};
+    $uri->path($base);
     $base .= '/' unless $base =~ /\/$/;
     $uri->query(undef);
     $uri->path($base);

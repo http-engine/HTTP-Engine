@@ -2,19 +2,35 @@ use strict;
 use warnings;
 use Test::Base;
 use HTTP::Engine::Request;
+use HTTP::Engine::RequestBuilder;
 
-plan tests => 2*blocks;
+plan tests => 4*blocks;
 
 filters {
     args            => ['yaml'],
+    add_env         => ['yaml'],
     expected_params => ['eval'],
 };
 
 run {
     my $block = shift;
-    my $req = HTTP::Engine::Request->new( uri => $block->base );
+    local %ENV = %ENV;
+    if ($block->add_env && ref($block->add_env) eq 'HASH') {
+        while (my($key, $val) = each %{ $block->add_env }) {
+            $ENV{$key} = $val;
+        }
+    }
+    my %args;
+    $args{uri} = $block->base if $block->base; 
+    my $req = HTTP::Engine::Request->new(
+        request_builder => HTTP::Engine::RequestBuilder->new,
+        %args
+    );
+
+    is $req->uri, ($block->base || $block->expected_uri);
     is_deeply $req->query_parameters, $block->expected_params;
     is $req->uri_with( $block->args || {} ), $block->expected;
+    is $req->base, $block->expected_base;
 };
 
 __END__
@@ -23,6 +39,14 @@ __END__
 --- base: http://example.com/
 --- args
 --- expected: http://example.com/
+--- expected_base: http://example.com/
+--- expected_params: {}
+
+===
+--- base: http://example.com
+--- args
+--- expected: http://example.com
+--- expected_base: http://example.com/
 --- expected_params: {}
 
 ===
@@ -30,6 +54,23 @@ __END__
 --- args
   foo: bar
 --- expected: http://example.com/?foo=bar
+--- expected_base: http://example.com/
+--- expected_params: {}
+
+===
+--- base: http://example.com/exit/
+--- args
+  foo: bar
+--- expected: http://example.com/exit/?foo=bar
+--- expected_base: http://example.com/exit/
+--- expected_params: {}
+
+===
+--- base: http://example.com/sample
+--- args
+  foo: bar
+--- expected: http://example.com/sample?foo=bar
+--- expected_base: http://example.com/sample/
 --- expected_params: {}
 
 ===
@@ -39,6 +80,7 @@ __END__
     - bar
     - baz
 --- expected: http://example.com/?foo=bar&foo=baz
+--- expected_base: http://example.com/
 --- expected_params: {}
 
 ===
@@ -46,6 +88,7 @@ __END__
 --- args
   foo: bar
 --- expected: http://example.com/?aco=tie&foo=bar
+--- expected_base: http://example.com/
 --- expected_params: { aco => 'tie' }
 
 ===
@@ -55,6 +98,7 @@ __END__
     - bar
     - baz
 --- expected: http://example.com/?aco=tie&foo=bar&foo=baz
+--- expected_base: http://example.com/
 --- expected_params: { aco => 'tie' }
 
 ===
@@ -64,6 +108,7 @@ __END__
     - bar
     - baz
 --- expected: http://example.com/?aco=tie&bar=baz&foo=bar&foo=baz
+--- expected_base: http://example.com/
 --- expected_params: { aco => 'tie', bar => 'baz' }
 
 ===
@@ -73,4 +118,91 @@ __END__
     - bar
     - baz
 --- expected: http://example.com/?aco=tie&bar=baz&bar=foo&foo=bar&foo=baz
+--- expected_base: http://example.com/
 --- expected_params: { aco => 'tie', bar => [ 'baz', 'foo' ] }
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /
+--- expected_uri: http://example.com/
+--- expected: http://example.com/
+--- expected_base: http://example.com/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /test.c
+--- expected_uri: http://example.com/test.c
+--- expected: http://example.com/test.c
+--- expected_base: http://example.com/test.c/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /test.c
+  PATH_INFO: /info
+--- expected_uri: http://example.com/test.c/info
+--- expected: http://example.com/test.c/info
+--- expected_base: http://example.com/test.c/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  REDIRECT_URL: /redirect
+  SCRIPT_NAME: /test
+--- expected_uri: http://example.com/redirect
+--- expected: http://example.com/redirect
+--- expected_base: http://example.com/redirect/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  REDIRECT_URL: /redirect
+  SCRIPT_NAME: /test
+  PATH_INFO: /info
+--- expected_uri: http://example.com/redirect/info
+--- expected: http://example.com/redirect/info
+--- expected_base: http://example.com/redirect/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /test
+  QUERY_STRING: dynamic=daikuma
+--- expected_uri: http://example.com/test?dynamic=daikuma
+--- expected: http://example.com/test?dynamic=daikuma
+--- expected_base: http://example.com/test/
+--- expected_params: { dynamic => 'daikuma' }
+
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /exec/
+--- expected_uri: http://example.com/exec/
+--- expected: http://example.com/exec/
+--- expected_base: http://example.com/exec/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /////exec/
+--- expected_uri: http://example.com/exec/
+--- expected: http://example.com/exec/
+--- expected_base: http://example.com/exec/
+--- expected_params: {}

@@ -48,7 +48,9 @@ sub _build_uri  {
 
     my $scheme = $req->secure ? 'https' : 'http';
     my $host   = $env->{HTTP_HOST}   || $env->{SERVER_NAME};
-    my $port   = $env->{SERVER_PORT} || ( $req->secure ? 443 : 80 );
+    # my $port   = $env->{SERVER_PORT} || ( $req->secure ? 443 : 80 );
+    my $port   = $env->{SERVER_PORT};
+    $port = ( $req->secure ? 443 : 80 ) unless $port; # dirty code for coverage_test 
 
     my $base_path;
     if (exists $env->{REDIRECT_URL}) {

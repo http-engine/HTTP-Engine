@@ -1,0 +1,65 @@
+package t::Dummy;
+
+sub meta { 't::Dummy' }
+
+package t::Interface::Dummy;
+use Moose;
+with 'HTTP::Engine::Role::Interface';
+no Moose;
+
+sub should_write_response_line { 0 }
+sub run {}
+
+sub request_builder_class { 't::Interface::Dummy::RequestResponse' }
+sub request_builder_traits { 't::Role' }
+
+sub response_writer_class { 't::Interface::Dummy::RequestResponse' }
+sub response_writer_traits { 't::Role' }
+
+package t::Interface::Dummy::RequestResponse;
+use Moose;
+with qw(
+    HTTP::Engine::Role::RequestBuilder::ParseEnv
+    HTTP::Engine::Role::RequestBuilder::HTTPBody
+    HTTP::Engine::Role::ResponseWriter
+);
+sub _build_connection {
+    return {
+        env           => \%ENV,
+        input_handle  => \*STDIN,
+        output_handle => \*STDOUT,
+    }
+}
+sub finalize {}
+no Moose;
+
+package t::Role;
+use Moose::Role;
+
+sub role { 'i am role' }
+
+package main;
+use strict;
+use warnings;
+use Test::More tests => 4;
+
+
+do {
+    my $interface = t::Interface::Dummy->new(request_handler => sub {});
+    no warnings 'redefine';
+    local *t::Interface::Dummy::_default_package = sub { 't::Dummy' };
+    is $interface->request_processor_class, 'HTTP::Engine::RequestProcessor';
+};
+do {
+    my $interface = t::Interface::Dummy->new(request_handler => sub {});
+    no warnings 'redefine';
+    local *Class::MOP::load_class = sub { die 'dummy' };
+    eval { $interface->request_processor_class };
+    like $@, qr/dummy/;
+};
+
+do {
+    my $interface = t::Interface::Dummy->new(request_handler => sub {});
+    is $interface->request_builder->role, 'i am role';
+    is $interface->response_writer->role, 'i am role';
+};

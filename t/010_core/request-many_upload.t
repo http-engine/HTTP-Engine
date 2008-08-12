@@ -3,7 +3,7 @@ use warnings;
 use t::Utils;
 use Test::More;
 
-plan tests => 8;
+plan tests => 10;
 
 use File::Temp qw( tempdir );
 use HTTP::Headers;
@@ -55,6 +55,11 @@ run_engine(
         my $req = shift;
         my $tempdir = tempdir( CLEANUP => 1 );
         $req->request_builder->upload_tmp($tempdir);
+
+        my @undef = $req->upload('undef');
+        is @undef, 0;
+        my $undef = $req->upload('undef');
+        is $undef, undef;
 
         my @uploads = $req->upload('test_upload_file');
         like $uploads[0]->tempname, qr|^\Q$tempdir/\E|;

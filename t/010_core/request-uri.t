@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 use Test::Base;
+use IO::Scalar;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 
-plan tests => 4*blocks;
+plan tests => 5*blocks;
 
 filters {
     args            => ['yaml'],
@@ -27,10 +28,19 @@ run {
         %args
     );
 
+    if ($block->nullkey) {
+        $block->args->{$block->nullkey} = undef;
+    }
+
     is $req->uri, ($block->base || $block->expected_uri);
     is_deeply $req->query_parameters, $block->expected_params;
     is $req->uri_with( $block->args || {} ), $block->expected;
     is $req->base, $block->expected_base;
+
+    tie *STDERR, 'IO::Scalar', \my $out;
+    $req->uri_with;
+    untie *STDOUT;
+    like $out, qr/No arguments passed to uri_with()/;
 };
 
 __END__
@@ -54,6 +64,15 @@ __END__
 --- args
   foo: bar
 --- expected: http://example.com/?foo=bar
+--- expected_base: http://example.com/
+--- expected_params: {}
+
+===
+--- base: http://example.com/
+--- args
+  bar: hoge
+--- nullkey: bar
+--- expected: http://example.com/?bar=
 --- expected_base: http://example.com/
 --- expected_params: {}
 

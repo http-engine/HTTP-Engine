@@ -246,6 +246,7 @@ sub cookie {
         return undef unless exists $self->cookies->{$name}; ## no critic.
         return $self->cookies->{$name};
     }
+    return;
 }
 
 sub param {

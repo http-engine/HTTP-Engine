@@ -20,6 +20,10 @@ do {
     # do test
     run_engine($req, sub {
         my $req = shift;
+	use Data::Dumper;
+	is '2', $req->cookie;
+        is $req->cookie('undef'), undef;
+        is $req->cookie('undef', 'undef'), undef;
         is $req->cookie('Foo')->value, 'Bar';
         is $req->cookie('Bar')->value, 'Baz';
         is_deeply $req->cookies, {Foo => 'Foo=Bar; path=/', Bar => 'Bar=Baz; path=/'};

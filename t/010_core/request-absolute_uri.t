@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 use Test::Base;
 use HTTP::Engine::Request;
 

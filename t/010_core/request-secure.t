@@ -1,50 +1,70 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::Base;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 
-plan tests => 18;
+plan tests => 3*blocks;
 
-$ENV{HTTP_HOST} = 'example.com';
-
-do {
-    local $ENV{HTTPS} = 'ON';
-    check(1, 'https://example.com/', 443);
-};
-
-do {
-    local $ENV{HTTPS} = 'OFF';
-    check(0, 'http://example.com/', 80);
-};
-
-do {
-    check(0, 'http://example.com/', 80);
-};
-
-do {
-    local $ENV{HTTPS} = 'ON';
-    local $ENV{SERVER_PORT} = 8443;
-    check(1, 'https://example.com:8443/', 8443);
-};
-
-do {
-    local $ENV{SERVER_PORT} = 443;
-    check(1, 'https://example.com/', 443);
-};
-
-do {
-    local $ENV{SERVER_PORT} = 80;
-    check(0, 'http://example.com/', 80);
-};
-
-sub check {
-    my($is_secure, $uri, $port) = @_;
+filters { env  => ['yaml'] };
+run {
+    my $block = shift;
     my $req = HTTP::Engine::Request->new(
         request_builder => HTTP::Engine::RequestBuilder->new,
     );
-    is $req->secure   , $is_secure;
-    is $req->uri      , $uri;
-    is $req->uri->port, $port;
+    local %ENV = %{ $block->env };
+    my $secure = $req->secure;
+    is qq{"$secure"}  , $block->is_secure;
+    is $req->uri      , $block->uri;
+    is $req->uri->port, $block->port;
 }
 
+__END__
+
+===
+--- env
+  HTTP_HOST: example.com
+  HTTPS: ON
+--- is_secure: "1"
+--- uri: https://example.com/
+--- port: 443
+
+===
+--- env
+  HTTP_HOST: example.com
+  HTTPS: OFF
+--- is_secure: "0"
+--- uri: http://example.com/
+--- port: 80
+
+===
+--- env
+  HTTP_HOST: example.com
+--- is_secure: "0"
+--- uri: http://example.com/
+--- port: 80
+
+===
+--- env
+  HTTP_HOST: example.com
+  HTTPS: ON
+  SERVER_PORT: 8443
+--- is_secure: "1"
+--- uri: https://example.com:8443/
+--- port: 8443
+
+===
+--- env
+  HTTP_HOST: example.com
+  SERVER_PORT: 443 
+--- is_secure: "1"
+--- uri: https://example.com/
+--- port: 443
+
+===
+--- env
+  HTTP_HOST: example.com
+  SERVER_PORT: 80
+--- is_secure: "0"
+--- uri: http://example.com/
+--- port: 80

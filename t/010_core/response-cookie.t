@@ -10,7 +10,7 @@ my $res = run_engine(
         my $req = shift;
         my $res = HTTP::Engine::Response->new();
         $res->cookies({
-            'Foo' => CGI::Simple::Cookie->new(
+            Foo => CGI::Simple::Cookie->new(
                 -name    => 'Foo',
                 -value   => 'foo',
                 -expires => '+1M',
@@ -25,7 +25,7 @@ my $res = run_engine(
                 path => '/',
                 secure => 1,
             },
-            'ID' => CGI::Simple::Cookie->new(
+            ID => CGI::Simple::Cookie->new(
                 -name    => 'ID',
                 -value   => 'TKSK',
                 -expires => '+1M',

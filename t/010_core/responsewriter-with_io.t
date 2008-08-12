@@ -30,7 +30,7 @@ sub crlf {
 
 __END__
 
-===
+=== normal io
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
@@ -63,7 +63,7 @@ Status: 200
 
 OK!
 
-===
+=== dummy io
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
@@ -93,7 +93,7 @@ Status: 200
 
 bless
 
-===
+=== big size
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
@@ -129,7 +129,7 @@ Status: 200
 
 ".('dummy'x5000)
 
-===
+=== no io
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
@@ -158,7 +158,7 @@ Status: 200
 
 OK!
 
-===
+=== broken writer
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,

@@ -41,7 +41,7 @@ sub role { 'i am role' }
 package main;
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 
 do {
@@ -54,12 +54,20 @@ do {
     my $interface = t::Interface::Dummy->new(request_handler => sub {});
     no warnings 'redefine';
     local *Class::MOP::load_class = sub { die 'dummy' };
+    local $@;
     eval { $interface->request_processor_class };
     like $@, qr/dummy/;
 };
 
 do {
     my $interface = t::Interface::Dummy->new(request_handler => sub {});
+    do {
+        local $@;
+        no warnings 'redefine';
+        local *t::Interface::Dummy::_create_anon_class = sub {};
+        eval { $interface->request_builder };
+        ok $@;
+    };
     is $interface->request_builder->role, 'i am role';
     is $interface->response_writer->role, 'i am role';
 };

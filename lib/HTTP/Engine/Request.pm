@@ -267,7 +267,7 @@ sub param {
               ? ( $self->parameters->{$param} )
                   : $self->parameters->{$param};
         }
-    } elsif (@_ > 1) {
+    } else {
         my $field = shift;
         $self->parameters->{$field} = [@_];
     }

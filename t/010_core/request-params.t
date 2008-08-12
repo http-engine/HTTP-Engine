@@ -15,6 +15,7 @@ run {
     my $block = shift;
     my $req = HTTP::Engine::Request->new( parameters => $block->parameters );
     is_deeply $req->params, $block->parameters;
+    is scalar($req->param), scalar(keys %{  $block->parameters });
 
     my @options = $block->options;
     @options = @{ $block->options } if ref $block->options;

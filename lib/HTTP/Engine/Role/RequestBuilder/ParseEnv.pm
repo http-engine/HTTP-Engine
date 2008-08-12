@@ -73,6 +73,7 @@ sub _build_uri  {
 
     # set the base URI
     # base must end in a slash
+    $base_path =~ s{^/+}{};
     $base_path .= '/' unless $base_path =~ /\/$/;
     my $base = $uri->clone;
     $base->path_query($base_path);

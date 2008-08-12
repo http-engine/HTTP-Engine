@@ -18,7 +18,7 @@ do {
     );
 
     # do test
-    run_engine($req, sub {
+    run_engine {
         my $req = shift;
 	use Data::Dumper;
 	is '2', $req->cookie;
@@ -28,7 +28,7 @@ do {
         is $req->cookie('Bar')->value, 'Baz';
         is_deeply $req->cookies, {Foo => 'Foo=Bar; path=/', Bar => 'Bar=Baz; path=/'};
         return ok_response;
-    });
+    } $req;
 };
 
 # no Cookie header
@@ -40,10 +40,10 @@ do {
     );
 
     # do test
-    run_engine($req, sub {
+    run_engine {
         my $req = shift;
         is_deeply $req->cookies, {};
         return ok_response;
-    });
+    } $req;
 };
 

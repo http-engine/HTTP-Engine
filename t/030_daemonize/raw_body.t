@@ -28,6 +28,7 @@ daemonize_all \&do_request => (
 );
 
 sub do_request {
+    wait_port $port;
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $req = POST("http://localhost:$port/", [foo => 'bar']);
     my $res = $ua->request($req);

@@ -18,13 +18,10 @@ my $req = HTTP::Request->new(
 );
 
 # do test
-run_engine(
-    $req,
-    sub {
-        my $req = shift;
-        is $req->raw_body, 'foo=bar';
-        is_deeply $req->body_params, { foo => 'bar' };
-        return ok_response;
-    },
-);
+run_engine {
+    my $req = shift;
+    is $req->raw_body, 'foo=bar';
+    is_deeply $req->body_params, { foo => 'bar' };
+    return ok_response;
+} $req;
 

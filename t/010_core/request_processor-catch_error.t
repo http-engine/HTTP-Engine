@@ -9,12 +9,9 @@ use IO::Scalar;
 tie *STDERR, 'IO::Scalar', \my $stderr;
 
 my $res = eval {
-    run_engine(
-        HTTP::Request->new( GET => 'http://localhost/'),
-        sub {
-            die "orz";
-        },
-    );
+    run_engine {
+        die "orz";
+    } HTTP::Request->new( GET => 'http://localhost/');
 };
 ok !$@;
 is $res->code, 500;

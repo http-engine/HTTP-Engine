@@ -27,10 +27,7 @@ sub run_engines {
     for my $code (@_) {
         tie *STDERR, 'IO::Scalar', \my $stderr;
         my $res;
-        $res = run_engine(
-            HTTP::Request->new( GET => 'http://localhost/'),
-            $code
-        );
+        $res = run_engine { $code->() } HTTP::Request->new( GET => 'http://localhost/');
         untie *STDERR;
         is $res->code, 500;
         like $stderr, qr/You should return instance of HTTP::Engine::Response./;

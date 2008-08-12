@@ -36,6 +36,7 @@ sub do_request {
 }
 
 sub _do_request {
+    wait_port $port;
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $req = POST("http://localhost:$port/", Content_Type => 'multipart/form-data;', Content => ['test' => ["README"]]);
     my $res = $ua->request($req);

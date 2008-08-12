@@ -54,35 +54,32 @@ my $req = HTTP::Request->new(
 );
 
 
-run_engine(
-    $req,
-    sub {
-        my $req = shift;
-        my $tempdir = tempdir( CLEANUP => 1 );
-        $req->request_builder->upload_tmp($tempdir);
+run_engine {
+    my $req = shift;
+    my $tempdir = tempdir( CLEANUP => 1 );
+    $req->request_builder->upload_tmp($tempdir);
 
-        my @undef = $req->upload('undef');
-        is @undef, 0;
-        my $undef = $req->upload('undef');
-        is $undef, undef;
+    my @undef = $req->upload('undef');
+    is @undef, 0;
+    my $undef = $req->upload('undef');
+    is $undef, undef;
 
-        my @uploads = $req->upload('test_upload_file');
-        like $uploads[0]->tempname, qr|^\Q$tempdir/\E|;
-        like $uploads[1]->tempname, qr|^\Q$tempdir/\E|;
-        like $req->upload('test_upload_file4')->tempname, qr|^\Q$tempdir/\E|;
+    my @uploads = $req->upload('test_upload_file');
+    like $uploads[0]->tempname, qr|^\Q$tempdir/\E|;
+    like $uploads[1]->tempname, qr|^\Q$tempdir/\E|;
+    like $req->upload('test_upload_file4')->tempname, qr|^\Q$tempdir/\E|;
 
-        like $uploads[0]->slurp, qr|^SHOGUN|;
-        like $uploads[1]->slurp, qr|^SHOGUN|;
-        is $req->upload('test_upload_file4')->slurp, 'SHOGUN4';
+    like $uploads[0]->slurp, qr|^SHOGUN|;
+    like $uploads[1]->slurp, qr|^SHOGUN|;
+    is $req->upload('test_upload_file4')->slurp, 'SHOGUN4';
 
-        my $test_upload_file3 = $req->upload('test_upload_file3');
-        like $test_upload_file3->tempname, qr|^\Q$tempdir/\E|;
-        is $test_upload_file3->slurp, 'SHOGUN3';
+    my $test_upload_file3 = $req->upload('test_upload_file3');
+    like $test_upload_file3->tempname, qr|^\Q$tempdir/\E|;
+    is $test_upload_file3->slurp, 'SHOGUN3';
 
-        my @test_upload_file6 = $req->upload('test_upload_file6');
-        like $test_upload_file6[0]->tempname, qr|^\Q$tempdir/\E|;
-        is $test_upload_file6[0]->slurp, 'SHOGUN6';
+    my @test_upload_file6 = $req->upload('test_upload_file6');
+    like $test_upload_file6[0]->tempname, qr|^\Q$tempdir/\E|;
+    is $test_upload_file6[0]->slurp, 'SHOGUN6';
 
-        HTTP::Engine::Response->new;
-    }
-);
+    HTTP::Engine::Response->new;
+} $req;

@@ -7,28 +7,20 @@ use HTTP::Request;
 
 
 do {
-    run_engine(
-        HTTP::Request->new( GET => 'http://localhost/'),
-        sub {
-            my $req = shift;
-            is $req->raw_body => 'test';
-            HTTP::Engine::Response->new( body => '' );
-        },
-        (
-            req => HTTP::Engine::Request->new( method => 'GET', raw_body => 'test' ),
-        )
-    );
+    run_engine {
+        my $req = shift;
+        is $req->raw_body => 'test';
+        HTTP::Engine::Response->new( body => '' );
+    } HTTP::Request->new( GET => 'http://localhost/')
+        => ( req => HTTP::Engine::Request->new( method => 'GET', raw_body => 'test' ) );
 };
 
 do {
-    run_engine(
-        HTTP::Request->new( GET => 'http://localhost/'),
-        sub {
-            my $req = shift;
-            isa_ok $req, 'HTTP::Engine::Request';
-            HTTP::Engine::Response->new( body => '' );
-        }
-    );
+    run_engine {
+        my $req = shift;
+        isa_ok $req, 'HTTP::Engine::Request';
+        HTTP::Engine::Response->new( body => '' );
+    } HTTP::Request->new( GET => 'http://localhost/');
 };
 
 do {
@@ -37,15 +29,11 @@ do {
     local *HTTP::Engine::Request::new = sub { return };
     local $@;
     eval {
-        run_engine(
-            HTTP::Request->new( GET => 'http://localhost/'),
-            sub {
-                my $req = shift;
-                ok !!!$req;
-                HTTP::Engine::Response->new( body => '' );
-            },
-            ( request_args => undef )
-        );
+        run_engine {
+            my $req = shift;
+            ok !!!$req;
+            HTTP::Engine::Response->new( body => '' );
+        } HTTP::Request->new( GET => 'http://localhost/') => ( request_args => undef );
     };
     like $@, qr/Can't call method/;
 };

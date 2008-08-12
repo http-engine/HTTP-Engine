@@ -53,7 +53,7 @@ sub _read_all {
 }
 
 sub _read {
-    my ($self, $state, $maxlength) = @_;
+    my ($self, $state) = @_;
 
     $self->_read_start($state) unless $state->{started};
 
@@ -61,7 +61,7 @@ sub _read {
 
     my $remaining = $length - $pos;
 
-    $maxlength ||= $self->chunk_size;
+    my $maxlength = $self->chunk_size;
 
     # Are we done reading?
     if ($remaining <= 0) {

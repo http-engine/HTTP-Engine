@@ -206,3 +206,20 @@ __END__
 --- expected: http://example.com/exec/
 --- expected_base: http://example.com/exec/
 --- expected_params: {}
+
+===
+--- args
+--- add_env
+  SERVER_NAME: example.com
+--- expected_uri: http://example.com/
+--- expected: http://example.com/
+--- expected_base: http://example.com/
+--- expected_params: {}
+
+===
+--- args
+--- add_env
+--- expected_uri: http:///
+--- expected: http:///
+--- expected_base: http:///
+--- expected_params: {}

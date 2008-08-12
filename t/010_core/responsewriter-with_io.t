@@ -128,6 +128,7 @@ Content-Type: text/html
 Status: 200
 
 ".('dummy'x5000)
+
 ===
 --- input
 my $writer = HTTP::Engine::ResponseWriter->new(
@@ -156,3 +157,31 @@ Content-Type: text/html
 Status: 200
 
 OK!
+
+===
+--- input
+my $writer = HTTP::Engine::ResponseWriter->new(
+    should_write_response_line => 1,
+);
+
+my $tmp = File::Temp->new();
+$tmp->write("OK!");
+$tmp->flush();
+$tmp->seek(0, File::Temp::SEEK_SET);
+
+my $req = HTTP::Engine::Request->new(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
+);
+my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
+
+my $write;
+do {
+    no warnings 'redefine';
+    local *HTTP::Engine::ResponseWriter::_write = sub { warn $write++; undef };
+    $writer->finalize( $req, $res );
+};
+$write ? 'OK' : 'NG';
+
+--- expected
+OK

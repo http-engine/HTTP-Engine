@@ -175,10 +175,11 @@ my $req = HTTP::Engine::Request->new(
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
 my $write;
 do {
     no warnings 'redefine';
-    local *HTTP::Engine::ResponseWriter::_write = sub { warn $write++; undef };
+    local *HTTP::Engine::ResponseWriter::_write = sub { $write++; undef };
     $writer->finalize( $req, $res );
 };
 $write ? 'OK' : 'NG';

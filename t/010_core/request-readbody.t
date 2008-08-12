@@ -51,7 +51,6 @@ do {
         },
     );
     my $state = $req->_read_state;
-#    $self->_read_to_end($req->_read_state);
     $req->request_builder->_read_all($state);
 
     $tmp->seek(0, File::Temp::SEEK_SET);

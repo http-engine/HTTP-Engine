@@ -79,9 +79,10 @@ sub _prepare_write {
     my $self = shift;
 
     # Set the output handle to autoflush
-    if (blessed *STDOUT) {
-        *STDOUT->autoflush(1);
-    }
+#    if (blessed *STDOUT) {
+    local $@;
+    eval { *STDOUT->autoflush(1); };
+#    }
 }
 
 1;

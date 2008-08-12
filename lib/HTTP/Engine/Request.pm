@@ -291,9 +291,7 @@ sub upload {
               ? ( $self->uploads->{$upload} )
           : $self->uploads->{$upload};
         }
-    }
-
-    if (@_ > 1) {
+    } else {
         while ( my($field, $upload) = splice(@_, 0, 2) ) {
             if ( exists $self->uploads->{$field} ) {
                 for ( $self->uploads->{$field} ) {

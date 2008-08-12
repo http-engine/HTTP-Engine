@@ -3,7 +3,7 @@ use warnings;
 use Test::Base;
 use HTTP::Engine::Request;
 
-plan tests => 3*blocks;
+plan tests => 4*blocks;
 
 filters {
     parameters => [qw/yaml/],

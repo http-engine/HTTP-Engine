@@ -3,7 +3,7 @@ use warnings;
 use t::Utils;
 use Test::More;
 
-plan tests => 10;
+plan tests => 12;
 
 use File::Temp qw( tempdir );
 use HTTP::Headers;
@@ -34,6 +34,11 @@ Content-Disposition: form-data; name="test_upload_file4"; filename="yappo5.txt"
 Content-Type: text/plain
 
 SHOGUN4
+------BOUNDARY
+Content-Disposition: form-data; name="test_upload_file6"; filename="yappo6.txt"
+Content-Type: text/plain
+
+SHOGUN6
 ------BOUNDARY--
 };
 $content =~ s/\r\n/\n/g;
@@ -64,13 +69,19 @@ run_engine(
         my @uploads = $req->upload('test_upload_file');
         like $uploads[0]->tempname, qr|^\Q$tempdir/\E|;
         like $uploads[1]->tempname, qr|^\Q$tempdir/\E|;
-        like $req->upload('test_upload_file3')->tempname, qr|^\Q$tempdir/\E|;
         like $req->upload('test_upload_file4')->tempname, qr|^\Q$tempdir/\E|;
 
         like $uploads[0]->slurp, qr|^SHOGUN|;
         like $uploads[1]->slurp, qr|^SHOGUN|;
-        is $req->upload('test_upload_file3')->slurp, 'SHOGUN3';
         is $req->upload('test_upload_file4')->slurp, 'SHOGUN4';
+
+        my $test_upload_file3 = $req->upload('test_upload_file3');
+        like $test_upload_file3->tempname, qr|^\Q$tempdir/\E|;
+        is $test_upload_file3->slurp, 'SHOGUN3';
+
+        my @test_upload_file6 = $req->upload('test_upload_file6');
+        like $test_upload_file6[0]->tempname, qr|^\Q$tempdir/\E|;
+        is $test_upload_file6[0]->slurp, 'SHOGUN6';
 
         HTTP::Engine::Response->new;
     }

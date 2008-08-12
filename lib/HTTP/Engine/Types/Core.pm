@@ -30,7 +30,15 @@ coerce Interface, from HashRef => via {
 
 class_type Uri, { class => "URI::WithBase" };
 
-coerce Uri, from Str => via { URI::WithBase->new($_) };
+coerce Uri, from Str => via { 
+    # generate base uri
+    my $uri = URI->new($_);
+    my $base = $uri->path;
+    $base .= '/' unless $base =~ /\/$/;
+    $uri->query(undef);
+    $uri->path($base);
+    URI::WithBase->new($_, $uri);
+};
 
 class_type Header, { class => "HTTP::Headers" };
 

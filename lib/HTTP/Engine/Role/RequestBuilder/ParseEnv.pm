@@ -53,7 +53,7 @@ sub _build_uri  {
     my $base_path;
     if (exists $env->{REDIRECT_URL}) {
         $base_path = $env->{REDIRECT_URL};
-        $base_path =~ s/$env->{PATH_INFO}$//;
+        $base_path =~ s/$env->{PATH_INFO}$// if exists $env->{PATH_INFO};
     } else {
         $base_path = $env->{SCRIPT_NAME} || '/';
     }

@@ -80,6 +80,19 @@ HTTP::Engine will handle absorbing the differences between the environment,
 the I/O, etc. Your application can focus on creating response objects
 (which is pretty much what your typical webapp is doing)
 
+
+The community can be found via:
+
+  IRC: irc.perl.org#http-engine irc.freenode.net#coderepos
+
+  Wiki Page: http://coderepos.org/share/wiki/HTTP%3A%3AEngine
+
+  SVN: http://svn.coderepos.org/share/lang/perl/HTTP-Engine  
+
+  Trac: http://coderepos.org/share/browser/lang/perl/HTTP-Engine
+
+  Mailing list: http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/http-engine
+
 =head1 INTERFACES
 
 Interfaces are the actual environment-dependent components which handles
@@ -185,8 +198,8 @@ kan
 
 =head1 SEE ALSO
 
-wiki page L<http://coderepos.org/share/wiki/HTTP%3A%3AEngine>
-
+L<HTTP::Engine::Compat>,
+L<HTTPEx::Declare>,
 L<Moose>
 
 =head1 REPOSITORY

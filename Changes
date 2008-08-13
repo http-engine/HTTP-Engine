@@ -1,6 +1,6 @@
 Revision history for Perl extension HTTP::Engine
 
-         2008-08-13T16:06:19+09:00
+0.0.13   2008-08-13T16:06:19+09:00
          - add more test scripts
          - test coverage 100%!
 

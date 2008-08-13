@@ -1,5 +1,9 @@
 Revision history for Perl extension HTTP::Engine
 
+         2008-08-13T16:06:19+09:00
+         - add more test scripts
+         - test coverage 100%!
+
 0.0.13_2 2008-08-11T16:47:38+09:00
          - !!! incompatible of version under 0.0.13_1 !!!
            using HTTP::Engine::Compat module if you want compatibility of version under 0.0.13_1

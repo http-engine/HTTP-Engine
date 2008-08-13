@@ -56,11 +56,11 @@ It is mostly based on the code of Catalyst::Engine.
 
 =head1 COMPATIBILITY
 
-version over 0.0.13_1 is incompatible of version under 0.0.13_1.
+version over 0.0.13 is incompatible of version under 0.0.12.
 
-using L<HTTP::Engine::Compat> module if you want compatibility of version under 0.0.13_1.
+using L<HTTP::Engine::Compat> module if you want compatibility of version under 0.0.12.
 
-version over 0.0.13_1 is unsupported of context and middleware.
+version 0.0.13 is unsupported of context and middleware.
 
 =head1 DESCRIPTION
 

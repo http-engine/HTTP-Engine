@@ -57,9 +57,26 @@ sub _client_input {
         # follow is normal workflow.
         my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
         do {
+            my $env = \%ENV;
+
+            my $host = $request->header('Host');
+            my $uri = $request->uri;
+            $uri->scheme('http')    unless $uri->scheme;
+            $uri->host($self->host) unless $uri->host;
+            $uri->port($self->port) unless $uri->port;
+            $uri->host_port($host)  unless !$host || ( $host eq $uri->host_port );
+
             $self->handle_request(
                 request_args => {
                     headers => $request->headers,
+                    connection_info => {
+                        address    => $heap->{remote_ip},
+                        method     => $request->method,
+                        port       => $self->port,
+                        user       => undef,
+                        https_info => ($uri->scheme eq 'https' ? 'ON' : 'OFF'),
+                        protocol   => $request->protocol(),
+                    },
                 },
             );
         };

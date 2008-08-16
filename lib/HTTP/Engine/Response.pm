@@ -121,13 +121,6 @@ Returns an L<HTTP::Headers> object, which can be used to set headers.
 
     $res->headers->header( 'X-HTTP-Engine' => $HTTP::Engine::VERSION );
 
-=item redirect
-
-Causes the response to redirect to the specified URL.
-
-    $res->redirect( 'http://slashdot.org' );
-    $res->redirect( 'http://slashdot.org', 307 );
-
 =item set_http_response
 
 set a L<HTTP::Response> into $self.

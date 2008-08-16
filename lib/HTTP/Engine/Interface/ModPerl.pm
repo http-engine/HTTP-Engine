@@ -48,12 +48,6 @@ sub handler : method
     my $server = $r->server;
     my $connection = $r->connection;
 
-    $ENV{REQUEST_METHOD} = $r->method();
-    $ENV{REMOTE_ADDR}    = $connection->remote_ip();
-    $ENV{SERVER_PORT}    = $server->port();
-    $ENV{QUERY_STRING}   = $r->args() || '';
-    $ENV{HTTP_HOST}      = $r->hostname();
-
     $engine->interface->request_processor->handle_request(
         request_args => {
             headers => HTTP::Headers->new(
@@ -62,7 +56,13 @@ sub handler : method
             _connection => {
                 input_handle   => \*STDIN,
                 output_handle  => \*STDOUT,
-                env            => \%ENV,
+                env            => {
+                    REQUEST_METHOD => $r->method(),
+                    REMOTE_ADDR    => $connection->remote_ip(),
+                    SERVER_PORT    => $server->port(),
+                    QUERY_STRING   => $r->args() || '',
+                    HTTP_HOST      => $r->hostname(),
+                },
                 apache_request => $r,
             },
         },

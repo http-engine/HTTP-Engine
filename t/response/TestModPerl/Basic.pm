@@ -21,15 +21,8 @@ sub create_engine {
         interface => HTTP::Engine::Interface::ModPerl->new(
             request_handler => sub {
                 my $req = shift;
-                my $body = join(
-                    "\n",
-                    "Accept-Language: @{[ $req->header('Accept-Language') ]}",
-                    "uri: @{[ $req->uri ]}",
-                    "uri class: @{[ ref $req->uri ]}",
-                );
                 HTTP::Engine::Response->new(
                     status => 200,
-                    body   => $body,
                 )
             },
         )

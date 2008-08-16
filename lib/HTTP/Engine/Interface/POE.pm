@@ -5,8 +5,10 @@ use constant should_write_response_line => 1;
 use POE qw/
     Component::Server::TCP
 /;
-use POE::Filter::HTTPD;
+use HTTP::Engine::Interface::POE::Filter;
 use HTTP::Request::AsCGI;
+use IO::Scalar;
+use URI::WithBase;
 
 has host => (
     is      => 'ro',
@@ -32,11 +34,13 @@ sub run {
     POE::Component::Server::TCP->new(
         Port         => $self->port,
         Address      => $self->host,
-        ClientFilter => 'POE::Filter::HTTPD',
+        ClientFilter => 'HTTP::Engine::Interface::POE::Filter',
         ( $self->alias ? ( Alias => $self->alias ) : () ),
         ClientInput  => _client_input($self),
     );
 }
+
+our $CLIENT;
 
 sub _client_input {
     my $self = shift;
@@ -49,15 +53,14 @@ sub _client_input {
         # while parsing the client's HTTP request.  It's easiest to send
         # the responses as they are and finish up.
         if ( $request->isa('HTTP::Response') ) {
-            $heap->{client}->put($request);
+            $heap->{client}->put($request->as_string);
             $kernel->yield('shutdown');
             return;
         }
 
         # follow is normal workflow.
-        my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
         do {
-            my $env = \%ENV;
+            local $CLIENT = $heap->{client};
 
             my $host = $request->header('Host');
             my $uri = $request->uri;
@@ -69,6 +72,7 @@ sub _client_input {
             $self->handle_request(
                 request_args => {
                     headers => $request->headers,
+                    uri     => URI::WithBase->new($uri),
                     connection_info => {
                         address    => $heap->{remote_ip},
                         method     => $request->method,
@@ -77,12 +81,18 @@ sub _client_input {
                         https_info => ($uri->scheme eq 'https' ? 'ON' : 'OFF'),
                         protocol   => $request->protocol(),
                     },
+                    _connection => {
+                        input_handle  => do {
+                            my $stdinbuf = $request->content;
+                            IO::Scalar->new( \$stdinbuf );
+                        },
+                        output_handle => undef,
+                        env           => \%ENV,
+                    },
                 },
             );
         };
-        $ascgi->restore;
 
-        $heap->{client}->put($ascgi->response);
         $kernel->yield('shutdown');
     }
 }

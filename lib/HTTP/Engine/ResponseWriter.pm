@@ -33,7 +33,7 @@ sub finalize {
         $res->header( Connection => 'close' );
     }
 
-    local *STDOUT = $req->_connection->{output_handle};
+    local *STDOUT = $req->_connection->{output_handle} if $req->_connection->{output_handle};
     $self->_prepare_write;
     $self->_write($self->_response_line($res) . $CRLF) if $self->should_write_response_line;
     $self->_write($res->headers->as_string($CRLF));

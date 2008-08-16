@@ -59,6 +59,12 @@ sub handler : method
             headers => HTTP::Headers->new(
                 %{ $r->headers_in }
             ),
+            _connection => {
+                input_handle   => \*STDIN,
+                output_handle  => \*STDOUT,
+                env            => \%ENV,
+                apache_request => $r,
+            },
         },
     );
 

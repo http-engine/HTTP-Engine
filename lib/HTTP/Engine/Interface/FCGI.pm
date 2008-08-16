@@ -115,8 +115,15 @@ sub run {
             $env{PATH_INFO} ||= delete $env{SCRIPT_NAME};
         }
 
-        local %ENV = %env;
-        $self->handle_request();
+        $self->handle_request(
+            request_args => {
+                _connection => {
+                    input_handle  => *STDIN,
+                    output_handle => *STDOUT,
+                    env           => \%env,
+                },
+            }
+        );
 
         $proc_manager && $proc_manager->pm_post_dispatch();
     }

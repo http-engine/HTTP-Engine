@@ -7,5 +7,7 @@ with qw(
 );
 
 sub _build_connection      { die "explicit parameter" }
+sub _build_connection_info { die "explicit parameter" }
+sub _build_hostname        { die "explicit parameter" }
 
 1;

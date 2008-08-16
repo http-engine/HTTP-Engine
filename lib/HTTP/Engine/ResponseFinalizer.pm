@@ -13,7 +13,6 @@ sub finalize {
     $res->protocol( $req->protocol ) unless $res->protocol;
 
     # Content-Length
-    $res->content_length(0);
     if ($res->body) {
         # get the length from a filehandle
         if ((Scalar::Util::blessed($res->body) && $res->body->can('read')) || (ref($res->body) eq 'GLOB')) {
@@ -25,6 +24,8 @@ sub finalize {
         } else {
             $res->content_length(bytes::length($res->body));
         }
+    } else {
+        $res->content_length(0);
     }
 
     # Errors
@@ -39,7 +40,7 @@ sub finalize {
     $class->_finalize_cookies($res);
 
     # HTTP/1.1's default Connection: close
-    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->header('Connection')) {
+    if ($res->protocol && $res->protocol =~ m!1\.1! && !!!$res->header('Connection')) {
         $res->header( Connection => 'close' );
     }
 

@@ -62,6 +62,7 @@ sub handler : method
                     SERVER_PORT    => $server->port(),
                     QUERY_STRING   => $r->args() || '',
                     HTTP_HOST      => $r->hostname(),
+                    SERVER_PROTOCOL => $r->protocol,
                 },
                 apache_request => $r,
             },

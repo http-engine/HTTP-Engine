@@ -28,11 +28,6 @@ sub finalize {
     my($self, $req, $res) = @_;
     Carp::croak "argument missing" unless $res;
 
-    # HTTP/1.1's default Connection: close
-    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->header('Connection')) {
-        $res->header( Connection => 'close' );
-    }
-
     local *STDOUT = $req->_connection->{output_handle} if $req->_connection->{output_handle};
     $self->_prepare_write;
     $self->_write($self->_response_line($res) . $CRLF) if $self->should_write_response_line;

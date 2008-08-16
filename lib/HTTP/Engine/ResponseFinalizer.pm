@@ -38,6 +38,11 @@ sub finalize {
 
     $class->_finalize_cookies($res);
 
+    # HTTP/1.1's default Connection: close
+    if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->header('Connection')) {
+        $res->header( Connection => 'close' );
+    }
+
     $res->body('') if $req->method eq 'HEAD';
 }
 

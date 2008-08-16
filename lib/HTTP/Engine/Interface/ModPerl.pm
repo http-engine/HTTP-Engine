@@ -51,7 +51,7 @@ sub handler : method
     $ENV{REQUEST_METHOD} = $r->method();
     $ENV{REMOTE_ADDR}    = $connection->remote_ip();
     $ENV{SERVER_PORT}    = $server->port();
-    $ENV{QUERY_STRING}   = $r->args();
+    $ENV{QUERY_STRING}   = $r->args() || '';
     $ENV{HTTP_HOST}      = $r->hostname();
 
     $engine->interface->request_processor->handle_request(

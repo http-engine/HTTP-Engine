@@ -4,10 +4,6 @@ TODO
 
 =head1 TRUNK
 
-=head2 TESTS TESTS TESTS
-
-Most interfaces have no tests... Mock tests would be nice
-
 =head2 Request Writer
 
 Cleanup much like RequestBuilder, many small things to do here

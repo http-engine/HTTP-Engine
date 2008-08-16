@@ -14,10 +14,6 @@ L<Parallel::Prefork> ?
 
 =head2 FCGI
 
-FCGI::Request can build the _connection structure directly, and use the normal RequestBuilder
-
-pass params to handle_request explicitly a la Standalone
-
 =head2 ModPerl
 
 HTTP::Engine::Interface::Apache::RequestBuilder should delegate everything to

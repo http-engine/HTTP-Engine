@@ -2,12 +2,12 @@ use strict;
 use warnings;
 use t::Utils;
 use Test::More;
-
-plan tests => 10*interfaces;
-
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 use HTTP::Engine;
+
+my $try_num = 10;
+plan tests => $try_num*interfaces*2;
 
 my $port = empty_port;
 
@@ -28,11 +28,9 @@ daemonize_all \&do_request => (
 );
 
 sub do_request {
-    _do_request();
-    _do_request();
-    _do_request();
-    _do_request();
-    _do_request();
+    for (1..$try_num) {
+        _do_request();
+    }
 }
 
 sub _do_request {

@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Interface::Test::RequestBuilder;
 use Moose;
 
@@ -35,21 +33,4 @@ sub _build_headers { die "explicit parameter" };
 sub _build_raw_body { die "explicit parameter" }
 
 __PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Interface::Test::RequestBuilder - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Interface::Test::RequestBuilder;
-
-=head1 DESCRIPTION
-
-=cut
-
 

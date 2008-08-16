@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::RequestBuilder::Dummy;
 use Moose;
 
@@ -39,21 +37,4 @@ sub _build_uri {
 }
 
 __PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::RequestBuilder::Dummy - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::RequestBuilder::Dummy;
-
-=head1 DESCRIPTION
-
-=cut
-
 

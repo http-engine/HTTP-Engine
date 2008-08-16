@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Interface::Test::ResponseWriter;
 use Moose;
 
@@ -24,21 +22,4 @@ sub get_response {
 }
 
 __PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Interface::Test::ResponseWriter - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Interface::Test::ResponseWriter;
-
-=head1 DESCRIPTION
-
-=cut
-
 

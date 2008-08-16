@@ -19,20 +19,3 @@ before finalize => sub {
 
 __PACKAGE__
 
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Interface::Standalone::ResponseWriter - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Interface::Standalone::ResponseWriter;
-
-=head1 DESCRIPTION
-
-=cut
-
-

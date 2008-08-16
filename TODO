@@ -19,6 +19,8 @@ L<Parallel::Prefork> ?
 HTTP::Engine::Interface::Apache::RequestBuilder should delegate everything to
 $request->_connection->{apache_request}. Should be very simple and efficient
 
+support $r->send_fd()
+
 =head2 POE
 
 Like Standalone

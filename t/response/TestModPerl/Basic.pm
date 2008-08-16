@@ -14,4 +14,21 @@ sub handler : method
     return $res;
 }
 
+sub create_engine {
+    my ( $self, $r ) = @_;
+
+    HTTP::Engine->new(
+        interface => HTTP::Engine::Interface::ModPerl->new(
+            request_handler => sub {
+                my $req = shift;
+                my $body = "Accept-Language: @{[ $req->header('Accept-Language') ]}";
+                HTTP::Engine::Response->new(
+                    status => 200,
+                    body   => $body,
+                )
+            },
+        )
+    );
+}
+
 1;

@@ -15,6 +15,7 @@ use Apache2::Connection;
 use Apache2::RequestRec;
 use Apache2::RequestUtil;
 use Apache2::ServerRec;
+use APR::Table;
 use HTTP::Engine;
 
 extends 'HTTP::Engine::Interface::CGI';
@@ -52,7 +53,13 @@ sub handler : method
     $ENV{SERVER_PORT}    = $server->port();
     $ENV{QUERY_STRING}   = $r->args();
 
-    $engine->interface->request_processor->handle_request();
+    $engine->interface->request_processor->handle_request(
+        request_args => {
+            headers => HTTP::Headers->new(
+                %{ $r->headers_in }
+            ),
+        },
+    );
 
     return &Apache2::Const::OK;
 }

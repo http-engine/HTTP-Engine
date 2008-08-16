@@ -66,6 +66,15 @@ sub handler : method
                 },
                 apache_request => $r,
             },
+            connection_info => {
+                address    => $connection->remote_ip(),
+                protocol   => $r->protocol,
+                method     => $r->method,
+                port       => $server->port,
+                user       => $r->user,
+                https_info => undef, # TODO: implement
+            },
+            hostname => $r->hostname,
         },
     );
 
@@ -94,6 +103,12 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 =head1 AUTHORS
 
 Daisuke Maki
+
+Tokuhiro Matsuno
+
+=head1 KNOWN BUGS
+
+    cannot get https_info
 
 =head1 SEE ALSO
 

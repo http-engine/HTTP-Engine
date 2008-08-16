@@ -62,8 +62,6 @@ HTTP::Engine::Interface::Test - HTTP::Engine Test Interface
       }
   )->run(HTTP::Request->new( GET => 'http://localhost/'), \%ENV);
 
-  
-
 =head1 DESCRIPTION
 
 HTTP::Engine::Interface::Test is test engine base class

@@ -166,11 +166,6 @@ __END__
 
 HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 
-=head1 SYNOPSIS
-
-    HTTP::Engine::Interface::FCGI->new(
-    );
-
 =head1 ATTRIBUTES
 
 =over 4
@@ -192,17 +187,6 @@ HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 =item listen
 
 =back
-
-=head1 METHODS
-
-=over 4
-
-=item run
-
-internal use only
-
-=back
-
 
 =head1 AUTHORS
 

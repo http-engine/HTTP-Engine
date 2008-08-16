@@ -253,13 +253,7 @@ __END__
 
 HTTP::Engine::Interface::Standalone - Standalone HTTP Server
 
-=head1 SYNOPSIS
+=head1 AUTHOR
 
-  interface:
-    module: Standalone
-    args:
-      host: localhost
-      port: 5963
-      fork: 1
-      keepalive: 1
-    request_handler: methodname
+Kazuhiro Osawa
+

@@ -166,13 +166,14 @@ sub _handler {
             request_args => {
                 uri            => URI::WithBase->new(
                     do {
-                        ;
                         my $u = URI->new($uri);
                         $u->scheme('http');
                         $u->host($headers->header('Host') || $self->host);
                         $u->port($self->port);
-                        $u;
-                    }
+                        my $b = $u->clone;
+                        $b->path_query('/');
+                        ($u, $b);
+                    },
                 ),
                 headers        => $headers,
                 _connection => {

@@ -64,15 +64,18 @@ sub _client_input {
 
             my $host = $request->header('Host');
             my $uri = $request->uri;
-            $uri->scheme('http')    unless $uri->scheme;
-            $uri->host($self->host) unless $uri->host;
-            $uri->port($self->port) unless $uri->port;
-            $uri->host_port($host)  unless !$host || ( $host eq $uri->host_port );
+            $uri->scheme('http');
+            $uri->host($self->host);
+            $uri->port($self->port);
 
             $self->handle_request(
                 request_args => {
                     headers => $request->headers,
-                    uri     => URI::WithBase->new($uri),
+                    uri     => URI::WithBase->new($uri, do {
+                        my $u = $uri->clone;
+                        $u->path_query('/');
+                        $u;
+                    }),
                     connection_info => {
                         address    => $heap->{remote_ip},
                         method     => $request->method,

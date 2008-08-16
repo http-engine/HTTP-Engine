@@ -14,9 +14,9 @@ my $port = empty_port;
 daemonize_all sub {
     wait_port $port;
     my $ua = LWP::UserAgent->new(timeout => 10);
-    my $res = $ua->get("http://localhost:$port/", 'Foo' => 'Bar');
+    my $res = $ua->get("http://localhost:$port/foobar?foo=bar");
     is $res->code, 200;
-    like $res->content, qr{http://localhost:\d+/};
+    like $res->content, qr{http://(?:localhost|\Q127.0.0.1\E):\d+/foobar\?foo=bar, http://(?:localhost|\Q127.0.0.1\E):\d+/, /foobar};
 } => (
     poe_kernel_run => 1,
     interface => {
@@ -27,7 +27,7 @@ daemonize_all sub {
             my $req = shift;
             HTTP::Engine::Response->new(
                 status => 200,
-                body   => join(', ', $req->uri ),
+                body   => join(', ', $req->uri, $req->base, $req->path),
             );
         },
     },

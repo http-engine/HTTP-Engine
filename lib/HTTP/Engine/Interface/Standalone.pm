@@ -164,7 +164,16 @@ sub _handler {
         # Pass flow control to HTTP::Engine
         $self->handle_request(
             request_args => {
-                uri            => URI::WithBase->new($uri),
+                uri            => URI::WithBase->new(
+                    do {
+                        ;
+                        my $u = URI->new($uri);
+                        $u->scheme('http');
+                        $u->host($headers->header('Host') || $self->host);
+                        $u->port($self->port);
+                        $u;
+                    }
+                ),
                 headers        => $headers,
                 _connection => {
                     input_handle  => $remote,

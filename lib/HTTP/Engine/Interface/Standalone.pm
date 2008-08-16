@@ -166,16 +166,18 @@ sub _handler {
             request_args => {
                 uri            => URI::WithBase->new($uri),
                 headers        => $headers,
-                method         => $method,
-                address        => $sockdata->{peeraddr},
-                port           => $port,
-                protocol       => "HTTP/$protocol",
-                user           => undef,
-                https_info     => undef,
                 _connection => {
                     input_handle  => $remote,
                     output_handle => $remote,
                     env           => {}, # no more env than what we provide
+                },
+                connection_info => {
+                    method         => $method,
+                    address        => $sockdata->{peeraddr},
+                    port           => $port,
+                    protocol       => "HTTP/$protocol",
+                    user           => undef,
+                    https_info     => undef,
                 },
             },
         );

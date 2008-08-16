@@ -16,7 +16,7 @@ daemonize_all sub {
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $res = $ua->get("http://localhost:$port/");
     is $res->code, 200;
-    like $res->content, qr{protocol: HTTP/1.1};
+    like $res->content, qr{protocol: HTTP/1.\d};
 } => (
     poe_kernel_run => 1,
     interface => {

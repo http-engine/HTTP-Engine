@@ -27,7 +27,7 @@ sub empty_port {
     die "empty port not found";
 }
 
-sub daemonize (&@) { goto _daemonize }
+sub daemonize (&@) { goto \&_daemonize }
 sub _daemonize {
     my($client, %args) = @_;
 

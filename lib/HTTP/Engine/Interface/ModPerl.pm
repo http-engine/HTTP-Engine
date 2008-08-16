@@ -63,7 +63,7 @@ sub create_engine
 
     HTTP::Engine->new(
         interface => HTTP::Engine::Interface::ModPerl->new(
-            request_handler   => sub { warn "hoge" },
+            request_handler   => sub { HTTP::Engine::Response->new(status => 200) },
         )
     );
 }

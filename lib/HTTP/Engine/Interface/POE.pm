@@ -57,7 +57,11 @@ sub _client_input {
         # follow is normal workflow.
         my $ascgi = HTTP::Request::AsCGI->new($request)->setup;
         do {
-            $self->handle_request();
+            $self->handle_request(
+                request_args => {
+                    headers => $request->headers,
+                },
+            );
         };
         $ascgi->restore;
 

@@ -28,14 +28,13 @@ sub finalize {
     my($self, $req, $res) = @_;
     Carp::croak "argument missing" unless $res;
 
-    delete $self->{_prepared_write};
-
     # HTTP/1.1's default Connection: close
     if ($res->protocol && $res->protocol =~ m!1.1! && !!!$res->header('Connection')) {
         $res->header( Connection => 'close' );
     }
 
     local *STDOUT = $req->_connection->{output_handle};
+    $self->_prepare_write;
     $self->_write($self->_response_line($res) . $CRLF) if $self->should_write_response_line;
     $self->_write($res->headers->as_string($CRLF));
     $self->_write($CRLF);
@@ -66,12 +65,6 @@ sub _response_line {
 
 sub _write {
     my($self, $buffer) = @_;
-
-    unless ( $self->{_prepared_write} ) {
-        $self->_prepare_write;
-        $self->{_prepared_write} = 1;
-    }
-
     print STDOUT $buffer;
 }
 

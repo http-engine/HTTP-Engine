@@ -142,11 +142,6 @@ HTTP::Engine::ResponseWriter->meta->make_mutable;
 HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
     my($self, $buffer) = @_;
 
-    unless ( $self->{_prepared_write} ) {
-        $self->_prepare_write;
-        $self->{_prepared_write} = 1;
-    }
-
     # XXX: We can't use Engine's write() method because syswrite
     # appears to return bogus values instead of the number of bytes
     # written: http://www.fastcgi.com/om_archive/mail-archive/0128.html

@@ -20,24 +20,4 @@ sub _build_hostname {
     gethostbyaddr( inet_aton( $req->address ), AF_INET );
 }
 
-__PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Role::RequestBuilder::Standard - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Role::RequestBuilder::Standard;
-
-=head1 DESCRIPTION
-
-    INTERNAL USE ONLY
-
-=cut
-
-
+1;

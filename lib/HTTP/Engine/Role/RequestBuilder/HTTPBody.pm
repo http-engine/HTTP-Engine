@@ -94,22 +94,5 @@ sub _prepare_uploads  {
     return \%uploads;
 }
 
-__PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Role::RequestBuilder::HTTPBody - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Role::RequestBuilder::HTTPBody;
-
-=head1 DESCRIPTION
-
-=cut
-
+1;
 

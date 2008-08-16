@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Role::RequestBuilder::ParseEnv;
 use Moose::Role;
 
@@ -83,23 +81,5 @@ sub _build_uri  {
     return URI::WithBase->new($uri, $base);
 }
 
-
-__PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Role::RequestBuilder::ParseEnv - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Role::RequestBuilder::ParseEnv;
-
-=head1 DESCRIPTION
-
-=cut
-
+1;
 

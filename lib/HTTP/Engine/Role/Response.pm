@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Role::Response;
 use Moose::Role;
 
@@ -24,22 +22,5 @@ requires qw(
     finalize
 );
 
-__PACKAGE__
-
-__END__
-
-=pod
-
-=head1 NAME
-
-HTTP::Engine::Role::Response - 
-
-=head1 SYNOPSIS
-
-	use HTTP::Engine::Role::Response;
-
-=head1 DESCRIPTION
-
-=cut
-
+1;
 

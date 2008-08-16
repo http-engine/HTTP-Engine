@@ -75,7 +75,7 @@ features(
 if (HAVE_MP) {
     Apache::TestMM::filter_args();
     Apache::TestMM::generate_script('t/TEST');
-    tests('t/*.t t/*/*.t t/modperl/basic.t');
+    tests('t/*.t t/*/*.t t/modperl/basic.t t/modperl/whole.t');
 } else {
     tests('t/*.t t/*/*.t ');
 }

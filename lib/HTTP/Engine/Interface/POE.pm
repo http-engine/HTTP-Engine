@@ -83,8 +83,8 @@ sub _client_input {
                     },
                     _connection => {
                         input_handle  => do {
-                            my $stdinbuf = $request->content;
-                            IO::Scalar->new( \$stdinbuf );
+                            my $buf = $request->content;
+                            IO::Scalar->new( \$buf );
                         },
                         output_handle => undef,
                         env           => \%ENV,

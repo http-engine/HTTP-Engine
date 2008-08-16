@@ -2,11 +2,14 @@ use strict;
 use warnings;
 use Test::More tests => 2;
 use HTTP::Engine;
+use HTTP::Engine::RequestBuilder;
 
 test_req( gen_request() );
 
 sub gen_request {
-    my $req = HTTP::Engine::Request->new;
+    my $req = HTTP::Engine::Request->new(
+        request_builder => HTTP::Engine::RequestBuilder->new,
+    );
     $req->method('POST');
     $req->uri('/foo');
     $req->content_type('application/octet-stream');

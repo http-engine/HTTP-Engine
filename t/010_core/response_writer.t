@@ -6,10 +6,13 @@ use_ok "HTTP::Engine::ResponseWriter";
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 use HTTP::Engine::ResponseFinalizer;
+use HTTP::Engine::RequestBuilder;
 
 can_ok "HTTP::Engine::ResponseWriter", 'finalize';
 
-my $req = HTTP::Engine::Request->new;
+my $req = HTTP::Engine::Request->new(
+    request_builder => HTTP::Engine::RequestBuilder->new,
+);
 $req->protocol('HTTP/1.1');
 $req->method('GET');
 

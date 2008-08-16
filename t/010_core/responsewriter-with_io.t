@@ -8,6 +8,7 @@ use IO::Scalar;
 use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::Response;
 use HTTP::Engine::Request;
+use HTTP::Engine::RequestBuilder;
 use HTTP::Response;
 use File::Temp qw/:seekable/;
 
@@ -46,6 +47,7 @@ tie *STDOUT, 'IO::Scalar', \my $out;
 my $req = HTTP::Engine::Request->new(
     protocol => 'HTTP/1.1',
     method => 'GET',
+    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -76,6 +78,7 @@ tie *STDOUT, 'IO::Scalar', \my $out;
 my $req = HTTP::Engine::Request->new(
     protocol => 'HTTP/1.1',
     method => 'GET',
+    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -111,6 +114,7 @@ tie *STDOUT, 'IO::Scalar', \my $out;
 my $req = HTTP::Engine::Request->new(
     protocol => 'HTTP/1.1',
     method => 'GET',
+    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -140,6 +144,7 @@ tie *STDOUT, 'IO::Scalar', \my $out;
 my $req = HTTP::Engine::Request->new(
     protocol => 'HTTP/1.1',
     method => 'GET',
+    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => 'OK!', status => 200);
 $res->header( Connection => 'keepalive' );
@@ -172,6 +177,7 @@ $tmp->seek(0, File::Temp::SEEK_SET);
 my $req = HTTP::Engine::Request->new(
     protocol => 'HTTP/1.1',
     method => 'GET',
+    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 

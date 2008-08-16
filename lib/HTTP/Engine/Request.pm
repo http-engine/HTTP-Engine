@@ -13,14 +13,9 @@ use URI::QueryParam;
 
 # this object constructs all our lazy fields for us
 has request_builder => (
-    does => "HTTP::Engine::Role::RequestBuilder",
-    is   => "rw",
-    # handles ...
-    # takes_self => 1, # add this to Moose
-    default => sub { # FIXME deprecate the default
-        require HTTP::Engine::RequestBuilder::Dummy;
-        HTTP::Engine::RequestBuilder::Dummy->new;
-    }
+    does     => "HTTP::Engine::Role::RequestBuilder",
+    is       => "rw",
+    required => 1,
 );
 
 sub BUILD {

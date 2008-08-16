@@ -136,22 +136,6 @@ sub daemon_detach {
     POSIX::setsid();
 }
 
-
-use HTTP::Engine::ResponseWriter;
-HTTP::Engine::ResponseWriter->meta->make_mutable;
-HTTP::Engine::ResponseWriter->meta->add_method( _write => sub {
-    my($self, $buffer) = @_;
-
-    # XXX: We can't use Engine's write() method because syswrite
-    # appears to return bogus values instead of the number of bytes
-    # written: http://www.fastcgi.com/om_archive/mail-archive/0128.html
-
-    # FastCGI does not stream data properly if using 'print $handle',
-    # but a syswrite appears to work properly.
-    *STDOUT->syswrite($buffer);
-});
-HTTP::Engine::ResponseWriter->meta->make_immutable;
-
 1;
 __END__
 

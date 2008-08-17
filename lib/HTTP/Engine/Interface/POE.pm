@@ -62,19 +62,19 @@ sub _client_input {
         do {
             local $CLIENT = $heap->{client};
 
-            my $host = $request->header('Host');
-            my $uri = $request->uri;
-            $uri->scheme('http');
-            $uri->host($self->host);
-            $uri->port($self->port);
-
             $self->handle_request(
                 request_args => {
                     headers => $request->headers,
-                    uri     => URI::WithBase->new($uri, do {
-                        my $u = $uri->clone;
-                        $u->path_query('/');
-                        $u;
+                    uri     => URI::WithBase->new(do {
+                        my $uri = $request->uri;
+                        $uri->scheme('http');
+                        $uri->host($self->host);
+                        $uri->port($self->port);
+
+                        my $b = $uri->clone;
+                        $b->path_query('/');
+
+                        ($uri, $b);
                     }),
                     connection_info => {
                         address    => $heap->{remote_ip},

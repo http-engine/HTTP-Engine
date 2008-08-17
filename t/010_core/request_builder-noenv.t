@@ -14,7 +14,8 @@ my $req = req(
 );
 
 for my $meth (qw/uri connection_info headers/) {
-    eval { $req->uri };
-    like $@, qr{explicit parameter};
+    local $@;
+    eval { $req->$meth };
+    like $@, qr{explicit parameter}, $meth;
 }
 

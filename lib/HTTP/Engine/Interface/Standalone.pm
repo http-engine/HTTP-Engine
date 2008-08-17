@@ -138,28 +138,27 @@ sub _handler {
 
     while (1) {
         # FIXME refactor an HTTP push parser
-        my($path, $query_string) = split /\?/, $uri, 2;
-
-        my $headers;
 
         # Parse headers
         # taken from HTTP::Message, which is unfortunately not really reusable
-        if ($protocol >= 1) {
-            my @hdr;
-            while ( length(my $line = $self->_get_line($remote)) ) {
-                if ($line =~ s/^([^\s:]+)[ \t]*: ?(.*)//) {
-                    push(@hdr, $1, $2);
+        my $headers = do {
+            if ($protocol >= 1) {
+                my @hdr;
+                while ( length(my $line = $self->_get_line($remote)) ) {
+                    if ($line =~ s/^([^\s:]+)[ \t]*: ?(.*)//) {
+                        push(@hdr, $1, $2);
+                    }
+                    elsif (@hdr && $line =~ s/^([ \t].*)//) {
+                        $hdr[-1] .= "\n$1";
+                    } else {
+                        last;
+                    }
                 }
-                elsif (@hdr && $line =~ s/^([ \t].*)//) {
-                    $hdr[-1] .= "\n$1";
-                } else {
-                    last;
-                }
+                HTTP::Headers->new(@hdr);
+            } else {
+                HTTP::Headers->new;
             }
-            $headers = HTTP::Headers->new(@hdr);
-        } else {
-            $headers = HTTP::Headers->new;
-        }
+        };
 
         # Pass flow control to HTTP::Engine
         $self->handle_request(
@@ -203,7 +202,7 @@ sub _handler {
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
-    $self->request_builder->_io_read($remote, my $buf, 4096) if $sel->can_read(0); # IE bk
+    $self->request_builder->_io_read($remote, my $buf, 4096) if $sel->can_read(0); # IE hack
     close $remote;
 }
 

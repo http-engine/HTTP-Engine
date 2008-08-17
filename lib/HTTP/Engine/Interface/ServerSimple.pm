@@ -32,7 +32,15 @@ sub run {
             superclasses => ['HTTP::Server::Simple::CGI'],
             methods => {
                 handler => sub {
-                    $self->handle_request();
+                    $self->handle_request(
+                        request_args => {
+                            _connection => {
+                                env           => \%ENV,
+                                input_handle  => \*STDIN,
+                                output_handle => \*STDOUT,
+                            },
+                        },
+                    );
                 },
                 net_server => sub { $self->net_server },
             },

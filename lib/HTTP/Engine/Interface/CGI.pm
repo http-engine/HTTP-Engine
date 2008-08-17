@@ -1,11 +1,19 @@
 package HTTP::Engine::Interface::CGI;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-use constant should_write_response_line => 0;
+sub should_write_response_line { 0 }
 
 sub run {
     my ($self) = @_;
-    $self->handle_request();
+    $self->handle_request(
+        request_args => {
+            _connection => {
+                env           => \%ENV,
+                input_handle  => \*STDIN,
+                output_handle => \*STDOUT,
+            },
+        },
+    );
 }
 
 1;

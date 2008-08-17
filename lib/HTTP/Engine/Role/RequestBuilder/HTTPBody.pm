@@ -40,7 +40,7 @@ sub _build_raw_body {
 sub _build_read_state {
     my($self, $req) = @_;
 
-    my $length = $req->header('Content-Length') || 0;
+    my $length = $req->content_length || 0;
     my $type   = $req->header('Content-Type');
 
     my $body = HTTP::Body->new($type, $length);

@@ -8,6 +8,16 @@ use HTTP::Engine::Types::Core qw( Header );
 # Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
 
+sub BUILD {
+    my ( $self, $param ) = @_;
+
+    for my $field (qw(content_type)) {
+        if ( my $val = $param->{$field} ) {
+            $self->$field($val);
+        }
+    }
+}
+
 has body => (
     is      => 'rw',
     isa     => 'Any',

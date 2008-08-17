@@ -29,8 +29,6 @@ sub run {
                 request => $request,
             },
         },
-        response_args => {
-        },
         %args,
     );
 

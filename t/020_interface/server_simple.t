@@ -17,6 +17,7 @@ my $port = empty_port;
 sub main {
     daemonize(
         \&_do_request,
+        $port,
         interface => {
             module => 'ServerSimple',
             args => {
@@ -31,6 +32,7 @@ sub main {
 }
 
 sub _do_request {
+    my $port = shift;
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $req = POST("http://localhost:$port/", Content_Type => 'multipart/form-data;', Content => ['test' => ["README"]]);
     my $res = $ua->request($req);

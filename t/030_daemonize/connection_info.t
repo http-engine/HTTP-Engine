@@ -9,10 +9,9 @@ use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 use HTTP::Engine;
 
-my $port = empty_port;
-
 daemonize_all sub {
-    wait_port $port;
+    my $port = shift;
+
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $res = $ua->get("http://localhost:$port/");
     is $res->code, 200;
@@ -23,20 +22,25 @@ daemonize_all sub {
     like $res->content, qr{user: };
     like $res->content, qr{\Qaddress: 127.0.0.1};
     # diag $res->content;
-} => (
-    poe_kernel_run => 1,
-    interface => {
-        args => {
-            port => $port,
-        },
-        request_handler => sub {
-            my $req = shift;
-            my $body = join("\n", map { join(": ", $_ => $req->connection_info->{$_} || '~') } sort keys %{ $req->connection_info });
-            HTTP::Engine::Response->new(
-                status => 200,
-                body   => $body,
-            );
-        },
-    },
-);
+} => <<'...'
+    sub {
+        my $port = shift;
+        return (
+            poe_kernel_run => 1,
+            interface => {
+                args => {
+                    port => $port,
+                },
+                request_handler => sub {
+                    my $req = shift;
+                    my $body = join("\n", map { join(": ", $_ => $req->connection_info->{$_} || '~') } sort keys %{ $req->connection_info });
+                    HTTP::Engine::Response->new(
+                        status => 200,
+                        body   => $body,
+                    );
+                },
+            },
+        );
+    }
+...
 

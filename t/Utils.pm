@@ -29,13 +29,14 @@ sub empty_port {
 
 sub daemonize (&@) { goto \&_daemonize }
 sub _daemonize {
-    my($client, %args) = @_;
+    my($client, $port, %args) = @_;
 
     if (my $pid = fork()) {
         # parent.
-        sleep 1; # wait startup child process
 
-        $client->();
+        wait_port($port);
+
+        $client->($port);
 
         kill TERM => $pid;
         waitpid($pid, 0);
@@ -52,6 +53,7 @@ sub _daemonize {
 my @interfaces; # memoize.
 sub interfaces() {
     unless (@interfaces) {
+        push @interfaces, 'FCGI'         if $ENV{TEST_LIGHTTPD};
         push @interfaces, 'Standalone';
         push @interfaces, 'ServerSimple' if eval "use HTTP::Server::Simple; 1;";
         push @interfaces, 'POE'          if eval "use POE; 1;";
@@ -59,15 +61,42 @@ sub interfaces() {
     return @interfaces;
 }
 
-sub daemonize_all (&@) {
-    my($client, %args) = @_;
+sub daemonize_all (&$@) {
+    my($client, $codesrc) = @_;
 
+    my $port = empty_port;
+
+    my $code = eval $codesrc;
+    die $@ if $@;
+    my %args = $code->($port);
     my $poe_kernel_run = delete $args{poe_kernel_run};
 
-    for my $interface (interfaces) {
-        $args{interface}->{module} = $interface;
-        $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
-        _daemonize $client => %args;
+    my @interfaces = interfaces;
+    for my $interface (@interfaces) {
+        if ($interface eq 'FCGI') {
+            require t::FCGIUtils;
+            t::FCGIUtils->import;
+            test_lighty(
+                qq{#!/usr/bin/perl
+                use strict;
+                use warnings;
+                use HTTP::Engine;
+                my \$code = $codesrc;
+                my \%args = \$code->($port);
+                \$args{interface}->{module} = 'FCGI';
+
+                HTTP::Engine->new(
+                    \%args
+                )->run;
+                },
+                $client,
+                $port
+            );
+        } else {
+            $args{interface}->{module} = $interface;
+            $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
+            _daemonize $client, $port, %args;
+        }
     }
 }
 

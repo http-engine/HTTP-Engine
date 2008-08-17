@@ -3,6 +3,7 @@ use warnings;
 use Test::More;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
 eval "use HTTP::Request::AsCGI;use HTTP::Request;";
 plan skip_all => "this test requires HTTP::Request::AsCGI" if $@;
@@ -21,7 +22,7 @@ my $r = HTTP::Request->new(
 );
 my $c = HTTP::Request::AsCGI->new($r)->setup;
 
-my $req = HTTP::Engine::Request->new(request_builder => HTTP::Engine::RequestBuilder->new);
+my $req = req();
 is $req->raw_body, $content;
 
 $c->restore();

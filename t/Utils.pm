@@ -4,11 +4,12 @@ use strict;
 use warnings;
 use HTTP::Engine;
 use HTTP::Request::AsCGI;
+use HTTP::Engine::RequestBuilder;
 
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine ok_response check_port wait_port /],
+    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine ok_response check_port wait_port req /],
     groups  => { default => [':all'] }
 };
 
@@ -176,6 +177,19 @@ sub wait_port {
         sleep 1;
     }
     die "cannot open port: $port";
+}
+
+sub req {
+    my %args = @_;
+    HTTP::Engine::Request->new(
+        request_builder => HTTP::Engine::RequestBuilder->new(),
+        _connection => {
+            env           => \%ENV,
+            input_handle  => \*STDIN,
+            output_handle => \*STDOUT,
+        },
+        %args
+    );
 }
 
 1;

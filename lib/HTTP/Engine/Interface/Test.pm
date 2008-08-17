@@ -28,6 +28,11 @@ sub run {
             _builder_params => {
                 request => $request,
             },
+            _connection => {
+                env           => \%ENV,
+                input_handle  => \*STDIN,
+                output_handle => \*STDOUT,
+            },
         },
         %args,
     );

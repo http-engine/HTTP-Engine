@@ -3,11 +3,10 @@ use warnings;
 use Test::More tests => 2;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
 do {
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
-    );
+    my $req = req();
     $req->http_body->param(foo => 'bar');
     $req->http_body->param(hoge => 'one');
     $req->query_parameters({bar => 'baz', hoge => 'two'});
@@ -15,9 +14,7 @@ do {
 };
 
 do {
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
-    );
+    my $req = req();
     $req->http_body->param(foo => 'bar');
     $req->http_body->param(hoge => 'one');
     $req->query_parameters({bar => ['baz', 'bar'], hoge => 'two'});

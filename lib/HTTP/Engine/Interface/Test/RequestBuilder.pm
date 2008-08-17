@@ -11,14 +11,6 @@ with (
     },
 );
 
-sub _build_connection {
-    return {
-        env           => \%ENV,
-        input_handle  => \*STDIN,
-        output_handle => \*STDOUT,
-    }
-}
-
 sub _build_http_body {
     my ( $self, $req ) = @_;
 

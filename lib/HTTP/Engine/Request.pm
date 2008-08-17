@@ -36,13 +36,9 @@ has _builder_params => (
 
 has _connection => (
     is => "ro",
-    lazy_build => 1,
+    isa => 'HashRef',
+    required => 1,
 );
-
-sub _build__connection {
-    my $self = shift;
-    $self->request_builder->_build_connection($self);
-}
 
 has "_read_state" => (
     is => "rw",

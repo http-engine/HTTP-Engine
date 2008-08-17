@@ -3,8 +3,9 @@ use warnings;
 use Test::More tests => 2;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
-my $req = HTTP::Engine::Request->new( raw_body => 'body', request_builder => HTTP::Engine::RequestBuilder->new );
+my $req = req( raw_body => 'body' );
 is $req->content, 'body';
 
 eval {

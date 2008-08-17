@@ -3,6 +3,7 @@ use warnings;
 use Test::More;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
 plan tests => 2;
 
@@ -15,9 +16,5 @@ $ENV{REMOTE_HOST} = '';
 $ENV{REMOTE_ADDR} = "127.0.0.1";
 ok _get();
 
-sub _get {
-    HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
-    )->hostname;
-}
+sub _get { req()->hostname }
 

@@ -1,6 +1,7 @@
 use Test::Base;
 use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine;
+use t::Utils;
 
 plan tests => 9+(1*blocks);
 
@@ -11,8 +12,7 @@ filters {
 
 run {
     my $block = shift;
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
+    my $req = req(
         %{ $block->req || {} }
     );
     my $res = HTTP::Engine::Response->new(

@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::Base;
+use t::Utils;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 
@@ -8,7 +9,7 @@ plan tests => 1*blocks;
 
 run {
     my $block = shift;
-    my $req = HTTP::Engine::Request->new(
+    my $req = req(
         base            => URI->new( $block->base ),
         request_builder => HTTP::Engine::RequestBuilder->new,
     );

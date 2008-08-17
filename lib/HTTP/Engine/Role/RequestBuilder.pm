@@ -3,10 +3,6 @@
 package HTTP::Engine::Role::RequestBuilder;
 use Moose::Role;
 
-# FIXME this probably needs to be removed once all interfaces are explicit
-# a hash ref of handle and env
-requires "_build_connection";
-
 # initialize reading structures
 requires "_build_read_state";
 

@@ -11,6 +11,7 @@ use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
 use HTTP::Response;
 use File::Temp qw/:seekable/;
+use t::Utils;
 
 plan skip_all => 'File::Temp 0.20 required for this test' unless $File::Temp::VERSION >= 0.20;
 
@@ -33,6 +34,8 @@ __END__
 
 === normal io
 --- input
+use t::Utils;
+
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
 );
@@ -44,10 +47,9 @@ $tmp->seek(0, File::Temp::SEEK_SET);
 
 tie *STDOUT, 'IO::Scalar', \my $out;
 
-my $req = HTTP::Engine::Request->new(
+my $req = req(
     protocol => 'HTTP/1.1',
     method => 'GET',
-    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -67,6 +69,8 @@ OK!
 
 === dummy io
 --- input
+use t::Utils;
+
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
 );
@@ -75,10 +79,9 @@ my $tmp = DummyIO->new;
 
 tie *STDOUT, 'IO::Scalar', \my $out;
 
-my $req = HTTP::Engine::Request->new(
+my $req = req(
     protocol => 'HTTP/1.1',
     method => 'GET',
-    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -98,6 +101,8 @@ bless
 
 === big size
 --- input
+use t::Utils;
+
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
 );
@@ -111,10 +116,9 @@ $ftmp->seek(0, File::Temp::SEEK_SET);
 open my $tmp, '<', $ftmp->filename or die $!;
 tie *STDOUT, 'IO::Scalar', \my $out;
 
-my $req = HTTP::Engine::Request->new(
+my $req = req(
     protocol => 'HTTP/1.1',
     method => 'GET',
-    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
@@ -135,16 +139,17 @@ Status: 200
 
 === no io
 --- input
+use t::Utils;
+
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
 );
 
 tie *STDOUT, 'IO::Scalar', \my $out;
 
-my $req = HTTP::Engine::Request->new(
+my $req = req(
     protocol => 'HTTP/1.1',
     method => 'GET',
-    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => 'OK!', status => 200);
 $res->header( Connection => 'keepalive' );
@@ -165,6 +170,8 @@ OK!
 
 === broken writer
 --- input
+use t::Utils;
+
 my $writer = HTTP::Engine::ResponseWriter->new(
     should_write_response_line => 1,
 );
@@ -174,10 +181,9 @@ $tmp->write("OK!");
 $tmp->flush();
 $tmp->seek(0, File::Temp::SEEK_SET);
 
-my $req = HTTP::Engine::Request->new(
+my $req = req(
     protocol => 'HTTP/1.1',
     method => 'GET',
-    request_builder => 'HTTP::Engine::RequestBuilder'
 );
 my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
 

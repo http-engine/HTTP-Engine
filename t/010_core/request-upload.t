@@ -4,10 +4,9 @@ use Test::More tests => 15;
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
-my $req = HTTP::Engine::Request->new(
-    request_builder => HTTP::Engine::RequestBuilder->new,
-);
+my $req = req();
 
 # file1
 $req->upload(foo => HTTP::Engine::Request::Upload->new(filename => 'foo1.txt'));

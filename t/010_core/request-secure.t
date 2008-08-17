@@ -3,16 +3,15 @@ use warnings;
 use Test::Base;
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder;
+use t::Utils;
 
 plan tests => 3*blocks;
 
 filters { env  => ['yaml'] };
 run {
     my $block = shift;
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
-    );
     local %ENV = %{ $block->env };
+    my $req = req();
     my $secure = $req->secure;
     is qq{"$secure"}  , $block->is_secure;
     is $req->uri      , $block->uri;

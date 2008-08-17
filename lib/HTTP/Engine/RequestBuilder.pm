@@ -8,14 +8,6 @@ with qw(
 );
 
 
-sub _build_connection {
-    return {
-        env           => \%ENV,
-        input_handle  => \*STDIN,
-        output_handle => \*STDOUT,
-    }
-}
-
 __PACKAGE__->meta->make_immutable;
 no Moose;
 

@@ -3,6 +3,7 @@ package t::Utils;
 use strict;
 use warnings;
 use HTTP::Engine;
+use HTTP::Request::AsCGI;
 
 use IO::Socket::INET;
 
@@ -30,6 +31,14 @@ sub empty_port {
 sub daemonize (&@) { goto \&_daemonize }
 sub _daemonize {
     my($client, $port, %args) = @_;
+    __daemonize($client, $port, sub {
+        my $poe_kernel_run = delete $args{poe_kernel_run};
+        HTTP::Engine->new(%args)->run;
+        POE::Kernel->run() if $poe_kernel_run;
+    });
+}
+sub __daemonize {
+    my($client, $port, $child) = @_;
 
     if (my $pid = fork()) {
         # parent.
@@ -42,9 +51,7 @@ sub _daemonize {
         waitpid($pid, 0);
     } elsif ($pid == 0) {
         # child
-        my $poe_kernel_run = delete $args{poe_kernel_run};
-        HTTP::Engine->new(%args)->run;
-        POE::Kernel->run() if $poe_kernel_run;
+        $child->();
     } else {
         die "cannot fork";
     }
@@ -53,6 +60,7 @@ sub _daemonize {
 my @interfaces; # memoize.
 sub interfaces() {
     unless (@interfaces) {
+        push @interfaces, 'CGI'          if eval "use HTTP::Server::Simple; 1;";
         push @interfaces, 'FCGI'         if $ENV{TEST_LIGHTTPD};
         push @interfaces, 'Standalone';
         push @interfaces, 'ServerSimple' if eval "use HTTP::Server::Simple; 1;";
@@ -92,6 +100,29 @@ sub daemonize_all (&$@) {
                 $client,
                 $port
             );
+        } elsif ($interface eq 'CGI') {
+            require HTTP::Server::Simple::CGI;
+            __daemonize $client, $port, sub {
+                Moose::Meta::Class
+                    ->create_anon_class(
+                        superclasses => ['HTTP::Server::Simple::CGI'],
+                        methods => {
+                            handler => sub {
+                                no warnings 'redefine';
+                                require HTTP::Engine::Interface::CGI;
+                                local *HTTP::Engine::Interface::CGI::should_write_response_line = sub { 1 }; # H::S::S::CGI needs status line
+                                $args{interface}->{module} = $interface;
+                                HTTP::Engine->new(
+                                    %args
+                                )->run;
+                            },
+                        },
+                        cache => 1
+                    )->new_object(
+                    )->new(
+                        $port
+                    )->run;
+            };
         } else {
             $args{interface}->{module} = $interface;
             $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;

@@ -86,11 +86,13 @@ t/010_core/request-secure.t
 t/010_core/request-upload.t
 t/010_core/request-uri.t
 t/010_core/request.t
+t/010_core/request_builder-noenv.t
 t/010_core/request_builder_dummy.t
 t/010_core/request_processor-catch_error.t
 t/010_core/request_processor-make_request.t
 t/010_core/request_processor-response_error.t
 t/010_core/request_upload-basename.t
+t/010_core/response-content_length.t
 t/010_core/response-cookie.t
 t/010_core/response-set_http_response.t
 t/010_core/response-status.t
@@ -115,6 +117,5 @@ t/030_daemonize/uri.t
 t/FCGIUtils.pm
 t/response/TestModPerl/Basic.pm
 t/response/TestModPerl/Whole.pm
-t/TEST.PL
 t/Utils.pm
 TODO

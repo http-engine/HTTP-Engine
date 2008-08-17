@@ -20,3 +20,10 @@
 ^nytprof
 ^cover_db
 \.sw[po]$
+^t/modperl/
+^t/conf/
+\bperltidy.ERR\b
+^t/logs/
+^t/TEST$
+^t/TEST.PL$
+^t/htdocs/.+.html$

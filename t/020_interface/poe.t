@@ -4,8 +4,11 @@ use Test::More;
 use t::Utils;
 use HTTP::Engine;
 
-eval "use POE;use POE::Session;use POE::Component::Client::HTTP;";
+eval "use POE;use POE::Session;";
 plan skip_all => "this test requires POE" if $@;
+eval "use POE::Component::Client::HTTP;";
+plan skip_all => "this test requires POE::Component::Client::HTTP" if $@;
+
 plan tests => 7;
 
 use_ok 'HTTP::Engine::Interface::POE';

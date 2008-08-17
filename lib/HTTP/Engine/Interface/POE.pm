@@ -81,7 +81,7 @@ sub _client_input {
                         method     => $request->method,
                         port       => $self->port,
                         user       => undef,
-                        https_info => ($uri->scheme eq 'https' ? 'ON' : 'OFF'),
+                        https_info => 'OFF',
                         protocol   => $request->protocol(),
                     },
                     _connection => {

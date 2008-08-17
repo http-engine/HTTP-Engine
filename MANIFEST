@@ -29,8 +29,14 @@ lib/HTTP/Engine.pm
 lib/HTTP/Engine/Cookbook.pod
 lib/HTTP/Engine/Interface/CGI.pm
 lib/HTTP/Engine/Interface/FCGI.pm
+lib/HTTP/Engine/Interface/FCGI/ResponseWriter.pm
 lib/HTTP/Engine/Interface/ModPerl.pm
+lib/HTTP/Engine/Interface/ModPerl/RequestBuilder.pm
+lib/HTTP/Engine/Interface/ModPerl/ResponseWriter.pm
 lib/HTTP/Engine/Interface/POE.pm
+lib/HTTP/Engine/Interface/POE/Filter.pm
+lib/HTTP/Engine/Interface/POE/RequestBuilder.pm
+lib/HTTP/Engine/Interface/POE/ResponseWriter.pm
 lib/HTTP/Engine/Interface/ServerSimple.pm
 lib/HTTP/Engine/Interface/Standalone.pm
 lib/HTTP/Engine/Interface/Standalone/RequestBuilder.pm
@@ -41,7 +47,6 @@ lib/HTTP/Engine/Interface/Test/ResponseWriter.pm
 lib/HTTP/Engine/Request.pm
 lib/HTTP/Engine/Request/Upload.pm
 lib/HTTP/Engine/RequestBuilder.pm
-lib/HTTP/Engine/RequestBuilder/Dummy.pm
 lib/HTTP/Engine/RequestProcessor.pm
 lib/HTTP/Engine/Response.pm
 lib/HTTP/Engine/ResponseFinalizer.pm
@@ -50,6 +55,7 @@ lib/HTTP/Engine/Role/Interface.pm
 lib/HTTP/Engine/Role/Request.pm
 lib/HTTP/Engine/Role/RequestBuilder.pm
 lib/HTTP/Engine/Role/RequestBuilder/HTTPBody.pm
+lib/HTTP/Engine/Role/RequestBuilder/NoEnv.pm
 lib/HTTP/Engine/Role/RequestBuilder/ParseEnv.pm
 lib/HTTP/Engine/Role/RequestBuilder/ReadBody.pm
 lib/HTTP/Engine/Role/RequestBuilder/Standard.pm
@@ -101,10 +107,14 @@ t/020_interface/server_simple.t
 t/020_interface/test.t
 t/020_interface/test_request_builder.t
 t/020_interface/test_upload.t
+t/030_daemonize/connection_info.t
+t/030_daemonize/headers.t
 t/030_daemonize/raw_body.t
 t/030_daemonize/upload.t
+t/030_daemonize/uri.t
 t/FCGIUtils.pm
 t/response/TestModPerl/Basic.pm
+t/response/TestModPerl/Whole.pm
 t/TEST.PL
 t/Utils.pm
 TODO

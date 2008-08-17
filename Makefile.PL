@@ -52,7 +52,7 @@ features(
 
     'Interface::ServerSimple' => [
         -default => 0,
-        recommends_hack('HTTP::Server::Simple'),
+        recommends_hack('HTTP::Server::Simple' => 0.34),
     ],
 
     'Interface::Standalone' => [

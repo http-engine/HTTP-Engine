@@ -16,7 +16,8 @@ use Sub::Exporter -setup => {
 };
 
 sub test_lighty ($&) {
-    my ($fcgisrc, $callback) = @_;
+    my ($fcgisrc, $callback, $port) = @_;
+    $port ||= empty_port;
 
     plan skip_all => 'set TEST_LIGHTTPD to enable this test' 
         unless $ENV{TEST_LIGHTTPD};
@@ -31,12 +32,13 @@ sub test_lighty ($&) {
         unless $lighttpd_bin && -x $lighttpd_bin;
 
     my $tmpdir = File::Temp::tempdir();
-    my $port    = empty_port;
 
-    my ($fcgifh, $fcgifname) = File::Temp::tempfile();
-    print {$fcgifh} $fcgisrc;
-    close $fcgifh;
-    chmod 0777, $fcgifname;
+    my $fcgifname = File::Spec->catfile($tmpdir, "test.fcgi");
+    do {
+        _write_file($fcgifname => $fcgisrc);
+        chmod 0777, $fcgifname;
+        warn `perl -wc $fcgifname` if $ENV{DEBUG};
+    };
 
     my $conf = <<"END";
 # basic lighttpd config file for testing fcgi+HTTP::Engine
@@ -72,19 +74,27 @@ fastcgi.server = (
 )
 END
 
-    my ($conffh, $confname) = File::Temp::tempfile();
-    print {$conffh} $conf or die "Write error: $!";
-    close $conffh;
+    my $conffname = File::Spec->catfile($tmpdir, "lighty.conf");
+    _write_file($conffname => $conf);
 
-    my $pid = open my $lighttpd, "$lighttpd_bin -D -f $confname 2>&1 |" 
+    my $pid = open my $lighttpd, "$lighttpd_bin -D -f $conffname 2>&1 |" 
         or die "Unable to spawn lighttpd: $!";
 
     wait_port($port);
 
     $callback->($port);
 
+    warn `cat $tmpdir/error.log` if $ENV{DEBUG};
+
     kill 'INT', $pid;
     close $lighttpd;
+}
+
+sub _write_file {
+    my ($fname, $src) = @_;
+    open my $fh, '>', $fname or die $!;
+    print {$fh} $src or die $!;
+    close $fh;
 }
 
 1;

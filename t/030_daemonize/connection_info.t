@@ -10,14 +10,14 @@ use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 use HTTP::Engine;
 
 daemonize_all sub {
-    my $port = shift;
+    my ($port, $interface) = @_;
 
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $res = $ua->get("http://localhost:$port/");
     is $res->code, 200;
     like $res->content, qr{protocol: HTTP/1.\d};
     like $res->content, qr{https_info: (?:~|OFF)};
-    like $res->content, qr{port: \d+};
+    like $res->content, qr{port: $port}, "port for $interface";
     like $res->content, qr{method: GET};
     like $res->content, qr{user: };
     like $res->content, qr{\Qaddress: 127.0.0.1};

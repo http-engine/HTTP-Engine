@@ -82,6 +82,7 @@ sub daemonize_all (&$@) {
 
     my @interfaces = interfaces;
     for my $interface (@interfaces) {
+        my $client_cb = sub { $client->(@_, $interface) };
         if ($interface eq 'FCGI') {
             require t::FCGIUtils;
             t::FCGIUtils->import;
@@ -98,12 +99,12 @@ sub daemonize_all (&$@) {
                     \%args
                 )->run;
                 },
-                $client,
+                $client_cb,
                 $port
             );
         } elsif ($interface eq 'CGI') {
             require HTTP::Server::Simple::CGI;
-            __daemonize $client, $port, sub {
+            __daemonize $client_cb, $port, sub {
                 Moose::Meta::Class
                     ->create_anon_class(
                         superclasses => ['HTTP::Server::Simple::CGI'],
@@ -127,7 +128,7 @@ sub daemonize_all (&$@) {
         } else {
             $args{interface}->{module} = $interface;
             $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
-            _daemonize $client, $port, %args;
+            _daemonize $client_cb, $port, %args;
         }
     }
 }

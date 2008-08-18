@@ -1,7 +1,7 @@
 package HTTP::Engine::Role::ResponseWriter;
 use Moose::Role;
 
-requires "finalize";
+requires qw(finalize write output_body);
 
 1;
 

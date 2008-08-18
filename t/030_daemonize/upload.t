@@ -10,12 +10,12 @@ my $try_num = 10;
 plan tests => $try_num*interfaces*2;
 
 daemonize_all sub {
-    my $port = shift;
+    my ($port, $interface) = @_;
     for (1..$try_num) {
         my $ua = LWP::UserAgent->new(timeout => 10);
         my $req = POST("http://localhost:$port/", Content_Type => 'multipart/form-data;', Content => ['test' => ["README"]]);
         my $res = $ua->request($req);
-        is $res->code, 200;
+        is $res->code, 200, "200 ok($interface)";
         like $res->content, qr{Kazuhiro Osawa};
     }
 } => <<'...'

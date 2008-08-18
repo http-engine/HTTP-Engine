@@ -6,8 +6,6 @@ use Socket qw(:all);
 use IO::Socket::INET ();
 use IO::Select       ();
 
-use constant should_write_response_line => 1;
-
 has host => (
     is      => 'ro',
     isa     => 'Str',

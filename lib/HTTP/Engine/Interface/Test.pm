@@ -4,8 +4,6 @@ with 'HTTP::Engine::Role::Interface';
 
 use URI::WithBase;
 
-use constant should_write_response_line => 0;
-
 sub run {
     my ( $self, $request, %args ) = @_;
 

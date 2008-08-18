@@ -67,17 +67,25 @@ sub daemonize_all (&$@) {
             test_tcp(
                 client => $client_cb,
                 server => sub {
+                    # XXX normal CGI doesn't needs response line, but H::S::S::CGI needs this. we needs hack :)
+                    require HTTP::Engine::Interface::CGI;
+
+                    $args{interface}->{args}->{request_handler} = $args{interface}->{request_handler};
+                    my $interface = HTTP::Engine::Interface::CGI->new($args{interface}->{args});
+                    Moose::Util::apply_all_roles(
+                        $interface->response_writer,
+                        'HTTP::Engine::Role::ResponseWriter::ResponseLine'
+                    );
+                    delete $args{interface};
+
                     Moose::Meta::Class
                         ->create_anon_class(
                             superclasses => ['HTTP::Server::Simple::CGI'],
                             methods => {
                                 handler => sub {
-                                    no warnings 'redefine';
-                                    require HTTP::Engine::Interface::CGI;
-                                    local *HTTP::Engine::Interface::CGI::should_write_response_line = sub { 1 }; # H::S::S::CGI needs status line
-                                    $args{interface}->{module} = $interface;
                                     HTTP::Engine->new(
-                                        %args
+                                        %args,
+                                        interface => $interface,
                                     )->run;
                                 },
                             },

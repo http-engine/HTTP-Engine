@@ -1,7 +1,12 @@
-#!/usr/bin/perl
-
 package HTTP::Engine::Interface::Standalone::ResponseWriter;
 use Moose::Role;
+
+with qw(
+    HTTP::Engine::Role::ResponseWriter
+    HTTP::Engine::Role::ResponseWriter::OutputBody
+    HTTP::Engine::Role::ResponseWriter::ResponseLine
+    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+);
 
 has keepalive => (
     isa => "Bool",
@@ -17,5 +22,11 @@ before finalize => sub {
     );
 };
 
-__PACKAGE__
+around finalize => sub {
+    my ( $next, $self, $req, $res ) = @_;
 
+    $req->_connection->{output_handle}->autoflush(1);
+    $next->( $self, $req, $res );
+};
+
+1;

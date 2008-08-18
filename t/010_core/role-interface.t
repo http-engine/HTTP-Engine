@@ -25,6 +25,8 @@ with qw(
 );
 
 sub finalize {}
+sub write {}
+sub output_body {}
 no Moose;
 
 package t::Role;

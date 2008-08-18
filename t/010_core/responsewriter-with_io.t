@@ -2,6 +2,16 @@ package DummyIO;
 use overload qw{""} => sub { 'bless' };
 sub new { bless {}, shift }
 
+package DummyRW;
+use Moose;
+extends 'HTTP::Engine::ResponseWriter';
+with qw(
+    HTTP::Engine::Role::ResponseWriter
+    HTTP::Engine::Role::ResponseWriter::ResponseLine
+    HTTP::Engine::Role::ResponseWriter::OutputBody
+    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+);
+
 package main;
 use Test::Base;
 use IO::Scalar;
@@ -36,9 +46,7 @@ __END__
 --- input
 use t::Utils;
 
-my $writer = HTTP::Engine::ResponseWriter->new(
-    should_write_response_line => 1,
-);
+my $writer = DummyRW->new();
 
 my $tmp = File::Temp->new();
 $tmp->write("OK!");
@@ -71,9 +79,7 @@ OK!
 --- input
 use t::Utils;
 
-my $writer = HTTP::Engine::ResponseWriter->new(
-    should_write_response_line => 1,
-);
+my $writer = DummyRW->new();
 
 my $tmp = DummyIO->new;
 
@@ -103,10 +109,7 @@ bless
 --- input
 use t::Utils;
 
-my $writer = HTTP::Engine::ResponseWriter->new(
-    should_write_response_line => 1,
-);
-
+my $writer = DummyRW->new();
 
 my $ftmp = File::Temp->new();
 $ftmp->write('dummy'x5000);
@@ -141,9 +144,7 @@ Status: 200
 --- input
 use t::Utils;
 
-my $writer = HTTP::Engine::ResponseWriter->new(
-    should_write_response_line => 1,
-);
+my $writer = DummyRW->new();
 
 tie *STDOUT, 'IO::Scalar', \my $out;
 
@@ -172,9 +173,7 @@ OK!
 --- input
 use t::Utils;
 
-my $writer = HTTP::Engine::ResponseWriter->new(
-    should_write_response_line => 1,
-);
+my $writer = DummyRW->new();
 
 my $tmp = File::Temp->new();
 $tmp->write("OK!");
@@ -191,7 +190,7 @@ HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
 my $write;
 do {
     no warnings 'redefine';
-    local *HTTP::Engine::ResponseWriter::_write = sub { $write++; undef };
+    local *DummyRW::write = sub { $write++; undef };
     $writer->finalize( $req, $res );
 };
 $write ? 'OK' : 'NG';

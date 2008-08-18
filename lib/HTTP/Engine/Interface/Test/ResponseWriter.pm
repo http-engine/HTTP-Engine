@@ -21,5 +21,8 @@ sub get_response {
     return $res;
 }
 
+sub write       { die "dummy" }
+sub output_body { die "dummy" }
+
 __PACKAGE__
 

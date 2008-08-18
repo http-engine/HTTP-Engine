@@ -1,7 +1,6 @@
 package HTTP::Engine::Interface::POE;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-use constant should_write_response_line => 1;
 use POE qw/
     Component::Server::TCP
 /;

@@ -1,7 +1,6 @@
 package HTTP::Engine::Interface::FCGI;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-use constant should_write_response_line => 0;
 use constant RUNNING_IN_HELL => $^O eq 'MSWin32';
 use FCGI;
 

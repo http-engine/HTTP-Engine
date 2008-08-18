@@ -1,7 +1,6 @@
 package HTTP::Engine::Interface::ServerSimple;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
-use constant should_write_response_line => 1;
 use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
 

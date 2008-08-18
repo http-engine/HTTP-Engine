@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 if (! $ENV{TEST_CRITIC}) {
-    plan(skip_all => "Set TEST_CRITIC environemtn variable to run this test");
+    plan(skip_all => "Set TEST_CRITIC environment variable to run this test");
 } else {
     eval {
         require Test::Perl::Critic;

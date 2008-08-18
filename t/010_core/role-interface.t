@@ -7,7 +7,6 @@ use Moose;
 with 'HTTP::Engine::Role::Interface';
 no Moose;
 
-sub should_write_response_line { 0 }
 sub run {}
 
 sub request_builder_class { 't::Interface::Dummy::RequestResponse' }

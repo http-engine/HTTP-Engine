@@ -160,6 +160,8 @@ sub _create_anon_class {
     # apply the roles to the class
     Moose::Util::apply_all_roles( $anon->name, @roles );
 
+    $anon->meta->make_immutable;
+
     return $anon;
 }
 

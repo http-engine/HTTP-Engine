@@ -52,6 +52,7 @@ sub run {
     $server->run;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 

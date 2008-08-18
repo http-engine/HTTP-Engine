@@ -68,7 +68,6 @@ MANIFEST			This list of files
 META.yml
 README
 t/00_compile.t
-t/010_core/abstract_method.t
 t/010_core/request-absolute_uri.t
 t/010_core/request-as_http_request.t
 t/010_core/request-as_string.t
@@ -87,7 +86,6 @@ t/010_core/request-upload.t
 t/010_core/request-uri.t
 t/010_core/request.t
 t/010_core/request_builder-noenv.t
-t/010_core/request_builder_dummy.t
 t/010_core/request_processor-catch_error.t
 t/010_core/request_processor-make_request.t
 t/010_core/request_processor-response_error.t

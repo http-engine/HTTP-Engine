@@ -16,6 +16,10 @@ use Sub::Exporter -setup => {
 
 my @interfaces; # memoize.
 sub interfaces() {
+    if (my $e = $ENV{HE_TEST_INTERFACES}) {
+        @interfaces = split /,/, $e;
+    }
+
     unless (@interfaces) {
         push @interfaces, 'CGI'          if eval "use HTTP::Server::Simple; 1;";
         push @interfaces, 'FCGI'         if $ENV{TEST_LIGHTTPD};

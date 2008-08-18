@@ -25,9 +25,11 @@ inc/Test/Base/Filter.pm
 inc/Test/Builder.pm
 inc/Test/Builder/Module.pm
 inc/Test/More.pm
+inc/Test/TCP.pm
 lib/HTTP/Engine.pm
 lib/HTTP/Engine/Cookbook.pod
 lib/HTTP/Engine/Interface/CGI.pm
+lib/HTTP/Engine/Interface/CGI/ResponseWriter.pm
 lib/HTTP/Engine/Interface/FCGI.pm
 lib/HTTP/Engine/Interface/FCGI/ResponseWriter.pm
 lib/HTTP/Engine/Interface/ModPerl.pm
@@ -38,6 +40,7 @@ lib/HTTP/Engine/Interface/POE/Filter.pm
 lib/HTTP/Engine/Interface/POE/RequestBuilder.pm
 lib/HTTP/Engine/Interface/POE/ResponseWriter.pm
 lib/HTTP/Engine/Interface/ServerSimple.pm
+lib/HTTP/Engine/Interface/ServerSimple/ResponseWriter.pm
 lib/HTTP/Engine/Interface/Standalone.pm
 lib/HTTP/Engine/Interface/Standalone/RequestBuilder.pm
 lib/HTTP/Engine/Interface/Standalone/ResponseWriter.pm
@@ -62,6 +65,9 @@ lib/HTTP/Engine/Role/RequestBuilder/Standard.pm
 lib/HTTP/Engine/Role/RequestProcessor.pm
 lib/HTTP/Engine/Role/Response.pm
 lib/HTTP/Engine/Role/ResponseWriter.pm
+lib/HTTP/Engine/Role/ResponseWriter/OutputBody.pm
+lib/HTTP/Engine/Role/ResponseWriter/ResponseLine.pm
+lib/HTTP/Engine/Role/ResponseWriter/WriteSTDOUT.pm
 lib/HTTP/Engine/Types/Core.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -90,6 +96,7 @@ t/010_core/request_processor-catch_error.t
 t/010_core/request_processor-make_request.t
 t/010_core/request_processor-response_error.t
 t/010_core/request_upload-basename.t
+t/010_core/response-coerce_headers.t
 t/010_core/response-content_length.t
 t/010_core/response-cookie.t
 t/010_core/response-set_http_response.t
@@ -104,12 +111,14 @@ t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
 t/020_interface/poe.t
 t/020_interface/server_simple.t
+t/020_interface/test-dummy_method.t
 t/020_interface/test.t
 t/020_interface/test_request_builder.t
 t/020_interface/test_upload.t
 t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t
 t/030_daemonize/raw_body.t
+t/030_daemonize/responsewriter_io.t
 t/030_daemonize/upload.t
 t/030_daemonize/uri.t
 t/FCGIUtils.pm

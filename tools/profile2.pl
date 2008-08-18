@@ -4,6 +4,10 @@ use Test::TCP;
 use HTTP::Engine;
 use LWP::UserAgent;
 
+my $module = shift || 'ServerSimple';
+print "module: $module\n";
+Class::MOP::load_class("HTTP::Engine::Interface::$module");
+
 test_tcp(
     client => sub {
         my $port = shift;
@@ -14,14 +18,18 @@ test_tcp(
     },
     server => sub {
         my $port = shift;
-        require Devel::NYTProf;
-        $ENV{NYTPROF} = 'start=no';
-        Devel::NYTProf->import;
-        DB::enable_profile();
-        $SIG{TERM} = sub { DB::_finish(); exit; };
+
+        if (!$ENV{NO_NYTPROF}) {
+            require Devel::NYTProf;
+            $ENV{NYTPROF} = 'start=no';
+            Devel::NYTProf->import;
+            DB::enable_profile();
+            $SIG{TERM} = sub { DB::_finish(); exit; };
+        }
+
         HTTP::Engine->new(
             interface => {
-                module => 'ServerSimple',
+                module => $module,
                 args => {
                     port => $port,
                 },
@@ -31,6 +39,9 @@ test_tcp(
                 },
             },
         )->run;
+        if ($module eq 'POE') {
+            POE::Kernel->run();
+        }
     },
 );
 

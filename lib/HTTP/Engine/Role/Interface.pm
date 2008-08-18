@@ -27,7 +27,7 @@ has request_processor => (
     is         => 'ro',
     does       => 'HTTP::Engine::Role::RequestProcessor',
     lazy_build => 1,
-    handles    => [qw/handle_request load_plugins/],
+    handles    => [qw/handle_request/],
 );
 
 sub _build_request_processor {

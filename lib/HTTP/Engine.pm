@@ -11,7 +11,7 @@ has 'interface' => (
     is      => 'ro',
     does    => Interface,
     coerce  => 1,
-    handles => [ qw(run load_plugins) ],
+    handles => [ qw(run) ],
 );
 
 no Moose;

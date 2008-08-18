@@ -32,22 +32,22 @@ requires 'Moose' => 0.55;
 requires 'MooseX::Types' => 0.04;
 requires 'Scalar::Util';
 
-requires 'IO::Socket';
+requires 'IO::Socket' => 1.30;
 
 requires 'File::Copy';
-requires 'IO::File';
+requires 'IO::File' => 1.14;
 requires 'File::Spec::Unix';
 
 requires 'CGI::Simple::Cookie';
 requires 'HTTP::Body' => '1.04';
 requires 'HTTP::Headers';
-requires 'URI';
+requires 'URI' => 1.36;
 requires 'URI::QueryParam';
 
 features(
     'Interface::FCGI' => [
         -default => 0,
-        recommends_hack('FCGI'),
+        recommends_hack('FCGI' => 0.67),
     ],
 
     'Interface::ServerSimple' => [
@@ -67,8 +67,8 @@ features(
 
     'Interface::POE' => [
         -default => 0,
-        recommends_hack('POE' => '1.0002'),
-        recommends_hack('POE::Filter::HTTPD'),
+        recommends_hack('POE' => '1.0003'),
+        recommends_hack('POE::Filter::HTTPD' => 1.2387),
     ],
 );
 

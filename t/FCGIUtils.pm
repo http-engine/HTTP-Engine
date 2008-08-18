@@ -1,12 +1,12 @@
 package t::FCGIUtils;
 use strict;
 use warnings;
-use t::Utils;
 use File::Temp ();
 use FindBin;
 use Test::More;
 use IO::Socket;
 use File::Spec;
+use Test::TCP qw/test_tcp empty_port/;
 
 # this file is copied from Catalyst. thanks!
 
@@ -17,7 +17,7 @@ use Sub::Exporter -setup => {
 
 sub test_lighty ($&) {
     my ($fcgisrc, $callback, $port) = @_;
-    $port ||= empty_port;
+    $port ||= empty_port();
 
     plan skip_all => 'set TEST_LIGHTTPD to enable this test' 
         unless $ENV{TEST_LIGHTTPD};
@@ -33,14 +33,49 @@ sub test_lighty ($&) {
 
     my $tmpdir = File::Temp::tempdir();
 
-    my $fcgifname = File::Spec->catfile($tmpdir, "test.fcgi");
-    do {
-        _write_file($fcgifname => $fcgisrc);
-        chmod 0777, $fcgifname;
-        warn `perl -wc $fcgifname` if $ENV{DEBUG};
-    };
+    test_tcp(
+        client => sub {
+            my $port = shift;
+            $callback->($port);
+            warn `cat $tmpdir/error.log` if $ENV{DEBUG};
+        },
+        server => sub {
+            my $port = shift;
 
-    my $conf = <<"END";
+            my $fcgifname = File::Spec->catfile($tmpdir, "test.fcgi");
+            do {
+                _write_file($fcgifname => $fcgisrc);
+                chmod 0777, $fcgifname;
+                warn `perl -wc $fcgifname` if $ENV{DEBUG};
+            };
+
+            my $conffname = File::Spec->catfile($tmpdir, "lighty.conf");
+            _write_file($conffname => _render_conf($tmpdir, $port, $fcgifname));
+
+            my $pid = open my $lighttpd, "$lighttpd_bin -D -f $conffname 2>&1 |" 
+                or die "Unable to spawn lighttpd: $!";
+            $SIG{TERM} = sub {
+                kill 'INT', $pid;
+                close $lighttpd;
+                exit;
+            };
+            sleep 60; # waiting tests.
+            die "server timeout";
+        },
+        port => $port,
+    );
+}
+
+sub _write_file {
+    my ($fname, $src) = @_;
+    open my $fh, '>', $fname or die $!;
+    print {$fh} $src or die $!;
+    close $fh;
+}
+
+sub _render_conf {
+    my ($tmpdir, $port, $fcgifname) = @_;
+    <<"END";
 # basic lighttpd config file for testing fcgi+HTTP::Engine
 server.modules = (
     "mod_access",
@@ -73,28 +108,6 @@ fastcgi.server = (
     )
 )
 END
-
-    my $conffname = File::Spec->catfile($tmpdir, "lighty.conf");
-    _write_file($conffname => $conf);
-
-    my $pid = open my $lighttpd, "$lighttpd_bin -D -f $conffname 2>&1 |" 
-        or die "Unable to spawn lighttpd: $!";
-
-    wait_port($port);
-
-    $callback->($port);
-
-    warn `cat $tmpdir/error.log` if $ENV{DEBUG};
-
-    kill 'INT', $pid;
-    close $lighttpd;
-}
-
-sub _write_file {
-    my ($fname, $src) = @_;
-    open my $fh, '>', $fname or die $!;
-    print {$fh} $src or die $!;
-    close $fh;
 }
 
 1;

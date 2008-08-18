@@ -84,6 +84,7 @@ build_requires 'Test::More';
 build_requires 'IO::Scalar';
 build_requires 'File::Temp' => '0.20';
 build_requires 'HTTP::Request::AsCGI';
+build_requires 'Test::TCP';
 
 use_test_base;
 auto_include;

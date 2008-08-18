@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use t::Utils;
+use Test::TCP;
 use HTTP::Engine;
 
 eval "use POE;use POE::Session;";

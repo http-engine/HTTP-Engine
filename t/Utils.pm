@@ -5,58 +5,14 @@ use warnings;
 use HTTP::Engine;
 use HTTP::Request::AsCGI;
 use HTTP::Engine::RequestBuilder;
+use Test::TCP qw/test_tcp empty_port/;
 
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ empty_port daemonize daemonize_all interfaces run_engine ok_response check_port wait_port req /],
+    exports => [qw/ daemonize_all interfaces run_engine ok_response req /],
     groups  => { default => [':all'] }
 };
-
-sub empty_port {
-    my $port = shift || 10000;
-    $port = 19000 unless $port =~ /^[0-9]+$/ && $port < 19000;
-
-    while ($port++ < 20000) {
-        my $sock = IO::Socket::INET->new(
-            Listen    => 5,
-            LocalAddr => 'localhost',
-            LocalPort => $port,
-            Proto     => 'tcp'
-        );
-        return $port if $sock;
-    }
-    die "empty port not found";
-}
-
-sub daemonize (&@) { goto \&_daemonize }
-sub _daemonize {
-    my($client, $port, %args) = @_;
-    __daemonize($client, $port, sub {
-        my $poe_kernel_run = delete $args{poe_kernel_run};
-        HTTP::Engine->new(%args)->run;
-        POE::Kernel->run() if $poe_kernel_run;
-    });
-}
-sub __daemonize {
-    my($client, $port, $child) = @_;
-
-    if (my $pid = fork()) {
-        # parent.
-
-        wait_port($port);
-
-        $client->($port);
-
-        kill TERM => $pid;
-        waitpid($pid, 0);
-    } elsif ($pid == 0) {
-        # child
-        $child->();
-    } else {
-        die "cannot fork";
-    }
-}
 
 my @interfaces; # memoize.
 sub interfaces() {
@@ -73,7 +29,7 @@ sub interfaces() {
 sub daemonize_all (&$@) {
     my($client, $codesrc) = @_;
 
-    my $port = empty_port;
+    my $port = empty_port();
 
     my $code = eval $codesrc;
     die $@ if $@;
@@ -104,31 +60,43 @@ sub daemonize_all (&$@) {
             );
         } elsif ($interface eq 'CGI') {
             require HTTP::Server::Simple::CGI;
-            __daemonize $client_cb, $port, sub {
-                Moose::Meta::Class
-                    ->create_anon_class(
-                        superclasses => ['HTTP::Server::Simple::CGI'],
-                        methods => {
-                            handler => sub {
-                                no warnings 'redefine';
-                                require HTTP::Engine::Interface::CGI;
-                                local *HTTP::Engine::Interface::CGI::should_write_response_line = sub { 1 }; # H::S::S::CGI needs status line
-                                $args{interface}->{module} = $interface;
-                                HTTP::Engine->new(
-                                    %args
-                                )->run;
+            test_tcp(
+                client => $client_cb,
+                server => sub {
+                    Moose::Meta::Class
+                        ->create_anon_class(
+                            superclasses => ['HTTP::Server::Simple::CGI'],
+                            methods => {
+                                handler => sub {
+                                    no warnings 'redefine';
+                                    require HTTP::Engine::Interface::CGI;
+                                    local *HTTP::Engine::Interface::CGI::should_write_response_line = sub { 1 }; # H::S::S::CGI needs status line
+                                    $args{interface}->{module} = $interface;
+                                    HTTP::Engine->new(
+                                        %args
+                                    )->run;
+                                },
                             },
-                        },
-                        cache => 1
-                    )->new_object(
-                    )->new(
-                        $port
-                    )->run;
-            };
+                            cache => 1
+                        )->new_object(
+                        )->new(
+                            $port
+                        )->run;
+                },
+                port => $port,
+            );
         } else {
             $args{interface}->{module} = $interface;
             $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
-            _daemonize $client_cb, $port, %args;
+            test_tcp(
+                client => $client_cb,
+                server => sub {
+                    my $poe_kernel_run = delete $args{poe_kernel_run};
+                    HTTP::Engine->new(%args)->run;
+                    POE::Kernel->run() if $poe_kernel_run;
+                },
+                port   => $port,
+            );
         }
     }
 }
@@ -150,34 +118,6 @@ sub ok_response {
         status => 200,
         body => 'ok',
     );
-}
-
-sub check_port {
-    my ( $port ) = @_;
-
-    my $remote = IO::Socket::INET->new(
-        Proto    => "tcp",
-        PeerAddr => '127.0.0.1',
-        PeerPort => $port
-    );
-    if ($remote) {
-        close $remote;
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
-
-sub wait_port {
-    my $port = shift;
-
-    my $retry = 10;
-    while ($retry--) {
-        return if check_port($port);
-        sleep 1;
-    }
-    die "cannot open port: $port";
 }
 
 sub req {

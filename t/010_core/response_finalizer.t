@@ -3,7 +3,7 @@ use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine;
 use t::Utils;
 
-plan tests => 9+(1*blocks);
+plan tests => 11+(1*blocks);
 
 filters {
     req => [qw/yaml/],
@@ -30,6 +30,17 @@ run {
 };
 
 __END__
+
+=== normal
+--- req
+protocol: HTTP/1.0
+method: GET
+--- res
+protocol: HTTP/1.1
+status: 200
+--- test
+is $res->protocol, 'HTTP/1.1';
+is $res->header('Status'), 200;
 
 === default protocol
 --- req

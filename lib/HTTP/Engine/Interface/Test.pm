@@ -20,7 +20,7 @@ sub run {
             method     => $request->method,
             address    => "127.0.0.1",
             port       => "80",
-            protocol   => "HTTP/1.0",
+            protocol   => $request->protocol,
             user       => undef,
             https_info => undef,
             _builder_params => {

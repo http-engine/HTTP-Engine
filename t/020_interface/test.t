@@ -13,6 +13,11 @@ filters {
 run {
     my $block = shift;
 
+    my $req = HTTP::Request->new( GET => 'http://localhost/' );
+    $req->protocol('HTTP/1.0');
+    eval $block->preprocess if $block->preprocess;
+    die $@ if $@;
+
     my $response = HTTP::Engine->new(
         interface => {
             module => 'Test',
@@ -29,7 +34,7 @@ run {
                 return $res;
             },
         },
-    )->run(HTTP::Request->new( GET => 'http://localhost/'));
+    )->run($req);
 
     $response->headers->remove_header('Date');
     my $data = $response->headers->as_string."\n".$response->content;
@@ -62,6 +67,33 @@ Content-Length: 3
 Content-Type: text/html
 Status: 200
 X-Req-Base: http://localhost/
+X-Req-Test: ping
+
+OK!
+
+=== $req->protocol
+--- code
+$res->header('X-Req-Protocol' => $req->protocol);
+--- response
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+X-Req-Protocol: HTTP/1.0
+X-Req-Test: ping
+
+OK!
+
+=== $req->protocol(1.1)
+--- preprocess
+$req->protocol('HTTP/1.1');
+--- code
+$res->header('X-Req-Protocol' => $req->protocol);
+--- response
+Connection: close
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+X-Req-Protocol: HTTP/1.1
 X-Req-Test: ping
 
 OK!

@@ -98,3 +98,18 @@ X-Req-Test: ping
 
 OK!
 
+=== $req->raw_body
+--- preprocess
+$req->content("YAYAYA");
+$req->content_length( bytes::length($req->content) );
+--- code
+$res->header('X-Req-RawBody' => $req->raw_body);
+--- response
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+X-Req-RawBody: YAYAYA
+X-Req-Test: ping
+
+OK!
+

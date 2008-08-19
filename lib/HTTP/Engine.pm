@@ -1,4 +1,5 @@
 package HTTP::Engine;
+use 5.00800;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
 our $VERSION = '0.0.13';

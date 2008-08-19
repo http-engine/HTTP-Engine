@@ -62,7 +62,7 @@ features(
 
     'Interface::Test' => [
         -default => 0,
-        recommends_hack('HTTP::Request::AsCGI'),
+        recommends_hack('IO::Scalar'),
     ],
 
     'Interface::POE' => [

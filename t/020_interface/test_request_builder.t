@@ -10,6 +10,6 @@ for my $meth (qw/connection_info uri headers raw_body/) {
     my $meth = "_build_$meth";
     local $@;
     eval { HTTP::Engine::Interface::Test::RequestBuilder->$meth };
-    like $@, qr/^explicit parameter/;
+    like $@, qr/^explicit parameter/, $meth;
 }
 

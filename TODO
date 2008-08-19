@@ -4,25 +4,11 @@ TODO
 
 =head1 TRUNK
 
-=head2 Request Writer
-
-Cleanup much like RequestBuilder, many small things to do here
-
 =head2 Standalone
 
 L<Parallel::Prefork> ?
 
-=head2 FCGI
-
 =head2 ModPerl
 
 support $r->send_fd()
-
-=head2 POE
-
-=head2 Test
-
-Use the Dummy request builder instead of HTTP::Request::AsCGI
-
-=head1 NO CONTEXT BRANCH
 

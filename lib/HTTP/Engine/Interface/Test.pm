@@ -3,6 +3,7 @@ use Moose;
 with 'HTTP::Engine::Role::Interface';
 
 use URI::WithBase;
+use IO::Scalar;
 
 sub run {
     my ( $self, $request, %args ) = @_;
@@ -16,20 +17,17 @@ sub run {
                 $base;
             },
             headers    => $request->headers,
-            raw_body   => $request->content,
             method     => $request->method,
+            protocol   => $request->protocol,
             address    => "127.0.0.1",
             port       => "80",
-            protocol   => $request->protocol,
             user       => undef,
             https_info => undef,
             _builder_params => {
                 request => $request,
             },
             _connection => {
-                env           => \%ENV,
-                input_handle  => \*STDIN,
-                output_handle => \*STDOUT,
+                input_handle  => IO::Scalar->new( \( $request->content ) ),
             },
         },
         %args,

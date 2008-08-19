@@ -9,6 +9,7 @@ with (
     'HTTP::Engine::Role::RequestBuilder::HTTPBody' => {
         alias => { _build_http_body => '_orig_build_http_body' },
     },
+    'HTTP::Engine::Role::RequestBuilder::NoEnv',
 );
 
 sub _build_http_body {
@@ -19,9 +20,6 @@ sub _build_http_body {
     $self->_orig_build_http_body($req);
 }
 
-sub _build_connection_info { die "explicit parameter" };
-sub _build_uri { die "explicit parameter" }
-sub _build_headers { die "explicit parameter" };
 sub _build_raw_body { die "explicit parameter" }
 
 __PACKAGE__

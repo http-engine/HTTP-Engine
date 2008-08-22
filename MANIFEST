@@ -113,7 +113,6 @@ t/020_interface/poe.t
 t/020_interface/server_simple.t
 t/020_interface/test-dummy_method.t
 t/020_interface/test.t
-t/020_interface/test_request_builder.t
 t/020_interface/test_upload.t
 t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t

@@ -1,5 +1,16 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.14   2008-08-22T18:08:54+09:00
+         - Interface::ModPerl broken code fix
+         - Interface::POE fix the many problems
+         - Interface::Standalone
+           bug fixed uri construction
+           bug fixed around $req->base
+         - some refactoring
+           connection_info in Interface
+         - POD cleanup
+         - tokuhirom++
+
 0.0.13   2008-08-13T16:06:19+09:00
          - add more test scripts
          - test coverage 100%!

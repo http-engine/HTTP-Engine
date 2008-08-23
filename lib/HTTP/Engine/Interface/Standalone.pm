@@ -87,7 +87,10 @@ sub run {
             # Fork
             next if $self->fork && ($pid = fork);
             $self->_handler($remote, $method, $uri, $protocol, $peername);
-            $daemon->close if defined $pid;
+            if (defined $pid) {
+                $daemon->close;
+                exit();
+            }
         } else {
             ### RESTART
             if ($self->_can_restart($peername)) {
@@ -95,7 +98,6 @@ sub run {
                 last;
             }
         }
-        exit if defined $pid;
     } continue {
         close $remote;
     }

@@ -94,12 +94,11 @@ sub run {
             $self->_handler($remote, $port, $method, $uri, $protocol);
             $daemon->close if defined $pid;
         } else {
-            my $sockdata = $self->_socket_data($remote);
-            my $ipaddr   = _inet_addr($sockdata->{peeraddr});
+            my $peeraddr   = _inet_addr($self->_peeraddr($remote));
             my $ready    = 0;
             for my $ip (keys %{ $allowed }) {
                 my $mask = $allowed->{$ip};
-                $ready = ($ipaddr & _inet_addr($mask)) == _inet_addr($ip);
+                $ready = ($peeraddr & _inet_addr($mask)) == _inet_addr($ip);
                 last if $ready;
             }
             if ($ready) {
@@ -131,7 +130,7 @@ sub _handler {
     # We better be careful and just use 1.0
     $protocol = '1.0';
 
-    my $sockdata    = $self->_socket_data($remote);
+    my $peeraddr = $self->_peeraddr($remote);
 
     my $select = IO::Select->new;
     $select->add($remote);
@@ -184,7 +183,7 @@ sub _handler {
                 },
                 connection_info => {
                     method         => $method,
-                    address        => $sockdata->{peeraddr},
+                    address        => $peeraddr,
                     port           => $port,
                     protocol       => "HTTP/$protocol",
                     user           => undef,
@@ -222,20 +221,12 @@ sub _parse_request_line {
     return ($method, $uri, $protocol);
 }
 
-sub _socket_data {
-    my($self, $handle) = @_;
+sub _peeraddr {
+    my ($self, $sock) = @_;
 
-    my $remote_sockaddr = getpeername($handle);
-    my(undef, $iaddr) = sockaddr_in($remote_sockaddr);
-    my $local_sockaddr = getsockname($handle);
-    my(undef, $localiaddr) = sockaddr_in($local_sockaddr);
-
-    my $data = {
-        peeraddr => inet_ntoa($iaddr) || "127.0.0.1",
-        localaddr => inet_ntoa($localiaddr) || "127.0.0.1",
-    };
-
-    $data;
+    my $remote_sockaddr = getpeername($sock);
+    my (undef, $iaddr) = sockaddr_in($remote_sockaddr);
+    return inet_ntoa($iaddr) || "127.0.0.1";
 }
 
 sub _get_line {
@@ -255,7 +246,6 @@ sub _get_line {
 }
 
 sub _inet_addr { unpack "N*", inet_aton($_[0]) }
-
 
 1;
 __END__

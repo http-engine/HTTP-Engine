@@ -64,7 +64,6 @@ sub run {
     }
 
     my $host = $self->host;
-    my $port = $self->port;
 
     # Setup address
     my $addr = $host ? inet_aton($host) : INADDR_ANY;
@@ -79,7 +78,7 @@ sub run {
     my $daemon = IO::Socket::INET->new(
         Listen    => SOMAXCONN,
         LocalAddr => inet_ntoa($addr),
-        LocalPort => $port,
+        LocalPort => $self->port,
         Proto     => 'tcp',
         ReuseAddr => 1,
         Type      => SOCK_STREAM,
@@ -100,7 +99,7 @@ sub run {
         unless (uc $method eq 'RESTART') {
             # Fork
             next if $self->fork && ($pid = fork);
-            $self->_handler($remote, $port, $method, $uri, $protocol, $peername);
+            $self->_handler($remote, $method, $uri, $protocol, $peername);
             $daemon->close if defined $pid;
         } else {
             ### RESTART
@@ -125,7 +124,7 @@ sub run {
 }
 
 sub _handler {
-    my($self, $remote, $port, $method, $uri, $protocol, $peername) = @_;
+    my($self, $remote, $method, $uri, $protocol, $peername) = @_;
 
     # Ignore broken pipes as an HTTP server should
     local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close $remote };
@@ -140,26 +139,7 @@ sub _handler {
     while (1) {
         # FIXME refactor an HTTP push parser
 
-        # Parse headers
-        # taken from HTTP::Message, which is unfortunately not really reusable
-        my $headers = do {
-            if ($protocol >= 1) {
-                my @hdr;
-                while ( length(my $line = $self->_get_line($remote)) ) {
-                    if ($line =~ s/^([^\s:]+)[ \t]*: ?(.*)//) {
-                        push(@hdr, $1, $2);
-                    }
-                    elsif (@hdr && $line =~ s/^([ \t].*)//) {
-                        $hdr[-1] .= "\n$1";
-                    } else {
-                        last;
-                    }
-                }
-                HTTP::Headers->new(@hdr);
-            } else {
-                HTTP::Headers->new;
-            }
-        };
+        my $headers = $self->_parse_header($remote, $protocol);
 
         my $connection = lc $headers->header("Connection");
         ### connection: $connection
@@ -193,7 +173,7 @@ sub _handler {
                 connection_info => {
                     method         => $method,
                     address        => $self->_peeraddr($peername),
-                    port           => $port,
+                    port           => $self->port,
                     protocol       => "HTTP/$protocol",
                     user           => undef,
                     https_info     => undef,
@@ -249,6 +229,31 @@ sub _get_line {
     $line =~ s/\015$//s;
 
     $line;
+}
+
+# Parse headers
+# taken from HTTP::Message, which is unfortunately not really reusable
+sub _parse_header {
+    my ($self, $remote, $protocol) = @_;
+
+    if ( $protocol >= 1 ) {
+        my @hdr;
+        while ( length( my $line = $self->_get_line($remote) ) ) {
+            if ( $line =~ s/^([^\s:]+)[ \t]*: ?(.*)// ) {
+                push( @hdr, $1, $2 );
+            }
+            elsif ( @hdr && $line =~ s/^([ \t].*)// ) {
+                $hdr[-1] .= "\n$1";
+            }
+            else {
+                last;
+            }
+        }
+        HTTP::Headers->new(@hdr);
+    }
+    else {
+        HTTP::Headers->new;
+    }
 }
 
 sub _can_restart {

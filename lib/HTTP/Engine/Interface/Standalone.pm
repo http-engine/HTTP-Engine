@@ -74,9 +74,6 @@ sub run {
         Type      => SOCK_STREAM,
     ) or die "Couldn't create daemon: $!";
 
-    my $url = "http://$host";
-    $url .= ":$port" unless $port == 80;
-
     my $restart = 0;
     my $parent = $$;
     my $pid    = undef;

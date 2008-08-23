@@ -147,43 +147,17 @@ sub _handler {
                                   && index( $connection, 'te' ) == -1          # opera stuff
         ;
 
-        # Pass flow control to HTTP::Engine
-        $self->handle_request(
-            request_args => {
-                uri            => URI::WithBase->new(
-                    do {
-                        my $u = URI->new($uri);
-                        $u->scheme('http');
-                        $u->host($headers->header('Host') || $self->host);
-                        $u->port($self->port);
-                        my $b = $u->clone;
-                        $b->path_query('/');
-                        ($u, $b);
-                    },
-                ),
-                headers        => $headers,
-                _connection => {
-                    input_handle        => $remote,
-                    output_handle       => $remote,
-                    env                 => {},
-                    keepalive_available => $keepalive_available,
-                },
-                connection_info => {
-                    method         => $method,
-                    address        => $self->_peeraddr($peername),
-                    port           => $self->port,
-                    protocol       => "HTTP/$protocol",
-                    user           => undef,
-                    https_info     => undef,
-                },
-            },
-        );
+        $self->_handle_one($remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available);
 
-        ### waiting keepalive timeout
-        last unless $keepalive_available && $select->can_read($self->keepalive_timeout);
+        if ($keepalive_available) {
+            ### waiting keepalive timeout
+            last unless $select->can_read($self->keepalive_timeout);
 
-        ### GO! keep alive!
-        last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
+            ### GO! keep alive!
+            last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
+        } else {
+            last;
+        }
     }
 
     $remote->read(my $buf, 4096) if $select->can_read(0); # IE hack
@@ -252,6 +226,41 @@ sub _parse_header {
     else {
         HTTP::Headers->new;
     }
+}
+
+sub _handle_one {
+    my($self, $remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available) = @_;
+
+    $self->handle_request(
+        request_args => {
+            uri => URI::WithBase->new(
+                do {
+                    my $u = URI->new($uri);
+                    $u->scheme('http');
+                    $u->host($headers->header('Host') || $self->host);
+                    $u->port($self->port);
+                    my $b = $u->clone;
+                    $b->path_query('/');
+                    ($u, $b);
+                },
+            ),
+            headers        => $headers,
+            _connection => {
+                input_handle        => $remote,
+                output_handle       => $remote,
+                env                 => {},
+                keepalive_available => $keepalive_available,
+            },
+            connection_info => {
+                method         => $method,
+                address        => $self->_peeraddr($peername),
+                port           => $self->port,
+                protocol       => "HTTP/$protocol",
+                user           => undef,
+                https_info     => undef,
+            },
+        },
+    );
 }
 
 sub _can_restart {

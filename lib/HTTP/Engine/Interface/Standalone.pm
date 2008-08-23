@@ -63,21 +63,10 @@ sub run {
         Carp::croak "set fork=1 if you want to work with keepalive!";
     }
 
-    my $host = $self->host;
-
-    # Setup address
-    my $addr = $host ? inet_aton($host) : INADDR_ANY;
-    if ($addr eq INADDR_ANY) {
-        require Sys::Hostname;
-        $host = lc Sys::Hostname::hostname();
-    } else {
-        $host = gethostbyaddr($addr, AF_INET) || inet_ntoa($addr);
-    }
-
     # Setup socket
     my $daemon = IO::Socket::INET->new(
         Listen    => SOMAXCONN,
-        LocalAddr => inet_ntoa($addr),
+        LocalAddr => $self->host,
         LocalPort => $self->port,
         Proto     => 'tcp',
         ReuseAddr => 1,

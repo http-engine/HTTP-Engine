@@ -8,7 +8,9 @@ TODO
 
 L<Parallel::Prefork> ?
 
+keepalive doesn't works?
+
 =head2 ModPerl
 
-support $r->send_fd()
+support $r->send_fd() (suggested by kazeburo++)
 

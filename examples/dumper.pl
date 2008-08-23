@@ -7,9 +7,11 @@ use String::TT qw/strip tt/;
 
 my $engine = HTTP::Engine->new(
     interface => {
-        module  => 'ServerSimple',
+        module  => 'Standalone',
         args => {
             port    => 9999,
+            fork    => 1,
+            keepalive => 1,
         },
         request_handler => sub {
             my $req = shift;

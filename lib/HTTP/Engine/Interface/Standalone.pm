@@ -31,6 +31,12 @@ has keepalive => (
     default => 0,
 );
 
+has keepalive_timeout => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 5,
+);
+
 # fixme add preforking support using Parallel::Prefork
 has fork => (
     is      => 'ro',
@@ -88,7 +94,7 @@ sub run {
 
     ### start server
     while (my ($remote, $peername) = $daemon->accept) {
-        ### accept
+        ### accept : $remote->fileno
         # TODO (Catalyst): get while ( my $remote = $daemon->accept ) to work
         delete $self->{_sigpipe};
 
@@ -99,6 +105,7 @@ sub run {
             $self->_handler($remote, $port, $method, $uri, $protocol, $peername);
             $daemon->close if defined $pid;
         } else {
+            ### RESTART
             if ($self->_can_restart($peername)) {
                 $restart = 1;
                 last;
@@ -126,7 +133,7 @@ sub _handler {
     local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close $remote };
 
     # We better be careful and just use 1.0
-    $protocol = '1.0';
+    $protocol = '1.0'; # XXX I don't know about why this needed.
 
     my $peeraddr = $self->_peeraddr($peername);
 
@@ -197,14 +204,16 @@ sub _handler {
           unless $self->keepalive
           && index($connection, 'keep-alive') > -1
           && index($connection, 'te') == -1          # opera stuff
-          && $select->can_read(5);
+          && $select->can_read($self->keepalive_timeout);
 
         ### keep alive
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
     $self->request_builder->_io_read($remote, my $buf, 4096) if $select->can_read(0); # IE hack
-    close $remote;
+
+    ### close connection
+    $remote->close();
 }
 
 sub _parse_request_line {

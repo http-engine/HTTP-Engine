@@ -17,6 +17,6 @@ my $e = HTTP::Engine->new(
         },
     },
 );
-DB::enable_profile();
+# DB::enable_profile();
 $e->run;
 

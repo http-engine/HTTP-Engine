@@ -210,7 +210,7 @@ sub _handler {
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
-    $self->request_builder->_io_read($remote, my $buf, 4096) if $select->can_read(0); # IE hack
+    $remote->sysread(my $buf, 4096) if $select->can_read(0); # IE hack
 
     ### close connection
     $remote->close();

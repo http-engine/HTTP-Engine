@@ -8,18 +8,16 @@ with qw(
     HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
 );
 
-has keepalive => (
-    isa => "Bool",
-    is  => "rw",
-);
-
 before finalize => sub {
     my($self, $req, $res) = @_;
 
     $res->headers->date(time);
-    $res->headers->header(
-        Connection => $self->keepalive ? 'keep-alive' : 'close'
-    );
+
+    if ($req->_connection->{keepalive_available}) {
+        $res->headers->header( Connection => 'keep-alive' );
+    } else {
+        $res->headers->header( Connection => 'close' );
+    }
 };
 
 1;

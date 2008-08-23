@@ -63,8 +63,6 @@ sub run {
         Carp::croak "set fork=1 if you want to work with keepalive!";
     }
 
-    $self->response_writer->keepalive( $self->keepalive );
-
     my $host = $self->host;
     my $port = $self->port;
 
@@ -163,6 +161,14 @@ sub _handler {
             }
         };
 
+        my $connection = lc $headers->header("Connection");
+        ### connection: $connection
+
+        my $keepalive_available =    $self->keepalive
+                                  && index( $connection, 'keep-alive' ) > -1
+                                  && index( $connection, 'te' ) == -1          # opera stuff
+        ;
+
         # Pass flow control to HTTP::Engine
         $self->handle_request(
             request_args => {
@@ -179,9 +185,10 @@ sub _handler {
                 ),
                 headers        => $headers,
                 _connection => {
-                    input_handle  => $remote,
-                    output_handle => $remote,
-                    env           => {}, # no more env than what we provide
+                    input_handle        => $remote,
+                    output_handle       => $remote,
+                    env                 => {},
+                    keepalive_available => $keepalive_available,
                 },
                 connection_info => {
                     method         => $method,
@@ -194,16 +201,10 @@ sub _handler {
             },
         );
 
-        my $connection = lc $headers->header("Connection");
-        ### connection: $connection
+        ### waiting keepalive timeout
+        last unless $keepalive_available && $select->can_read($self->keepalive_timeout);
 
-        last
-          unless $self->keepalive
-          && index($connection, 'keep-alive') > -1
-          && index($connection, 'te') == -1          # opera stuff
-          && $select->can_read($self->keepalive_timeout);
-
-        ### keep alive
+        ### GO! keep alive!
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 

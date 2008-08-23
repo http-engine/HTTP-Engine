@@ -46,7 +46,11 @@ has argv => (
 sub run {
     my ( $self ) = @_;
 
-    $self->response_writer->keepalive( $self->fork && $self->keepalive );
+    if ($self->keepalive && !$self->fork) {
+        Carp::croak "set fork=1 if you want to work with keepalive!";
+    }
+
+    $self->response_writer->keepalive( $self->keepalive );
 
     my $host = $self->host;
     my $port = $self->port;
@@ -192,7 +196,7 @@ sub _handler {
         my $connection = $headers->header("Connection");
 
         last
-          unless $self->fork && $self->keepalive
+          unless $self->keepalive
           && index($connection, 'keep-alive') > -1
           && index($connection, 'te') == -1          # opera stuff
           && $select->can_read(5);

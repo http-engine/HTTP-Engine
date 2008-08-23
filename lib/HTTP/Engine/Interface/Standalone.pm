@@ -78,12 +78,11 @@ sub run {
     $url .= ":$port" unless $port == 80;
 
     my $restart = 0;
-    my $allowed = $self->allowed;
     my $parent = $$;
     my $pid    = undef;
     local $SIG{CHLD} = 'IGNORE';
 
-    while (my $remote = $daemon->accept) {
+    while (my ($remote, $peername) = $daemon->accept) {
         # TODO (Catalyst): get while ( my $remote = $daemon->accept ) to work
         delete $self->{_sigpipe};
 
@@ -91,17 +90,10 @@ sub run {
         unless (uc $method eq 'RESTART') {
             # Fork
             next if $self->fork && ($pid = fork);
-            $self->_handler($remote, $port, $method, $uri, $protocol);
+            $self->_handler($remote, $port, $method, $uri, $protocol, $peername);
             $daemon->close if defined $pid;
         } else {
-            my $peeraddr   = _inet_addr($self->_peeraddr($remote));
-            my $ready    = 0;
-            for my $ip (keys %{ $allowed }) {
-                my $mask = $allowed->{$ip};
-                $ready = ($peeraddr & _inet_addr($mask)) == _inet_addr($ip);
-                last if $ready;
-            }
-            if ($ready) {
+            if ($self->_can_restart($peername)) {
                 $restart = 1;
                 last;
             }
@@ -122,7 +114,7 @@ sub run {
 }
 
 sub _handler {
-    my($self, $remote, $port, $method, $uri, $protocol) = @_;
+    my($self, $remote, $port, $method, $uri, $protocol, $peername) = @_;
 
     # Ignore broken pipes as an HTTP server should
     local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close $remote };
@@ -130,7 +122,7 @@ sub _handler {
     # We better be careful and just use 1.0
     $protocol = '1.0';
 
-    my $peeraddr = $self->_peeraddr($remote);
+    my $peeraddr = $self->_peeraddr($peername);
 
     my $select = IO::Select->new;
     $select->add($remote);
@@ -222,10 +214,9 @@ sub _parse_request_line {
 }
 
 sub _peeraddr {
-    my ($self, $sock) = @_;
+    my ($self, $peername) = @_;
 
-    my $remote_sockaddr = getpeername($sock);
-    my (undef, $iaddr) = sockaddr_in($remote_sockaddr);
+    my (undef, $iaddr) = sockaddr_in($peername);
     return inet_ntoa($iaddr) || "127.0.0.1";
 }
 
@@ -243,6 +234,20 @@ sub _get_line {
     $line =~ s/\015$//s;
 
     $line;
+}
+
+sub _can_restart {
+    my ($self, $peername) = @_;
+
+    my $peeraddr = _inet_addr($self->_peeraddr($peername));
+    my $allowed = $self->allowed;
+    for my $ip (keys %{ $allowed }) {
+        my $mask = $allowed->{$ip};
+        if (($peeraddr & _inet_addr($mask)) == _inet_addr($ip)) {
+            return 1
+        }
+    }
+    return 0;
 }
 
 sub _inet_addr { unpack "N*", inet_aton($_[0]) }

@@ -129,8 +129,8 @@ sub _handler {
 
     my $sockdata    = $self->_socket_data($remote);
 
-    my $sel = IO::Select->new;
-    $sel->add($remote);
+    my $select = IO::Select->new;
+    $select->add($remote);
 
     $remote->autoflush(1);
 
@@ -195,12 +195,12 @@ sub _handler {
           unless $self->fork && $self->keepalive
           && index($connection, 'keep-alive') > -1
           && index($connection, 'te') == -1          # opera stuff
-          && $sel->can_read(5);
+          && $select->can_read(5);
 
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
-    $self->request_builder->_io_read($remote, my $buf, 4096) if $sel->can_read(0); # IE hack
+    $self->request_builder->_io_read($remote, my $buf, 4096) if $select->can_read(0); # IE hack
     close $remote;
 }
 

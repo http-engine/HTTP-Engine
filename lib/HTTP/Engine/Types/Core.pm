@@ -11,46 +11,53 @@ use URI::WithBase;
 use URI::QueryParam;
 use HTTP::Headers;
 
-role_type Interface, { role => "HTTP::Engine::Role::Interface" };
+do {
+    role_type Interface, { role => "HTTP::Engine::Role::Interface" };
 
-coerce Interface, from HashRef => via {
-    my $module  = $_->{module};
-    my $plugins = $_->{plugins} || [];
-    my $args    = $_->{args};
-    $args->{request_handler} = $_->{request_handler};
+    coerce Interface, from HashRef => via {
+        my $module  = $_->{module};
+        my $plugins = $_->{plugins} || [];
+        my $args    = $_->{args};
+        $args->{request_handler} = $_->{request_handler};
 
-    if ($module !~ s{^\+}{}) {
-        $module = join('::', "HTTP", "Engine", "Interface", $module);
-    }
+        if ($module !~ s{^\+}{}) {
+            $module = join('::', "HTTP", "Engine", "Interface", $module);
+        }
 
-    Class::MOP::load_class($module);
+        Class::MOP::load_class($module);
 
-    return $module->new( %$args );
+        return $module->new( %$args );
+    };
 };
 
-class_type Uri, { class => "URI::WithBase" };
+do {
+    class_type Uri, { class => "URI::WithBase" };
 
-coerce Uri, from Str => via { 
-    # generate base uri
-    my $uri = URI->new($_);
-    my $base = $uri->path;
-    $base =~ s{^/+}{};
-    $uri->path($base);
-    $base .= '/' unless $base =~ /\/$/;
-    $uri->query(undef);
-    $uri->path($base);
-    URI::WithBase->new($_, $uri);
+    coerce Uri, from Str => via { 
+        # generate base uri
+        my $uri = URI->new($_);
+        my $base = $uri->path;
+        $base =~ s{^/+}{};
+        $uri->path($base);
+        $base .= '/' unless $base =~ /\/$/;
+        $uri->query(undef);
+        $uri->path($base);
+        URI::WithBase->new($_, $uri);
+    };
 };
 
-class_type Header, { class => "HTTP::Headers" };
+do {
+    class_type Header, { class => "HTTP::Headers" };
 
-coerce Header,
-    from ArrayRef => via { HTTP::Headers->new( @{ $_ } ) },
-    from HashRef  => via { HTTP::Headers->new( %{ $_ } ) };
+    coerce Header,
+        from ArrayRef => via { HTTP::Headers->new( @{ $_ } ) },
+        from HashRef  => via { HTTP::Headers->new( %{ $_ } ) };
+};
 
-subtype Handler, as 'CodeRef';
-
-coerce Handler, from Str => via { \&{$_} };
+do {
+    subtype Handler, as 'CodeRef';
+    coerce Handler, from Str => via { \&{$_} };
+};
 
 1;
 

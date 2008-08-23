@@ -186,7 +186,7 @@ sub _handler {
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 
-    $remote->sysread(my $buf, 4096) if $select->can_read(0); # IE hack
+    $remote->read(my $buf, 4096) if $select->can_read(0); # IE hack
 
     ### close connection
     $remote->close();
@@ -218,7 +218,7 @@ sub _get_line {
 
     # FIXME use bufferred but nonblocking IO? this is a lot of calls =(
     my $line = '';
-    while (read($handle, my $byte, 1)) {
+    while ($handle->read(my $byte, 1)) {
         last if $byte eq "\012";    # eol
         $line .= $byte;
     }

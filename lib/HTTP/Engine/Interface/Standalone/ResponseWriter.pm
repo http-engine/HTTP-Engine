@@ -22,11 +22,4 @@ before finalize => sub {
     );
 };
 
-around finalize => sub {
-    my ( $next, $self, $req, $res ) = @_;
-
-    $req->_connection->{output_handle}->autoflush(1);
-    $next->( $self, $req, $res );
-};
-
 1;

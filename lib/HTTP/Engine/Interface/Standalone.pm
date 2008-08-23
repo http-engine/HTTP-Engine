@@ -135,10 +135,7 @@ sub _handler {
     # We better be careful and just use 1.0
     $protocol = '1.0'; # XXX I don't know about why this needed.
 
-    my $peeraddr = $self->_peeraddr($peername);
-
-    my $select = IO::Select->new;
-    $select->add($remote);
+    my $select = IO::Select->new($remote);
 
     $remote->autoflush(1);
 
@@ -188,7 +185,7 @@ sub _handler {
                 },
                 connection_info => {
                     method         => $method,
-                    address        => $peeraddr,
+                    address        => $self->_peeraddr($peername),
                     port           => $port,
                     protocol       => "HTTP/$protocol",
                     user           => undef,

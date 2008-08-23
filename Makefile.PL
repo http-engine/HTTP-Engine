@@ -28,21 +28,20 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Moose' => 0.55;
+requires 'Moose'         => 0.55;
 requires 'MooseX::Types' => 0.04;
-requires 'Scalar::Util';
+requires 'Scalar::Util'  => 1.19;
 
 requires 'IO::Socket' => 1.30;
 
-requires 'File::Copy';
-requires 'IO::File' => 1.14;
-requires 'File::Spec::Unix';
+requires 'File::Copy'       => 2.09;
+requires 'IO::File'         => 1.14;
+requires 'File::Spec::Unix' => 3.2701;
 
-requires 'CGI::Simple::Cookie';
-requires 'HTTP::Body' => '1.04';
-requires 'HTTP::Headers';
-requires 'URI' => 1.36;
-requires 'URI::QueryParam';
+requires 'CGI::Simple::Cookie' => 0.80;
+requires 'HTTP::Body'          => '1.04';
+requires 'HTTP::Headers'       => 5.810;
+requires 'URI'                 => 1.36;
 
 features(
     'Interface::FCGI' => [
@@ -57,12 +56,12 @@ features(
 
     'Interface::Standalone' => [
         -default => 0,
-        recommends_hack('Errno'),
+        recommends_hack('Errno' => 1.0901),
     ],
 
     'Interface::Test' => [
         -default => 0,
-        recommends_hack('IO::Scalar'),
+        recommends_hack('IO::Scalar' => 2.110),
     ],
 
     'Interface::POE' => [

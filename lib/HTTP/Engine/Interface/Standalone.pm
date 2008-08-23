@@ -6,6 +6,13 @@ use Socket qw(:all);
 use IO::Socket::INET ();
 use IO::Select       ();
 
+BEGIN {
+    if ( $ENV{SMART_COMMENTS} ) {
+        Class::MOP::load_class('Smart::Comments');
+        Smart::Comments->import;
+    }
+}
+
 has host => (
     is      => 'ro',
     isa     => 'Str',
@@ -79,7 +86,9 @@ sub run {
     my $pid    = undef;
     local $SIG{CHLD} = 'IGNORE';
 
+    ### start server
     while (my ($remote, $peername) = $daemon->accept) {
+        ### accept
         # TODO (Catalyst): get while ( my $remote = $daemon->accept ) to work
         delete $self->{_sigpipe};
 
@@ -181,7 +190,8 @@ sub _handler {
             },
         );
 
-        my $connection = $headers->header("Connection");
+        my $connection = lc $headers->header("Connection");
+        ### connection: $connection
 
         last
           unless $self->keepalive
@@ -189,6 +199,7 @@ sub _handler {
           && index($connection, 'te') == -1          # opera stuff
           && $select->can_read(5);
 
+        ### keep alive
         last unless ($method, $uri, $protocol) = $self->_parse_request_line($remote, 1);
     }
 

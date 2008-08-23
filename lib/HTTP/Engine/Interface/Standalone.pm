@@ -104,7 +104,7 @@ sub run {
     if ($restart) {
         $SIG{CHLD} = 'DEFAULT';
         wait;
-        exec $^X . ' "' . $0 . '" ' . join(' ', @{ $self->argv });
+        exec $^X, $0, @{ $self->argv };
     }
 
     exit;

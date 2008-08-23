@@ -93,8 +93,6 @@ sub run {
     while (my ($remote, $peername) = $daemon->accept) {
         ### accept : $remote->fileno
         # TODO (Catalyst): get while ( my $remote = $daemon->accept ) to work
-        delete $self->{_sigpipe};
-
         next unless my($method, $uri, $protocol) = $self->_parse_request_line($remote);
         unless (uc $method eq 'RESTART') {
             # Fork
@@ -127,7 +125,7 @@ sub _handler {
     my($self, $remote, $method, $uri, $protocol, $peername) = @_;
 
     # Ignore broken pipes as an HTTP server should
-    local $SIG{PIPE} = sub { $self->{_sigpipe} = 1; close $remote };
+    local $SIG{PIPE} = sub { close $remote };
 
     # We better be careful and just use 1.0
     $protocol = '1.0'; # XXX I don't know about why this needed.

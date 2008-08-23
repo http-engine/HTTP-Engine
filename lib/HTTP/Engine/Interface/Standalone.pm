@@ -218,7 +218,7 @@ sub _get_line {
 
     # FIXME use bufferred but nonblocking IO? this is a lot of calls =(
     my $line = '';
-    while ($self->request_builder->_io_read($handle, my $byte, 1)) {
+    while (read($handle, my $byte, 1)) {
         last if $byte eq "\012";    # eol
         $line .= $byte;
     }

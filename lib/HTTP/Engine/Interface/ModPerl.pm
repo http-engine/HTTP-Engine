@@ -18,7 +18,7 @@ use Apache2::ServerRec;
 use APR::Table;
 use HTTP::Engine;
 
-extends 'HTTP::Engine::Interface::CGI';
+with 'HTTP::Engine::Role::Interface';
 
 has 'apache' => (
     is      => 'rw',
@@ -93,6 +93,8 @@ sub create_engine
         )
     );
 }
+
+sub run { die "THIS IS DUMMY" }
 
 __PACKAGE__->meta->make_immutable;
 1;

@@ -53,7 +53,6 @@ my $filter = Moose::Meta::Class->create(
             return @_;
         }
     },
-    cache => 1,
 )->name;
 
 sub run {
@@ -63,7 +62,7 @@ sub run {
     POE::Component::Server::TCP->new(
         Port         => $self->port,
         Address      => $self->host,
-        ClientFilter => $filter,
+        ClientFilter => $filter->new,
         ( $self->alias ? ( Alias => $self->alias ) : () ),
         ClientInput  => _client_input($self),
     );

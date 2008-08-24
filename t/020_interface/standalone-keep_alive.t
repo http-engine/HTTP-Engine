@@ -8,7 +8,6 @@ use Net::HTTP;
 
 my $TRY = 30;
 
-plan skip_all => "Set TEST_STANDALON_KEEPALIVE environment variable to run this test" unless $ENV{TEST_STANDALON_KEEPALIVE};
 plan tests => 1*$TRY + 1;
 
 my $s;

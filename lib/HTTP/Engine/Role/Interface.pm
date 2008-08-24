@@ -20,6 +20,7 @@ sub handle_request {
         request_builder => $self->request_builder,
         %args,
     );
+
     my $res;
     eval {
         $res = $self->request_handler->($req);

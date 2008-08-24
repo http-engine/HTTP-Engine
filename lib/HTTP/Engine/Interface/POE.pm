@@ -74,13 +74,11 @@ sub _client_input {
         # the responses as they are and finish up.
         if ( $request->isa('HTTP::Response') ) {
             $heap->{client}->put($request->as_string);
-            $kernel->yield('shutdown');
-            return;
         } else {
             local $CLIENT = $heap->{client};
             $self->handle_request(%{ $self->_make_request($request, $heap) });
-            $kernel->yield('shutdown');
         }
+        $kernel->yield('shutdown');
     }
 }
 

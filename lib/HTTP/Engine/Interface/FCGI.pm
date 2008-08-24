@@ -50,6 +50,8 @@ has listen => (
     isa => 'Str',
 );
 
+sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
+
 sub run {
     my ( $self, ) = @_;
 

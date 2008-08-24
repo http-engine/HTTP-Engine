@@ -52,7 +52,6 @@ lib/HTTP/Engine/Request/Upload.pm
 lib/HTTP/Engine/RequestProcessor.pm
 lib/HTTP/Engine/Response.pm
 lib/HTTP/Engine/ResponseFinalizer.pm
-lib/HTTP/Engine/ResponseWriter.pm
 lib/HTTP/Engine/Role/Interface.pm
 lib/HTTP/Engine/Role/Request.pm
 lib/HTTP/Engine/Role/RequestBuilder.pm

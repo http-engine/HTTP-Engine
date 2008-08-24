@@ -49,7 +49,10 @@ has request_builder => (
 sub _build_request_builder {
     my $self = shift;
 
-    my $pkg = join( "::", $self->meta->name, 'RequestBuilder' );
+    my $pkg =
+        $self->can('request_builder_class')
+      ? $self->request_builder_class
+      : join( "::", $self->meta->name, 'RequestBuilder' );
     Class::MOP::load_class($pkg);
     return $pkg->new();
 }

@@ -1,4 +1,4 @@
-package HTTP::Engine::ResponseWriter::CGI;
+package HTTP::Engine::RequestBuilder::CGI;
 use Moose;
 
 with qw(

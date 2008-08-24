@@ -2,6 +2,8 @@ package HTTP::Engine::Interface::CGI;
 use Moose;
 with 'HTTP::Engine::Role::Interface';
 
+sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
+
 sub run {
     my ($self) = @_;
     $self->handle_request(

@@ -9,4 +9,5 @@ with qw(
 sub _build_connection_info { die "explicit parameter" }
 sub _build_hostname        { die "explicit parameter" }
 
+__PACKAGE__->meta->make_immutable;
 1;

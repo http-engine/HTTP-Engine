@@ -9,5 +9,6 @@ with qw(
     HTTP::Engine::Role::RequestBuilder::NoEnv
 );
 
+__PACKAGE__->meta->make_immutable;
 __PACKAGE__
 

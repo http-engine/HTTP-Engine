@@ -28,12 +28,6 @@ sub BUILD {
     }
 }
 
-has _builder_params => (
-    is => "ro",
-    isa => "HashRef",
-    default => sub { {} },
-);
-
 has _connection => (
     is => "ro",
     isa => 'HashRef',

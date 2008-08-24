@@ -37,9 +37,6 @@ sub run {
             port       => "80",
             user       => undef,
             https_info => undef,
-            _builder_params => {
-                request => $request,
-            },
             _connection => {
                 input_handle  => IO::Scalar->new( \( $request->content ) ),
             },

@@ -6,31 +6,21 @@ use IO::Scalar;
 
 builder 'NoEnv';
 
+our $RESPONSE;
+
 writer {
-    attributes => {
-        '_response' => {
-            is => "rw",
-            clearer => "_clear_response",
-        },
-    },
     methods => {
         finalize => sub {
             my ( $self, $req, $res ) = @_;
-            $self->_response($res->as_http_response);
+            $RESPONSE = $res->as_http_response;
         },
-        get_response => sub {
-            my $self = shift;
-            my $res = $self->_response;
-            $self->_clear_response;
-            return $res;
-        },
-        write       => sub { die "dummy" },
-        output_body => sub { die "dummy" },
     },
 };
 
 sub run {
     my ( $self, $request, %args ) = @_;
+
+    local $RESPONSE;
 
     $self->handle_request(
         request_args => {
@@ -57,7 +47,7 @@ sub run {
         %args,
     );
 
-    $self->response_writer->get_response; # FIXME yuck, should be a ret from handle_request
+    return $RESPONSE;
 }
 
 __INTERFACE__

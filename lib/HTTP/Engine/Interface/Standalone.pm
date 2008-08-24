@@ -61,6 +61,7 @@ builder 'NoEnv';
 
 writer {
     roles => [qw/
+        Finalize
         OutputBody
         ResponseLine
         WriteSTDOUT

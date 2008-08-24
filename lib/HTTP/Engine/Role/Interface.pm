@@ -1,7 +1,6 @@
 package HTTP::Engine::Role::Interface;
 use strict;
 use Moose::Role;
-use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::Types::Core qw( Handler );
 use HTTP::Engine::RequestProcessor;
 

@@ -1,7 +1,6 @@
 package HTTP::Engine::Interface;
 use Moose;
 use Moose::Exporter;
-use HTTP::Engine::ResponseWriter;
 
 Moose::Exporter->setup_import_methods(
     with_caller => [ 'builder', 'writer', '__INTERFACE__'],
@@ -25,13 +24,14 @@ sub writer {
     $WRITER->{$caller} = $args;
 }
 
+# fix up Interface.
 sub __INTERFACE__ {
     my ($caller, ) = @_;
 
     # setup writer
-    if (my $args = $WRITER->{$caller}) {
+    if (my $args = delete $WRITER->{$caller}) {
         my $writer = Moose::Meta::Class->create_anon_class(
-            superclasses => ['HTTP::Engine::ResponseWriter'],
+            superclasses => ['Moose::Object'],
             roles => [
                 map( {"HTTP::Engine::Role::ResponseWriter::$_"}
                     @{ $args->{roles} || [] } ),
@@ -43,12 +43,9 @@ sub __INTERFACE__ {
         for my $attribute (keys %{ $args->{attributes} || {} }) {
             $writer->add_attribute( $attribute => $args->{attributes}->{$attribute} );
         }
-        for my $before (keys %{ $args->{before} || {} }) {
-            $writer->add_before_method_modifier( $before => $args->{before}->{$before} );
-        }
         $caller->meta->add_method(
             '_build_response_writer' => sub {
-                $writer->new_object->new
+                $writer->new_object->new;
             }
         );
     };

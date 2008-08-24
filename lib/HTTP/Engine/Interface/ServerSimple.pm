@@ -26,6 +26,7 @@ builder 'CGI';
 
 writer {
     roles => [qw(
+        Finalize
         ResponseLine
         OutputBody
         WriteSTDOUT

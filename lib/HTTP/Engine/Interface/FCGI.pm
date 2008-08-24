@@ -61,6 +61,7 @@ writer {
     roles => [qw(
         ResponseLine
         OutputBody
+        Finalize
     )],
     methods => {
         'write' => sub {

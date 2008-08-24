@@ -7,6 +7,7 @@ writer {
     roles => [qw(
         WriteSTDOUT
         OutputBody
+        Finalize
     )]
 };
 

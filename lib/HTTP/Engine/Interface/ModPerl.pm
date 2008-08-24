@@ -64,7 +64,6 @@ writer {
                 print $body;
             }
         },
-        'write' => sub { die "THIS IS DUMMY" },
     }
 };
 

@@ -27,15 +27,18 @@ has alias => (
 
 builder 'NoEnv';
 
+our $CLIENT;
+
 writer {
     roles => [qw(
+        Finalize
         OutputBody
         ResponseLine
     )],
     methods => {
         'write' => sub {
             my ( $self, $buffer ) = @_;
-            $HTTP::Engine::Interface::POE::CLIENT->put($buffer);
+            $CLIENT->put($buffer);
             return 1;
         },
     }
@@ -53,8 +56,6 @@ sub run {
         ClientInput  => _client_input($self),
     );
 }
-
-our $CLIENT;
 
 sub _client_input {
     my $self = shift;

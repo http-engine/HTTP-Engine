@@ -160,7 +160,6 @@ sub _handler {
 
         my $keepalive_available =    $self->keepalive
                                   && index( $connection, 'keep-alive' ) > -1
-                                  && index( $connection, 'te' ) == -1          # opera stuff
         ;
 
         $self->_handle_one($remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available);

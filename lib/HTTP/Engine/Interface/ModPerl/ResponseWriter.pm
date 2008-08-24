@@ -4,6 +4,7 @@ with qw(
     HTTP::Engine::Role::ResponseWriter
 );
 use Apache2::RequestRec ();
+use Apache2::RequestIO  ();
 
 sub finalize {
     my ($self, $req, $res) = @_;
@@ -18,10 +19,10 @@ sub finalize {
         }
     );
 
-    $self->_output_body($r, $res->body);
+    $self->output_body($r, $res->body);
 }
 
-sub _output_body  {
+sub output_body {
     my($self, $r, $body) = @_;
 
     no warnings 'uninitialized';
@@ -35,5 +36,7 @@ sub _output_body  {
         print $body;
     }
 }
+
+sub write { die "THIS IS DUMMY" }
 
 1;

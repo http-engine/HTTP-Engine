@@ -6,10 +6,11 @@ use LWP::UserAgent;
 use Test::More;
 use Net::HTTP;
 
+my $SESSION = 10;
 my $TRY = 30;
 
 plan skip_all => "Set TEST_STANDALON_KEEPALIVE environment variable to run this test" unless $ENV{TEST_STANDALON_KEEPALIVE};
-plan tests => 1*$TRY + 1;
+plan tests => ($TRY + 2) * $SESSION;
 
 my $s;
 sub doit {
@@ -31,11 +32,17 @@ sub doit {
 test_tcp(
     client => sub {
         my $port = shift;
-        my $pid = doit($port);
-        like $pid, qr{^\d+$};
+        my $pid_old;
+        for (1..$SESSION) {
+            undef $s;
+            my $pid = doit($port);
+            like $pid, qr{^\d+$};
+            isnt $pid_old, $pid;
+            $pid_old = $pid;
 
-        for my $i (1..$TRY) {
-            is doit($port), $pid;
+            for my $i (1..$TRY) {
+                is doit($port), $pid;
+            }
         }
     },
     server => sub {

@@ -133,10 +133,11 @@ sub _handler {
         my $connection = lc $headers->header("Connection");
         ### connection: $connection
 
-        my $keepalive_available =    $self->keepalive
+        my $keepalive_available = $self->keepalive
                                   && index( $connection, 'keep-alive' ) > -1
                                   && index( $connection, 'te' ) == -1          # opera stuff
         ;
+        ### keepalive_available: $keepalive_available
 
         $self->_handle_one($remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available);
 

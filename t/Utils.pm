@@ -7,7 +7,6 @@ use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
 
 use IO::Socket::INET;
-use HTTP::Engine::Interface::Test::RequestBuilder;
 
 use Sub::Exporter -setup => {
     exports => [qw/ daemonize_all interfaces run_engine ok_response req /],

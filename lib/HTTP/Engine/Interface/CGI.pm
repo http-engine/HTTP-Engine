@@ -1,7 +1,7 @@
 package HTTP::Engine::Interface::CGI;
 use HTTP::Engine::Interface;
 
-builder 'HTTP::Engine::RequestBuilder::CGI';
+builder 'CGI';
 
 writer {
     roles => [qw(

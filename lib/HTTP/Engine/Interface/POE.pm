@@ -25,7 +25,7 @@ has alias => (
     isa      => 'Str | Undef',
 );
 
-builder 'HTTP::Engine::RequestBuilder::NoEnv';
+builder 'NoEnv';
 
 writer {
     roles => [qw(

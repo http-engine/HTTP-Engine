@@ -4,7 +4,7 @@ use HTTP::Engine::Interface;
 use URI::WithBase;
 use IO::Scalar;
 
-builder 'HTTP::Engine::RequestBuilder::NoEnv';
+builder 'NoEnv';
 
 writer {
     attributes => {

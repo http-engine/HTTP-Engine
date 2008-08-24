@@ -49,7 +49,7 @@ has listen => (
     isa => 'Str',
 );
 
-builder 'HTTP::Engine::RequestBuilder::CGI';
+builder 'CGI';
 
 # XXX: We can't use Engine's write() method because syswrite
 # appears to return bogus values instead of the number of bytes

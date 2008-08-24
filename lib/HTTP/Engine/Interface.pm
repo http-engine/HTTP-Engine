@@ -12,6 +12,7 @@ my $WRITER;
 
 sub builder {
     my ($caller, $builder ) = @_;
+    $builder = ($builder =~ s/^\+(.+)$//) ? $1 : "HTTP::Engine::RequestBuilder::$builder";
     Class::MOP::load_class($builder);
     $caller->meta->add_method(
         '_build_request_builder' => sub { $builder->new }

@@ -22,7 +22,7 @@ has net_server => (
 );
 no Moose;
 
-builder 'HTTP::Engine::RequestBuilder::CGI';
+builder 'CGI';
 
 writer {
     roles => [qw(

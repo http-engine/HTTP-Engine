@@ -1,6 +1,12 @@
 package HTTP::Engine::Role::ResponseWriter::OutputBody;
 use Moose::Role;
 
+has chunk_size => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 4096,
+);
+
 sub output_body  {
     my($self, $body) = @_;
 

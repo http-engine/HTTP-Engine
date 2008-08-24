@@ -6,6 +6,12 @@ with qw(
 use Apache2::RequestRec ();
 use Apache2::RequestIO  ();
 
+has chunk_size => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 4096,
+);
+
 sub finalize {
     my ($self, $req, $res) = @_;
     my $r = $req->_connection->{apache_request} or die "missing apache request";

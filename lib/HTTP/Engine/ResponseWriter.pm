@@ -2,12 +2,6 @@ package HTTP::Engine::ResponseWriter;
 use Moose;
 use Carp;
 
-has chunk_size => (
-    is      => 'ro',
-    isa     => 'Int',
-    default => 4096,
-);
-
 my $CRLF = "\015\012";
 
 sub finalize {

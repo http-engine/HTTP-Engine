@@ -26,6 +26,8 @@ has 'apache' => (
     is_weak => 1,
 );
 
+no Moose;
+
 my %HE;
 
 sub handler : method
@@ -92,6 +94,7 @@ sub create_engine
     );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 __END__

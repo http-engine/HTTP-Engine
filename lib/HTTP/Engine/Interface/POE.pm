@@ -2,8 +2,8 @@ package HTTP::Engine::Interface::POE;
 use HTTP::Engine::Interface;
 use POE qw/
     Component::Server::TCP
+    Filter::HTTPD
 /;
-use HTTP::Engine::Interface::POE::Filter;
 use HTTP::Request::AsCGI;
 use IO::Scalar;
 use URI::WithBase;
@@ -44,6 +44,18 @@ writer {
     }
 };
 
+my $filter = Moose::Meta::Class->create(
+    'HTTP::Engine::Interface::POE::Filter',
+    superclasses => ['POE::Filter::HTTPD'],
+    methods => {
+        put => sub { # omit output filter
+            shift; # class name
+            return @_;
+        }
+    },
+    cache => 1,
+)->name;
+
 sub run {
     my ($self) = @_;
 
@@ -51,7 +63,7 @@ sub run {
     POE::Component::Server::TCP->new(
         Port         => $self->port,
         Address      => $self->host,
-        ClientFilter => 'HTTP::Engine::Interface::POE::Filter',
+        ClientFilter => $filter,
         ( $self->alias ? ( Alias => $self->alias ) : () ),
         ClientInput  => _client_input($self),
     );

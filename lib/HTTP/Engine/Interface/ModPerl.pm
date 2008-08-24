@@ -1,5 +1,5 @@
 package HTTP::Engine::Interface::ModPerl;
-use Moose;
+use HTTP::Engine::Interface;
 
 BEGIN
 {
@@ -13,12 +13,11 @@ BEGIN
 use Apache2::Const -compile => qw(OK);
 use Apache2::Connection;
 use Apache2::RequestRec;
+use Apache2::RequestIO  ();
 use Apache2::RequestUtil;
 use Apache2::ServerRec;
 use APR::Table;
 use HTTP::Engine;
-
-with 'HTTP::Engine::Role::Interface';
 
 has 'apache' => (
     is      => 'rw',
@@ -27,6 +26,47 @@ has 'apache' => (
 );
 
 no Moose;
+
+builder 'HTTP::Engine::Interface::ModPerl::RequestBuilder';
+
+writer {
+    attributes => {
+        chunk_size => {
+            is      => 'ro',
+            isa     => 'Int',
+            default => 4096,
+        }
+    },
+    methods => {
+        finalize => sub {
+            my ($self, $req, $res) = @_;
+            my $r = $req->_connection->{apache_request} or die "missing apache request";
+            $r->status( $res->status );
+            $req->headers->scan(
+                sub {
+                    my ($key, $val) = @_;
+                    $r->headers_out->add($key => $val);
+                }
+            );
+            $self->output_body($r, $res->body);
+        },
+        output_body => sub {
+            my($self, $r, $body) = @_;
+
+            no warnings 'uninitialized';
+            if ((Scalar::Util::blessed($body) && $body->can('read')) || (ref($body) eq 'GLOB')) {
+                while (!eof $body) {
+                    read $body, my ($buffer), $self->chunk_size;
+                    last unless print $buffer;
+                }
+                close $body;
+            } else {
+                print $body;
+            }
+        },
+        'write' => sub { die "THIS IS DUMMY" },
+    }
+};
 
 my %HE;
 
@@ -96,8 +136,7 @@ sub create_engine
 
 sub run { die "THIS IS DUMMY" }
 
-__PACKAGE__->meta->make_immutable;
-1;
+__INTERFACE__
 
 __END__
 

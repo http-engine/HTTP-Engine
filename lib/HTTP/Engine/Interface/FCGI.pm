@@ -1,6 +1,5 @@
 package HTTP::Engine::Interface::FCGI;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 use constant RUNNING_IN_HELL => $^O eq 'MSWin32';
 use FCGI;
 
@@ -50,7 +49,26 @@ has listen => (
     isa => 'Str',
 );
 
-sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
+builder 'HTTP::Engine::RequestBuilder::CGI';
+
+# XXX: We can't use Engine's write() method because syswrite
+# appears to return bogus values instead of the number of bytes
+# written: http://www.fastcgi.com/om_archive/mail-archive/0128.html
+
+# FastCGI does not stream data properly if using 'print $handle',
+# but a syswrite appears to work properly.
+writer {
+    roles => [qw(
+        ResponseLine
+        OutputBody
+    )],
+    methods => {
+        'write' => sub {
+            my ($self, $buffer) = @_;
+            *STDOUT->syswrite($buffer);
+        },
+    },
+};
 
 sub run {
     my ( $self, ) = @_;
@@ -144,7 +162,8 @@ sub daemon_detach {
     POSIX::setsid();
 }
 
-1;
+__INTERFACE__
+
 __END__
 
 =for stopwords nointr pidfile nproc

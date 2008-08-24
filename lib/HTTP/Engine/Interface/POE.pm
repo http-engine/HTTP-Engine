@@ -1,6 +1,5 @@
 package HTTP::Engine::Interface::POE;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 use POE qw/
     Component::Server::TCP
 /;
@@ -25,6 +24,22 @@ has alias => (
     is       => 'ro',
     isa      => 'Str | Undef',
 );
+
+builder 'HTTP::Engine::RequestBuilder::NoEnv';
+
+writer {
+    roles => [qw(
+        OutputBody
+        ResponseLine
+    )],
+    methods => {
+        'write' => sub {
+            my ( $self, $buffer ) = @_;
+            $HTTP::Engine::Interface::POE::CLIENT->put($buffer);
+            return 1;
+        },
+    }
+};
 
 sub run {
     my ($self) = @_;
@@ -99,7 +114,8 @@ sub _client_input {
     }
 }
 
-1;
+__INTERFACE__
+
 __END__
 
 =head1 NAME

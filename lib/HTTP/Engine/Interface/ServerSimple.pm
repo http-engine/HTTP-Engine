@@ -1,6 +1,5 @@
 package HTTP::Engine::Interface::ServerSimple;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 use HTTP::Server::Simple 0.33;
 use HTTP::Server::Simple::CGI;
 
@@ -23,7 +22,15 @@ has net_server => (
 );
 no Moose;
 
-sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
+builder 'HTTP::Engine::RequestBuilder::CGI';
+
+writer {
+    roles => [qw(
+        ResponseLine
+        OutputBody
+        WriteSTDOUT
+    )]
+};
 
 sub run {
     my ($self, ) = @_;
@@ -54,8 +61,8 @@ sub run {
     $server->run;
 }
 
-__PACKAGE__->meta->make_immutable;
-1;
+__INTERFACE__
+
 __END__
 
 =head1 NAME

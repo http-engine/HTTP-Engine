@@ -1,9 +1,33 @@
 package HTTP::Engine::Interface::Test;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 
 use URI::WithBase;
 use IO::Scalar;
+
+builder 'HTTP::Engine::RequestBuilder::NoEnv';
+
+writer {
+    attributes => {
+        '_response' => {
+            is => "rw",
+            clearer => "_clear_response",
+        },
+    },
+    methods => {
+        finalize => sub {
+            my ( $self, $req, $res ) = @_;
+            $self->_response($res->as_http_response);
+        },
+        get_response => sub {
+            my $self = shift;
+            my $res = $self->_response;
+            $self->_clear_response;
+            return $res;
+        },
+        write       => sub { die "dummy" },
+        output_body => sub { die "dummy" },
+    },
+};
 
 sub run {
     my ( $self, $request, %args ) = @_;
@@ -36,7 +60,7 @@ sub run {
     $self->response_writer->get_response; # FIXME yuck, should be a ret from handle_request
 }
 
-1;
+__INTERFACE__
 
 __END__
 

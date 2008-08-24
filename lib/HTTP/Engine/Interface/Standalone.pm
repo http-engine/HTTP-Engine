@@ -1,6 +1,5 @@
 package HTTP::Engine::Interface::Standalone;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 
 use Socket qw(:all);
 use IO::Socket::INET ();
@@ -55,6 +54,31 @@ has argv => (
     isa     => 'ArrayRef',
     default => sub { [] },
 );
+
+ no Moose;
+
+builder 'HTTP::Engine::RequestBuilder::NoEnv';
+
+writer {
+    roles => [qw/
+        OutputBody
+        ResponseLine
+        WriteSTDOUT
+    /],
+    before => {
+        finalize => sub {
+            my($self, $req, $res) = @_;
+
+            $res->headers->date(time);
+
+            if ($req->_connection->{keepalive_available}) {
+                $res->headers->header( Connection => 'keep-alive' );
+            } else {
+                $res->headers->header( Connection => 'close' );
+            }
+        }
+    }
+};
 
 sub run {
     my ( $self ) = @_;
@@ -270,7 +294,8 @@ sub _can_restart {
 
 sub _inet_addr { unpack "N*", inet_aton($_[0]) }
 
-1;
+__INTERFACE__
+
 __END__
 
 =for stopwords Standalone

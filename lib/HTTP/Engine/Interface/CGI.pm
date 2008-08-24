@@ -1,8 +1,14 @@
 package HTTP::Engine::Interface::CGI;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface;
 
-sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
+builder 'HTTP::Engine::RequestBuilder::CGI';
+
+writer {
+    roles => [qw(
+        WriteSTDOUT
+        OutputBody
+    )]
+};
 
 sub run {
     my ($self) = @_;
@@ -17,7 +23,8 @@ sub run {
     );
 }
 
-1;
+__INTERFACE__
+
 __END__
 
 =for stopwords CGI Naoki Nyarla Okamura yaml

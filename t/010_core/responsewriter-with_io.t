@@ -16,6 +16,7 @@ package main;
 use Test::Base;
 use IO::Scalar;
 use HTTP::Engine::Response;
+use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine::Request;
 use HTTP::Response;
 use File::Temp qw/:seekable/;

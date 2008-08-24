@@ -13,8 +13,9 @@ sub builder {
     my ($caller, $builder ) = @_;
     $builder = ($builder =~ s/^\+(.+)$//) ? $1 : "HTTP::Engine::RequestBuilder::$builder";
     Class::MOP::load_class($builder);
+    my $instance = $builder->new;
     $caller->meta->add_method(
-        '_build_request_builder' => sub { $builder->new }
+        'request_builder' => sub { $instance }
     );
 }
 
@@ -29,10 +30,10 @@ sub __INTERFACE__ {
     my ($caller, ) = @_;
 
     if (my $args = delete $WRITER->{$caller}) {
-        my $writer = _construct_writer($args);
+        my $writer = _construct_writer($args)->new_object->new;
         $caller->meta->add_method(
-            '_build_response_writer' => sub {
-                $writer->new_object->new;
+            'response_writer' => sub {
+                $writer;
             }
         );
     }

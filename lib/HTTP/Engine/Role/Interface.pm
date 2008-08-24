@@ -2,9 +2,9 @@ package HTTP::Engine::Role::Interface;
 use strict;
 use Moose::Role;
 use HTTP::Engine::Types::Core qw( Handler );
-use HTTP::Engine::RequestProcessor;
+use HTTP::Engine::ResponseFinalizer;
 
-requires 'run', '_build_response_writer', '_build_request_builder';
+requires 'run';
 
 has request_handler => (
     is       => 'rw',
@@ -13,20 +13,6 @@ has request_handler => (
     required => 1,
 );
 
-has request_processor => (
-    is         => 'ro',
-    does       => 'HTTP::Engine::Role::RequestProcessor',
-    lazy_build => 1,
-);
-
-sub _build_request_processor {
-    my $self = shift;
-
-    HTTP::Engine::RequestProcessor->new(
-        handler                    => $self->request_handler,
-    );
-}
-
 sub handle_request {
     my ($self, %args) = @_;
 
@@ -34,24 +20,27 @@ sub handle_request {
         request_builder => $self->request_builder,
         %args,
     );
-    my $res = $self->request_processor->handle_request(
-        $req,
-    );
+    my $res;
+    eval {
+        $res = $self->request_handler->($req);
+        unless ( Scalar::Util::blessed($res)
+            && $res->isa('HTTP::Engine::Response') )
+        {
+            die "You should return instance of HTTP::Engine::Response.";
+        }
+    };
+    if ( my $e = $@ ) {
+        print STDERR $e;
+        $res = HTTP::Engine::Response->new(
+            status => 500,
+            body   => 'internal server errror',
+        );
+    }
+
+    HTTP::Engine::ResponseFinalizer->finalize( $req => $res );
 
     return $self->response_writer->finalize( $req => $res );
 }
-
-has request_builder => (
-    is         => 'ro',
-    does       => 'HTTP::Engine::Role::RequestBuilder',
-    lazy_build => 1,
-);
-
-has response_writer => (
-    is         => 'ro',
-    does       => 'HTTP::Engine::Role::ResponseWriter',
-    lazy_build => 1,
-);
 
 1;
 

@@ -49,7 +49,6 @@ lib/HTTP/Engine/Interface/Test/RequestBuilder.pm
 lib/HTTP/Engine/Interface/Test/ResponseWriter.pm
 lib/HTTP/Engine/Request.pm
 lib/HTTP/Engine/Request/Upload.pm
-lib/HTTP/Engine/RequestBuilder.pm
 lib/HTTP/Engine/RequestProcessor.pm
 lib/HTTP/Engine/Response.pm
 lib/HTTP/Engine/ResponseFinalizer.pm

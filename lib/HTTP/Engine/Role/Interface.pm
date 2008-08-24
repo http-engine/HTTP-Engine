@@ -40,17 +40,6 @@ sub _build_request_processor {
     );
 }
 
-
-sub request_builder_class {
-    my $self = shift;
-    $self->_default_class("RequestBuilder");
-}
-
-sub request_builder_traits {
-    my $self = shift;
-    $self->_default_trait("RequestBuilder");
-}
-
 has request_builder => (
     is         => 'ro',
     does       => 'HTTP::Engine::Role::RequestBuilder',
@@ -60,7 +49,9 @@ has request_builder => (
 sub _build_request_builder {
     my $self = shift;
 
-    $self->_class_with_roles("request_builder")->new;
+    my $pkg = join( "::", $self->meta->name, 'RequestBuilder' );
+    Class::MOP::load_class($pkg);
+    return $pkg->new();
 }
 
 

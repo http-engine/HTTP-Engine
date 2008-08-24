@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More tests => 2;
 use HTTP::Engine;
-use HTTP::Engine::RequestBuilder;
 use t::Utils;
 
 test_req( gen_request() );

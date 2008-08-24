@@ -6,7 +6,6 @@ use_ok "HTTP::Engine::ResponseWriter";
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 use HTTP::Engine::ResponseFinalizer;
-use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::Interface::CGI;
 use t::Utils;
 

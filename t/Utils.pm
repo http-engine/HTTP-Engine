@@ -4,10 +4,10 @@ use strict;
 use warnings;
 use HTTP::Engine;
 use HTTP::Request::AsCGI;
-use HTTP::Engine::RequestBuilder;
 use Test::TCP qw/test_tcp empty_port/;
 
 use IO::Socket::INET;
+use HTTP::Engine::Interface::Test::RequestBuilder;
 
 use Sub::Exporter -setup => {
     exports => [qw/ daemonize_all interfaces run_engine ok_response req /],
@@ -132,10 +132,27 @@ sub ok_response {
     );
 }
 
+my $BUILDER = do {
+    my $builder_meta = Moose::Meta::Class->create_anon_class(
+        superclass => 'Moose::Meta::Class',
+        roles => [qw(
+            HTTP::Engine::Role::RequestBuilder
+            HTTP::Engine::Role::RequestBuilder::ParseEnv
+            HTTP::Engine::Role::RequestBuilder::HTTPBody
+        )],
+        cache => 1,
+    );
+    $builder_meta->make_immutable;
+    $builder_meta->name->new(
+        chunk_size => 1,
+    );
+};
+
 sub req {
     my %args = @_;
+
     HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new(),
+        request_builder => $BUILDER,
         _connection => {
             env           => \%ENV,
             input_handle  => \*STDIN,

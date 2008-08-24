@@ -9,9 +9,6 @@ no Moose;
 
 sub run {}
 
-sub request_builder_class { 't::Interface::Dummy::RequestResponse' }
-sub request_builder_traits { 't::Role' }
-
 sub response_writer_class { 't::Interface::Dummy::RequestResponse' }
 sub response_writer_traits { 't::Role' }
 
@@ -36,7 +33,7 @@ sub role { 'i am role' }
 package main;
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 2;
 
 
 do {
@@ -54,15 +51,3 @@ do {
     like $@, qr/dummy/;
 };
 
-do {
-    my $interface = t::Interface::Dummy->new(request_handler => sub {});
-    do {
-        local $@;
-        no warnings 'redefine';
-        local *t::Interface::Dummy::_create_anon_class = sub {};
-        eval { $interface->request_builder };
-        ok $@;
-    };
-    is $interface->request_builder->role, 'i am role';
-    is $interface->response_writer->role, 'i am role';
-};

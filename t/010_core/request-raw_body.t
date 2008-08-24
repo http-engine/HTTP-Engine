@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder;
 use t::Utils;
 
 eval "use HTTP::Request::AsCGI;use HTTP::Request;";

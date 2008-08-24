@@ -7,7 +7,6 @@ use HTTP::Status ();
 use Scalar::Util qw/blessed/;
 use URI;
 use URI::QueryParam;
-use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::ResponseFinalizer;
 

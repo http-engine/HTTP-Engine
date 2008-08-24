@@ -4,7 +4,6 @@ use Test::More tests => 4;
 use t::Utils;
 use HTTP::Engine;
 use HTTP::Request;
-use HTTP::Engine::RequestBuilder;
 use t::Utils;
 
 do {

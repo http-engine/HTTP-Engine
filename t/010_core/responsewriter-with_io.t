@@ -18,7 +18,6 @@ use IO::Scalar;
 use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::Response;
 use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder;
 use HTTP::Response;
 use File::Temp qw/:seekable/;
 use t::Utils;

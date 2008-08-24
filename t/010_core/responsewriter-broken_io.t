@@ -11,7 +11,6 @@ package main;
 use Test::More tests => 1;
 
 use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder;
 use HTTP::Engine::Response;
 use HTTP::Engine::ResponseFinalizer;
 use t::Utils;

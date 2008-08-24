@@ -3,7 +3,6 @@ use warnings;
 use Test::Base;
 use IO::Scalar;
 use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder;
 use t::Utils;
 
 plan tests => 5*blocks;

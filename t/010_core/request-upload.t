@@ -3,7 +3,6 @@ use warnings;
 use Test::More tests => 15;
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
-use HTTP::Engine::RequestBuilder;
 use t::Utils;
 
 my $req = req();

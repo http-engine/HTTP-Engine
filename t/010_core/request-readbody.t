@@ -1,19 +1,15 @@
 use strict;
 use warnings;
 use Test::More tests => 5;
+use t::Utils;
 
 use File::Temp qw/:seekable/;
 use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder;
 
 
 do {
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new,
+    my $req = req(
         _connection => {
-            env           => \%ENV,
-            input_handle  => undef,
-            output_handle => \*STDOUT,
         },
     );
 
@@ -35,13 +31,14 @@ do {
     $tmp->flush();
     $tmp->seek(0, File::Temp::SEEK_SET);
 
-    local $ENV{HTTP_CONTENT_LENGTH} = 3;
-    my $req = HTTP::Engine::Request->new(
-        request_builder => HTTP::Engine::RequestBuilder->new( chunk_size => 1 ),
+    my $req = req(
         _connection => {
             env           => \%ENV,
             input_handle  => $tmp,
             output_handle => \*STDOUT,
+        },
+        headers => {
+            'Content-Length' => 3,
         },
     );
     my $state = $req->_read_state;
@@ -50,6 +47,7 @@ do {
         $state->{read_position} = 0;
     };
 
+    $req->request_builder->meta->make_mutable();
 
     $req->request_builder->_read_all($state);
     $reset->();
@@ -62,7 +60,7 @@ do {
 
     do {
         no warnings 'redefine';
-        local *HTTP::Engine::RequestBuilder::_io_read = sub {};
+        $req->request_builder->meta->add_method('_io_read' => sub { });
         local $@;
         eval { $req->request_builder->_read($state); };
         like $@, qr/Unknown error reading input/;
@@ -71,13 +69,14 @@ do {
 
 sub read_to_end {
     my($req, $state, $code, $re) = @_;
-    my $read_all = \&HTTP::Engine::RequestBuilder::_read_all;
-    no warnings 'redefine';
-    local *HTTP::Engine::RequestBuilder::_read_all = sub {
-        $read_all->(@_);
-        $code->();
-    };
+    my $orig = $req->request_builder->meta->get_method( '_read_all' );
+    $req->request_builder->meta->add_method(
+        '_read_all', sub { $orig->(@_); $code->() }
+    );
+
     local $@;
     eval { $req->request_builder->_read_to_end($state); };
     like $@, qr/\Q$re\E/, $re;
+
+    $req->request_builder->meta->add_method( '_read_all' => $orig );
 }

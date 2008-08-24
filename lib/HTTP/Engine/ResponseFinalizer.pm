@@ -1,5 +1,6 @@
 package HTTP::Engine::ResponseFinalizer;
-use Moose;
+use strict;
+use warnings;
 use CGI::Simple::Cookie ();
 use Scalar::Util        ();
 use Carp                ();
@@ -69,6 +70,4 @@ sub _finalize_cookies  {
     }
 }
 
-__PACKAGE__->meta->make_immutable;
-no Moose;
 1;

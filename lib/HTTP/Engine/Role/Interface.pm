@@ -17,7 +17,6 @@ has request_processor => (
     is         => 'ro',
     does       => 'HTTP::Engine::Role::RequestProcessor',
     lazy_build => 1,
-    handles    => [qw/handle_request/],
 );
 
 sub _build_request_processor {
@@ -25,9 +24,21 @@ sub _build_request_processor {
 
     HTTP::Engine::RequestProcessor->new(
         handler                    => $self->request_handler,
-        request_builder            => $self->request_builder,
-        response_writer            => $self->response_writer,
     );
+}
+
+sub handle_request {
+    my ($self, %args) = @_;
+
+    my $req = HTTP::Engine::Request->new(
+        request_builder => $self->request_builder,
+        %args,
+    );
+    my $res = $self->request_processor->handle_request(
+        $req,
+    );
+
+    return $self->response_writer->finalize( $req => $res );
 }
 
 has request_builder => (

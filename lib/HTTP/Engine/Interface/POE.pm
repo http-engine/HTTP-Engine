@@ -30,17 +30,11 @@ builder 'NoEnv';
 our $CLIENT;
 
 writer {
-    roles => [qw(
-        Finalize
-        OutputBody
-        ResponseLine
-    )],
-    methods => {
-        'write' => sub {
-            my ( $self, $buffer ) = @_;
-            $CLIENT->put($buffer);
-            return 1;
-        },
+    response_line => 1,
+    'write' => sub {
+        my ($self, $buffer) = @_;
+        $CLIENT->put($buffer);
+        return 1;
     }
 };
 
@@ -82,48 +76,47 @@ sub _client_input {
             $heap->{client}->put($request->as_string);
             $kernel->yield('shutdown');
             return;
-        }
-
-        # follow is normal workflow.
-        do {
+        } else {
             local $CLIENT = $heap->{client};
-
-            $self->handle_request(
-                request_args => {
-                    headers => $request->headers,
-                    uri     => URI::WithBase->new(do {
-                        my $uri = $request->uri;
-                        $uri->scheme('http');
-                        $uri->host($self->host);
-                        $uri->port($self->port);
-
-                        my $b = $uri->clone;
-                        $b->path_query('/');
-
-                        ($uri, $b);
-                    }),
-                    connection_info => {
-                        address    => $heap->{remote_ip},
-                        method     => $request->method,
-                        port       => $self->port,
-                        user       => undef,
-                        https_info => 'OFF',
-                        protocol   => $request->protocol(),
-                    },
-                    _connection => {
-                        input_handle  => do {
-                            my $buf = $request->content;
-                            IO::Scalar->new( \$buf );
-                        },
-                        output_handle => undef,
-                        env           => \%ENV,
-                    },
-                },
-            );
-        };
-
-        $kernel->yield('shutdown');
+            $self->handle_request(%{ $self->_make_request($request, $heap) });
+            $kernel->yield('shutdown');
+        }
     }
+}
+
+sub _make_request {
+    my ($self, $request, $heap) = @_;
+
+    {
+        headers => $request->headers,
+        uri     => URI::WithBase->new(do {
+            my $uri = $request->uri;
+            $uri->scheme('http');
+            $uri->host($self->host);
+            $uri->port($self->port);
+
+            my $b = $uri->clone;
+            $b->path_query('/');
+
+            ($uri, $b);
+        }),
+        connection_info => {
+            address    => $heap->{remote_ip},
+            method     => $request->method,
+            port       => $self->port,
+            user       => undef,
+            https_info => 'OFF',
+            protocol   => $request->protocol(),
+        },
+        _connection => {
+            input_handle  => do {
+                my $buf = $request->content;
+                IO::Scalar->new( \$buf );
+            },
+            output_handle => undef,
+            env           => \%ENV,
+        },
+    };
 }
 
 __INTERFACE__

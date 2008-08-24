@@ -3,23 +3,15 @@ use HTTP::Engine::Interface;
 
 builder 'CGI';
 
-writer {
-    roles => [qw(
-        WriteSTDOUT
-        OutputBody
-        Finalize
-    )]
-};
+writer { response_line => 0 };
 
 sub run {
     my ($self) = @_;
     $self->handle_request(
-        request_args => {
-            _connection => {
-                env           => \%ENV,
-                input_handle  => \*STDIN,
-                output_handle => \*STDOUT,
-            },
+        _connection => {
+            env           => \%ENV,
+            input_handle  => \*STDIN,
+            output_handle => \*STDOUT,
         },
     );
 }

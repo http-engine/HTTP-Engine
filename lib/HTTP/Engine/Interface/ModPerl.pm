@@ -30,42 +30,19 @@ no Moose;
 builder 'HTTP::Engine::Interface::ModPerl::RequestBuilder';
 
 writer {
-    attributes => {
-        chunk_size => {
-            is      => 'ro',
-            isa     => 'Int',
-            default => 4096,
-        }
-    },
-    methods => {
-        finalize => sub {
-            my ($self, $req, $res) = @_;
-            my $r = $req->_connection->{apache_request} or die "missing apache request";
-            $r->status( $res->status );
-            $req->headers->scan(
-                sub {
-                    my ($key, $val) = @_;
-                    $r->headers_out->add($key => $val);
-                }
-            );
-            $self->output_body($r, $res->body);
-        },
-        output_body => sub {
-            my($self, $r, $body) = @_;
-
-            no warnings 'uninitialized';
-            if ((Scalar::Util::blessed($body) && $body->can('read')) || (ref($body) eq 'GLOB')) {
-                while (!eof $body) {
-                    read $body, my ($buffer), $self->chunk_size;
-                    last unless print $buffer;
-                }
-                close $body;
-            } else {
-                print $body;
+    finalize => sub {
+        my ($self, $req, $res) = @_;
+        my $r = $req->_connection->{apache_request} or die "missing apache request";
+        $r->status( $res->status );
+        $req->headers->scan(
+            sub {
+                my ($key, $val) = @_;
+                $r->headers_out->add($key => $val);
             }
-        },
-    }
-};
+        );
+        $self->output_body($r, $res->body);
+    },
+);
 
 my %HE;
 
@@ -90,33 +67,31 @@ sub handler : method
     my $connection = $r->connection;
 
     $engine->interface->request_processor->handle_request(
-        request_args => {
-            headers => HTTP::Headers->new(
-                %{ $r->headers_in }
-            ),
-            _connection => {
-                input_handle   => \*STDIN,
-                output_handle  => \*STDOUT,
-                env            => {
-                    REQUEST_METHOD => $r->method(),
-                    REMOTE_ADDR    => $connection->remote_ip(),
-                    SERVER_PORT    => $server->port(),
-                    QUERY_STRING   => $r->args() || '',
-                    HTTP_HOST      => $r->hostname(),
-                    SERVER_PROTOCOL => $r->protocol,
-                },
-                apache_request => $r,
+        headers => HTTP::Headers->new(
+            %{ $r->headers_in }
+        ),
+        _connection => {
+            input_handle   => \*STDIN,
+            output_handle  => \*STDOUT,
+            env            => {
+                REQUEST_METHOD => $r->method(),
+                REMOTE_ADDR    => $connection->remote_ip(),
+                SERVER_PORT    => $server->port(),
+                QUERY_STRING   => $r->args() || '',
+                HTTP_HOST      => $r->hostname(),
+                SERVER_PROTOCOL => $r->protocol,
             },
-            connection_info => {
-                address    => $connection->remote_ip(),
-                protocol   => $r->protocol,
-                method     => $r->method,
-                port       => $server->port,
-                user       => $r->user,
-                https_info => undef, # TODO: implement
-            },
-            hostname => $r->hostname,
+            apache_request => $r,
         },
+        connection_info => {
+            address    => $connection->remote_ip(),
+            protocol   => $r->protocol,
+            method     => $r->method,
+            port       => $server->port,
+            user       => $r->user,
+            https_info => undef, # TODO: implement
+        },
+        hostname => $r->hostname,
     );
 
     return &Apache2::Const::OK;

@@ -55,17 +55,12 @@ has argv => (
     default => sub { [] },
 );
 
- no Moose;
+no Moose;
 
 builder 'NoEnv';
 
 writer {
-    roles => [qw/
-        Finalize
-        OutputBody
-        ResponseLine
-        WriteSTDOUT
-    /],
+    response_line => 1,
     before => {
         finalize => sub {
             my($self, $req, $res) = @_;
@@ -246,34 +241,33 @@ sub _parse_header {
 sub _handle_one {
     my($self, $remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available) = @_;
 
+    local *STDOUT = $remote;
     $self->handle_request(
-        request_args => {
-            uri => URI::WithBase->new(
-                do {
-                    my $u = URI->new($uri);
-                    $u->scheme('http');
-                    $u->host($headers->header('Host') || $self->host);
-                    $u->port($self->port);
-                    my $b = $u->clone;
-                    $b->path_query('/');
-                    ($u, $b);
-                },
-            ),
-            headers        => $headers,
-            _connection => {
-                input_handle        => $remote,
-                output_handle       => $remote,
-                env                 => {},
-                keepalive_available => $keepalive_available,
+        uri => URI::WithBase->new(
+            do {
+                my $u = URI->new($uri);
+                $u->scheme('http');
+                $u->host($headers->header('Host') || $self->host);
+                $u->port($self->port);
+                my $b = $u->clone;
+                $b->path_query('/');
+                ($u, $b);
             },
-            connection_info => {
-                method         => $method,
-                address        => $self->_peeraddr($peername),
-                port           => $self->port,
-                protocol       => "HTTP/$protocol",
-                user           => undef,
-                https_info     => undef,
-            },
+        ),
+        headers        => $headers,
+        _connection => {
+            input_handle        => $remote,
+            output_handle       => $remote,
+            env                 => {},
+            keepalive_available => $keepalive_available,
+        },
+        connection_info => {
+            method         => $method,
+            address        => $self->_peeraddr($peername),
+            port           => $self->port,
+            protocol       => "HTTP/$protocol",
+            user           => undef,
+            https_info     => undef,
         },
     );
 }

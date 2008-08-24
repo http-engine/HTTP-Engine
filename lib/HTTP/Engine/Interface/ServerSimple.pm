@@ -25,12 +25,7 @@ no Moose;
 builder 'CGI';
 
 writer {
-    roles => [qw(
-        Finalize
-        ResponseLine
-        OutputBody
-        WriteSTDOUT
-    )]
+    response_line => 1,
 };
 
 sub run {
@@ -40,17 +35,7 @@ sub run {
         ->create_anon_class(
             superclasses => ['HTTP::Server::Simple::CGI'],
             methods => {
-                handler => sub {
-                    $self->handle_request(
-                        request_args => {
-                            _connection => {
-                                env           => \%ENV,
-                                input_handle  => \*STDIN,
-                                output_handle => \*STDOUT,
-                            },
-                        },
-                    );
-                },
+                handler    => $self->_handler(),
                 net_server => sub { $self->net_server },
             },
             cache => 1
@@ -60,6 +45,20 @@ sub run {
         );
     $server->host($self->host);
     $server->run;
+}
+
+sub _handler {
+    my $self = shift;
+
+    sub {
+        $self->handle_request(
+            _connection => {
+                env           => \%ENV,
+                input_handle  => \*STDIN,
+                output_handle => \*STDOUT,
+            },
+        );
+    };
 }
 
 __INTERFACE__

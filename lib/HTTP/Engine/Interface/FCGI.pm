@@ -58,16 +58,10 @@ builder 'CGI';
 # FastCGI does not stream data properly if using 'print $handle',
 # but a syswrite appears to work properly.
 writer {
-    roles => [qw(
-        ResponseLine
-        OutputBody
-        Finalize
-    )],
-    methods => {
-        'write' => sub {
-            my ($self, $buffer) = @_;
-            *STDOUT->syswrite($buffer);
-        },
+    response_line => 1,
+    'write' => sub {
+        my ($self, $buffer) = @_;
+        *STDOUT->syswrite($buffer);
     },
 };
 
@@ -136,13 +130,11 @@ sub run {
         }
 
         $self->handle_request(
-            request_args => {
-                _connection => {
-                    input_handle  => *STDIN,
-                    output_handle => *STDOUT,
-                    env           => \%env,
-                },
-            }
+            _connection => {
+                input_handle  => *STDIN,
+                output_handle => *STDOUT,
+                env           => \%env,
+            },
         );
 
         $proc_manager && $proc_manager->pm_post_dispatch();

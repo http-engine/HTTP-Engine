@@ -6,45 +6,35 @@ use IO::Scalar;
 
 builder 'NoEnv';
 
-our $RESPONSE;
-
 writer {
-    methods => {
-        finalize => sub {
-            my ( $self, $req, $res ) = @_;
-            $RESPONSE = $res->as_http_response;
-        },
+    finalize => sub {
+        my ( $self, $req, $res ) = @_;
+        $res->as_http_response;
     },
 };
 
 sub run {
     my ( $self, $request, %args ) = @_;
 
-    local $RESPONSE;
-
-    $self->handle_request(
-        request_args => {
-            uri        => URI::WithBase->new( $request->uri ),
-            base       => do {
-                my $base = $request->uri->clone;
-                $base->path_query('/');
-                $base;
-            },
-            headers    => $request->headers,
-            method     => $request->method,
-            protocol   => $request->protocol,
-            address    => "127.0.0.1",
-            port       => "80",
-            user       => undef,
-            https_info => undef,
-            _connection => {
-                input_handle  => IO::Scalar->new( \( $request->content ) ),
-            },
+    return $self->handle_request(
+        uri        => URI::WithBase->new( $request->uri ),
+        base       => do {
+            my $base = $request->uri->clone;
+            $base->path_query('/');
+            $base;
+        },
+        headers    => $request->headers,
+        method     => $request->method,
+        protocol   => $request->protocol,
+        address    => "127.0.0.1",
+        port       => "80",
+        user       => undef,
+        https_info => undef,
+        _connection => {
+            input_handle  => IO::Scalar->new( \( $request->content ) ),
         },
         %args,
     );
-
-    return $RESPONSE;
 }
 
 __INTERFACE__

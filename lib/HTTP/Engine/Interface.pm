@@ -28,31 +28,60 @@ sub writer {
 sub __INTERFACE__ {
     my ($caller, ) = @_;
 
-    # setup writer
     if (my $args = delete $WRITER->{$caller}) {
-        my $writer = Moose::Meta::Class->create_anon_class(
-            superclasses => ['Moose::Object'],
-            roles => [
-                map( {"HTTP::Engine::Role::ResponseWriter::$_"}
-                    @{ $args->{roles} || [] } ),
-                'HTTP::Engine::Role::ResponseWriter',
-            ],
-            ( $args->{methods} ? (methods => $args->{methods}) : () ),
-            cache => 1,
-        );
-        for my $attribute (keys %{ $args->{attributes} || {} }) {
-            $writer->add_attribute( $attribute => $args->{attributes}->{$attribute} );
-        }
+        my $writer = _construct_writer($args);
         $caller->meta->add_method(
             '_build_response_writer' => sub {
                 $writer->new_object->new;
             }
         );
-    };
+    }
 
     Moose::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
 
     $caller->meta->make_immutable;
+}
+
+sub _construct_writer {
+    my ($args, ) = @_;
+
+    my $writer = Moose::Meta::Class->create_anon_class(
+        superclasses => ['Moose::Object'],
+        cache => 1,
+    );
+
+    {
+        my @roles;
+        my $apply = sub { push @roles, "HTTP::Engine::Role::ResponseWriter::$_[0]" };
+        if ($args->{finalize}) {
+            $writer->add_method(finalize => $args->{finalize});
+        } else {
+            if ($args->{response_line}) {
+                $apply->('ResponseLine');
+            }
+            if (my $code = $args->{output_body}) {
+                $writer->add_method('output_body' => $code);
+            } else {
+                $apply->('OutputBody');
+            }
+            if (my $code = $args->{write}) {
+                $writer->add_method('write' => $code);
+            } else {
+                $apply->('WriteSTDOUT');
+            }
+            $apply->('Finalize');
+        }
+        Moose::Util::apply_all_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
+    }
+
+    for my $before (keys %{ $args->{before} || {} }) {
+        $writer->add_before_method_modifier( $before => $args->{before}->{$before} );
+    }
+    for my $attribute (keys %{ $args->{attributes} || {} }) {
+        $writer->add_attribute( $attribute => $args->{attributes}->{$attribute} );
+    }
+
+    return $writer;
 }
 
 1;

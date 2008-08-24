@@ -31,8 +31,6 @@ all_from 'lib/HTTP/Engine.pm';
 requires 'Moose'         => '0.55_01';
 requires 'MooseX::Types' => 0.04;
 requires 'Scalar::Util'  => 1.19;
-requires 'Devel::Pragma' => 0.12;
-requires 'Scope::Guard'  => 0.03;
 
 requires 'IO::Socket' => 1.30;
 

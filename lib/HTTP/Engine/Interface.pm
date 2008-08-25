@@ -83,6 +83,8 @@ sub _construct_writer {
         $writer->add_attribute( $attribute => $args->{attributes}->{$attribute} );
     }
 
+    $writer->make_immutable;
+
     return $writer;
 }
 

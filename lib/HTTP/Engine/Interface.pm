@@ -30,7 +30,7 @@ sub __INTERFACE__ {
     my ($caller, ) = @_;
 
     if (my $args = delete $WRITER->{$caller}) {
-        my $writer = _construct_writer($args)->new_object->new;
+        my $writer = _construct_writer($caller, $args)->new_object->new;
         $caller->meta->make_mutable;
         $caller->meta->add_method(
             'response_writer' => sub {
@@ -45,9 +45,9 @@ sub __INTERFACE__ {
 }
 
 sub _construct_writer {
-    my ($args, ) = @_;
+    my ($caller, $args, ) = @_;
 
-    my $writer = Moose::Meta::Class->create_anon_class(
+    my $writer = Moose::Meta::Class->create( $caller . '::ResponseWriter',
         superclasses => ['Moose::Object'],
         cache => 1,
     );

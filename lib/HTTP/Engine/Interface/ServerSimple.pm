@@ -22,7 +22,7 @@ has net_server => (
 );
 no Moose;
 
-builder 'CGI';
+builder 'NoEnv';
 
 writer {
     response_line => 1,
@@ -31,11 +31,44 @@ writer {
 sub run {
     my ($self, ) = @_;
 
-    my $server = Moose::Meta::Class
+    my $headers;
+    my %setup;
+    my $server;
+    $server = Moose::Meta::Class
         ->create_anon_class(
-            superclasses => ['HTTP::Server::Simple::CGI'],
+            superclasses => ['HTTP::Server::Simple'],
             methods => {
-                handler    => $self->_handler(),
+                headers => sub {
+                    my ( $self, $args ) = @_;
+                    $headers = HTTP::Headers->new(@$args);
+                },
+                setup => sub {
+                    shift; # $self;
+                    %setup = @_;
+                },
+                handler    => sub {
+                    my $base = "http://$setup{localname}:$setup{localport}";
+                    $self->handle_request(
+                        uri => URI::WithBase->new(
+                            $base . $setup{request_uri},
+                            $base . '/',
+                        ),
+                        connection_info => {
+                            method      => $setup{method},
+                            protocol    => $setup{protocol},
+                            address     => $setup{peeraddr},
+                            port        => $setup{localport},
+                            user        => undef,
+                            https_info  => undef,
+                        },
+                        headers     => $headers,
+                        _connection => {
+                            env           => {},
+                            input_handle  => \*STDIN,
+                            output_handle => \*STDOUT,
+                        },
+                    )
+                },
                 net_server => sub { $self->net_server },
             },
             cache => 1
@@ -45,20 +78,6 @@ sub run {
         );
     $server->host($self->host);
     $server->run;
-}
-
-sub _handler {
-    my $self = shift;
-
-    sub {
-        $self->handle_request(
-            _connection => {
-                env           => \%ENV,
-                input_handle  => \*STDIN,
-                output_handle => \*STDOUT,
-            },
-        );
-    };
 }
 
 __INTERFACE__

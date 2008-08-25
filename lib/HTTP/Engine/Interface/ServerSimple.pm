@@ -10,9 +10,9 @@ has host => (
 );
 
 has port => (
-    is      => 'ro',
-    isa     => 'Int',
-    default => 1978,
+    is       => 'ro',
+    isa      => 'Int',
+    required => 1,
 );
 
 has net_server => (

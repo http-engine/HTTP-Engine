@@ -1,6 +1,6 @@
 package HTTP::Engine::Interface::ServerSimple;
 use HTTP::Engine::Interface;
-use HTTP::Server::Simple 0.33;
+use HTTP::Server::Simple 0.34;
 use HTTP::Server::Simple::CGI;
 
 has host => (

@@ -31,6 +31,7 @@ sub __INTERFACE__ {
 
     if (my $args = delete $WRITER->{$caller}) {
         my $writer = _construct_writer($args)->new_object->new;
+        $caller->meta->make_mutable;
         $caller->meta->add_method(
             'response_writer' => sub {
                 $writer;

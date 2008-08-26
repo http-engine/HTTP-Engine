@@ -10,6 +10,8 @@ L<Parallel::Prefork> ?
 
 keepalive doesn't works?
 
+remove?
+
 =head2 ModPerl
 
 support $r->send_fd() (suggested by kazeburo++)

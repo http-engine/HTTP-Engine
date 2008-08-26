@@ -1,7 +1,12 @@
 package HTTP::Engine::Interface::ServerSimple;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
-use HTTP::Server::Simple 0.33;
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        response_line => 1,
+    }
+;
+
+use HTTP::Server::Simple 0.34;
 use HTTP::Server::Simple::CGI;
 
 has host => (
@@ -11,9 +16,9 @@ has host => (
 );
 
 has port => (
-    is      => 'ro',
-    isa     => 'Int',
-    default => 1978,
+    is       => 'ro',
+    isa      => 'Int',
+    required => 1,
 );
 
 has net_server => (
@@ -23,25 +28,46 @@ has net_server => (
 );
 no Moose;
 
-sub request_builder_class { 'HTTP::Engine::RequestBuilder::CGI' }
-
 sub run {
     my ($self, ) = @_;
 
-    my $server = Moose::Meta::Class
+    my $headers;
+    my %setup;
+    my $server;
+    $server = Moose::Meta::Class
         ->create_anon_class(
-            superclasses => ['HTTP::Server::Simple::CGI'],
+            superclasses => ['HTTP::Server::Simple'],
             methods => {
-                handler => sub {
+                headers => sub {
+                    my ( $self, $args ) = @_;
+                    $headers = HTTP::Headers->new(@$args);
+                },
+                setup => sub {
+                    shift; # $self;
+                    %setup = @_;
+                },
+                handler    => sub {
+                    my $base = "http://$setup{localname}:$setup{localport}";
                     $self->handle_request(
-                        request_args => {
-                            _connection => {
-                                env           => \%ENV,
-                                input_handle  => \*STDIN,
-                                output_handle => \*STDOUT,
-                            },
+                        uri => URI::WithBase->new(
+                            $base . $setup{request_uri},
+                            $base . '/',
+                        ),
+                        connection_info => {
+                            method      => $setup{method},
+                            protocol    => $setup{protocol},
+                            address     => $setup{peeraddr},
+                            port        => $setup{localport},
+                            user        => undef,
+                            https_info  => undef,
                         },
-                    );
+                        headers     => $headers,
+                        _connection => {
+                            env           => {},
+                            input_handle  => \*STDIN,
+                            output_handle => \*STDOUT,
+                        },
+                    )
                 },
                 net_server => sub { $self->net_server },
             },
@@ -54,8 +80,8 @@ sub run {
     $server->run;
 }
 
-__PACKAGE__->meta->make_immutable;
-1;
+__INTERFACE__
+
 __END__
 
 =head1 NAME

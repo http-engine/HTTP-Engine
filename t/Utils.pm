@@ -7,7 +7,6 @@ use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
 
 use IO::Socket::INET;
-use HTTP::Engine::Interface::Test::RequestBuilder;
 
 use Sub::Exporter -setup => {
     exports => [qw/ daemonize_all interfaces run_engine ok_response req /],
@@ -64,11 +63,11 @@ sub daemonize_all (&$@) {
             );
         } elsif ($interface eq 'CGI') {
             require HTTP::Server::Simple::CGI;
+            require HTTP::Engine::Interface::CGI;
             test_tcp(
                 client => $client_cb,
                 server => sub {
                     # XXX normal CGI doesn't needs response line, but H::S::S::CGI needs this. we needs hack :)
-                    require HTTP::Engine::Interface::CGI;
 
                     $args{interface}->{args}->{request_handler} = $args{interface}->{request_handler};
                     my $interface = HTTP::Engine::Interface::CGI->new($args{interface}->{args});

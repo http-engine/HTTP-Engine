@@ -1,15 +1,12 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 use IO::Scalar;
-use_ok "HTTP::Engine::ResponseWriter";
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine::Interface::CGI;
 use t::Utils;
-
-can_ok "HTTP::Engine::ResponseWriter", 'finalize';
 
 my $got = sub {
     my $req = req(

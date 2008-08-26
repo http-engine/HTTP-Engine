@@ -6,7 +6,6 @@ our $VERSION = '0.0.14';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
-use HTTP::Engine::RequestProcessor;
 
 has 'interface' => (
     is      => 'ro',

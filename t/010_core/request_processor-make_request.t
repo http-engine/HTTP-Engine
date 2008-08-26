@@ -12,7 +12,7 @@ do {
         is $req->raw_body => 'test';
         HTTP::Engine::Response->new( body => '' );
     } HTTP::Request->new( GET => 'http://localhost/')
-        => ( req => req( method => 'GET', raw_body => 'test' ) );
+        => ( method => 'GET', raw_body => 'test' );
 };
 
 do {

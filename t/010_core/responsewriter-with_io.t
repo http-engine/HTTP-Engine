@@ -4,9 +4,9 @@ sub new { bless {}, shift }
 
 package DummyRW;
 use Moose;
-extends 'HTTP::Engine::ResponseWriter';
 with qw(
     HTTP::Engine::Role::ResponseWriter
+    HTTP::Engine::Role::ResponseWriter::Finalize
     HTTP::Engine::Role::ResponseWriter::ResponseLine
     HTTP::Engine::Role::ResponseWriter::OutputBody
     HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
@@ -15,8 +15,8 @@ with qw(
 package main;
 use Test::Base;
 use IO::Scalar;
-use HTTP::Engine::ResponseWriter;
 use HTTP::Engine::Response;
+use HTTP::Engine::ResponseFinalizer;
 use HTTP::Engine::Request;
 use HTTP::Response;
 use File::Temp qw/:seekable/;

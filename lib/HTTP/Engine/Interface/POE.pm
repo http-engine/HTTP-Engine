@@ -1,10 +1,23 @@
 package HTTP::Engine::Interface::POE;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+
+our $CLIENT;
+
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  =>  {
+        response_line => 1,
+        'write' => sub {
+            my ($self, $buffer) = @_;
+            $CLIENT->put($buffer);
+            return 1;
+        }
+    }
+;
+
 use POE qw/
     Component::Server::TCP
+    Filter::HTTPD
 /;
-use HTTP::Engine::Interface::POE::Filter;
 use HTTP::Request::AsCGI;
 use IO::Scalar;
 use URI::WithBase;
@@ -26,6 +39,17 @@ has alias => (
     isa      => 'Str | Undef',
 );
 
+my $filter = Moose::Meta::Class->create(
+    'HTTP::Engine::Interface::POE::Filter',
+    superclasses => ['POE::Filter::HTTPD'],
+    methods => {
+        put => sub { # omit output filter
+            shift; # class name
+            return @_;
+        }
+    },
+)->name;
+
 sub run {
     my ($self) = @_;
 
@@ -33,13 +57,11 @@ sub run {
     POE::Component::Server::TCP->new(
         Port         => $self->port,
         Address      => $self->host,
-        ClientFilter => 'HTTP::Engine::Interface::POE::Filter',
+        ClientFilter => $filter->new,
         ( $self->alias ? ( Alias => $self->alias ) : () ),
         ClientInput  => _client_input($self),
     );
 }
-
-our $CLIENT;
 
 sub _client_input {
     my $self = shift;
@@ -53,53 +75,51 @@ sub _client_input {
         # the responses as they are and finish up.
         if ( $request->isa('HTTP::Response') ) {
             $heap->{client}->put($request->as_string);
-            $kernel->yield('shutdown');
-            return;
-        }
-
-        # follow is normal workflow.
-        do {
+        } else {
             local $CLIENT = $heap->{client};
-
-            $self->handle_request(
-                request_args => {
-                    headers => $request->headers,
-                    uri     => URI::WithBase->new(do {
-                        my $uri = $request->uri;
-                        $uri->scheme('http');
-                        $uri->host($self->host);
-                        $uri->port($self->port);
-
-                        my $b = $uri->clone;
-                        $b->path_query('/');
-
-                        ($uri, $b);
-                    }),
-                    connection_info => {
-                        address    => $heap->{remote_ip},
-                        method     => $request->method,
-                        port       => $self->port,
-                        user       => undef,
-                        https_info => 'OFF',
-                        protocol   => $request->protocol(),
-                    },
-                    _connection => {
-                        input_handle  => do {
-                            my $buf = $request->content;
-                            IO::Scalar->new( \$buf );
-                        },
-                        output_handle => undef,
-                        env           => \%ENV,
-                    },
-                },
-            );
-        };
-
+            $self->handle_request(%{ $self->_make_request($request, $heap) });
+        }
         $kernel->yield('shutdown');
     }
 }
 
-1;
+sub _make_request {
+    my ($self, $request, $heap) = @_;
+
+    {
+        headers => $request->headers,
+        uri     => URI::WithBase->new(do {
+            my $uri = $request->uri;
+            $uri->scheme('http');
+            $uri->host($self->host);
+            $uri->port($self->port);
+
+            my $b = $uri->clone;
+            $b->path_query('/');
+
+            ($uri, $b);
+        }),
+        connection_info => {
+            address    => $heap->{remote_ip},
+            method     => $request->method,
+            port       => $self->port,
+            user       => undef,
+            https_info => 'OFF',
+            protocol   => $request->protocol(),
+        },
+        _connection => {
+            input_handle  => do {
+                my $buf = $request->content;
+                IO::Scalar->new( \$buf );
+            },
+            output_handle => undef,
+            env           => \%ENV,
+        },
+    };
+}
+
+__INTERFACE__
+
 __END__
 
 =head1 NAME

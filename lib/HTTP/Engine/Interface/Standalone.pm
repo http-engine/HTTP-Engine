@@ -1,6 +1,24 @@
 package HTTP::Engine::Interface::Standalone;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        response_line => 1,
+        before => {
+            finalize => sub {
+                my($self, $req, $res) = @_;
+
+                $res->headers->date(time);
+
+                if ($req->_connection->{keepalive_available}) {
+                    $res->headers->header( Connection => 'keep-alive' );
+                } else {
+                    $res->headers->header( Connection => 'close' );
+                }
+            }
+        }
+    }
+;
+
 
 use Socket qw(:all);
 use IO::Socket::INET ();
@@ -55,6 +73,8 @@ has argv => (
     isa     => 'ArrayRef',
     default => sub { [] },
 );
+
+no Moose;
 
 sub run {
     my ( $self ) = @_;
@@ -135,7 +155,6 @@ sub _handler {
 
         my $keepalive_available = $self->keepalive
                                   && index( $connection, 'keep-alive' ) > -1
-                                  && index( $connection, 'te' ) == -1          # opera stuff
         ;
         ### keepalive_available: $keepalive_available
 
@@ -223,34 +242,33 @@ sub _parse_header {
 sub _handle_one {
     my($self, $remote, $method, $uri, $protocol, $peername, $headers, $keepalive_available) = @_;
 
+    local *STDOUT = $remote;
     $self->handle_request(
-        request_args => {
-            uri => URI::WithBase->new(
-                do {
-                    my $u = URI->new($uri);
-                    $u->scheme('http');
-                    $u->host($headers->header('Host') || $self->host);
-                    $u->port($self->port);
-                    my $b = $u->clone;
-                    $b->path_query('/');
-                    ($u, $b);
-                },
-            ),
-            headers        => $headers,
-            _connection => {
-                input_handle        => $remote,
-                output_handle       => $remote,
-                env                 => {},
-                keepalive_available => $keepalive_available,
+        uri => URI::WithBase->new(
+            do {
+                my $u = URI->new($uri);
+                $u->scheme('http');
+                $u->host($headers->header('Host') || $self->host);
+                $u->port($self->port);
+                my $b = $u->clone;
+                $b->path_query('/');
+                ($u, $b);
             },
-            connection_info => {
-                method         => $method,
-                address        => $self->_peeraddr($peername),
-                port           => $self->port,
-                protocol       => "HTTP/$protocol",
-                user           => undef,
-                https_info     => undef,
-            },
+        ),
+        headers        => $headers,
+        _connection => {
+            input_handle        => $remote,
+            output_handle       => $remote,
+            env                 => {},
+            keepalive_available => $keepalive_available,
+        },
+        connection_info => {
+            method         => $method,
+            address        => $self->_peeraddr($peername),
+            port           => $self->port,
+            protocol       => "HTTP/$protocol",
+            user           => undef,
+            https_info     => undef,
         },
     );
 }
@@ -271,7 +289,8 @@ sub _can_restart {
 
 sub _inet_addr { unpack "N*", inet_aton($_[0]) }
 
-1;
+__INTERFACE__
+
 __END__
 
 =for stopwords Standalone

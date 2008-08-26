@@ -1,6 +1,13 @@
 package HTTP::Engine::Interface::Test;
-use Moose;
-with 'HTTP::Engine::Role::Interface';
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        finalize => sub {
+            my ( $self, $req, $res ) = @_;
+            $res->as_http_response;
+        },
+    }
+;
 
 use URI::WithBase;
 use IO::Scalar;
@@ -8,35 +15,28 @@ use IO::Scalar;
 sub run {
     my ( $self, $request, %args ) = @_;
 
-    $self->handle_request(
-        request_args => {
-            uri        => URI::WithBase->new( $request->uri ),
-            base       => do {
-                my $base = $request->uri->clone;
-                $base->path_query('/');
-                $base;
-            },
-            headers    => $request->headers,
-            method     => $request->method,
-            protocol   => $request->protocol,
-            address    => "127.0.0.1",
-            port       => "80",
-            user       => undef,
-            https_info => undef,
-            _builder_params => {
-                request => $request,
-            },
-            _connection => {
-                input_handle  => IO::Scalar->new( \( $request->content ) ),
-            },
+    return $self->handle_request(
+        uri        => URI::WithBase->new( $request->uri ),
+        base       => do {
+            my $base = $request->uri->clone;
+            $base->path_query('/');
+            $base;
+        },
+        headers    => $request->headers,
+        method     => $request->method,
+        protocol   => $request->protocol,
+        address    => "127.0.0.1",
+        port       => "80",
+        user       => undef,
+        https_info => undef,
+        _connection => {
+            input_handle  => IO::Scalar->new( \( $request->content ) ),
         },
         %args,
     );
-
-    $self->response_writer->get_response; # FIXME yuck, should be a ret from handle_request
 }
 
-1;
+__INTERFACE__
 
 __END__
 

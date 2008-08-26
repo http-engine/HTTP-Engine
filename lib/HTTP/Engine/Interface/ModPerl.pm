@@ -2,6 +2,13 @@ package HTTP::Engine::Interface::ModPerl;
 use HTTP::Engine::Interface
     builder => '+HTTP::Engine::Interface::ModPerl::RequestBuilder',
     writer  => {
+        attribute => {
+            chunk_size => {
+                is      => 'ro',
+                isa     => 'Int',
+                default => 4096,
+            }
+        },
         finalize => sub {
             my ($self, $req, $res) = @_;
             my $r = $req->_connection->{apache_request} or die "missing apache request";
@@ -12,7 +19,20 @@ use HTTP::Engine::Interface
                     $r->headers_out->add($key => $val);
                 }
             );
-            $self->output_body($r, $res->body);
+
+            sub {
+                my ($r, $body) = @_;
+                no warnings 'uninitialized';
+                if ((Scalar::Util::blessed($body) && $body->can('read')) || (ref($body) eq 'GLOB')) {
+                    while (!eof $body) {
+                        read $body, my ($buffer), $self->chunk_size;
+                        last unless $r->print($buffer);
+                    }
+                    close $body;
+                } else {
+                    $r->print($body);
+                }
+            }->($r, $res->body);
         },
     }
 ;

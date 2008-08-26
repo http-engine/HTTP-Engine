@@ -299,6 +299,10 @@ __END__
 
 HTTP::Engine::Interface::Standalone - Standalone HTTP Server
 
+=head1 DESCRIPTION
+
+THIS MODULE WILL REMOVE!!
+
 =head1 AUTHOR
 
 Kazuhiro Osawa

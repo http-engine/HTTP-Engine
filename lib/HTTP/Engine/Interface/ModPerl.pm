@@ -66,7 +66,7 @@ sub handler : method
     my $server = $r->server;
     my $connection = $r->connection;
 
-    $engine->interface->request_processor->handle_request(
+    $engine->interface->handle_request(
         headers => HTTP::Headers->new(
             %{ $r->headers_in }
         ),

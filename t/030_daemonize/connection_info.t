@@ -16,7 +16,7 @@ daemonize_all sub {
     my $res = $ua->get("http://localhost:$port/");
     is $res->code, 200;
     like $res->content, qr{protocol: HTTP/1.\d};
-    like $res->content, qr{https_info: (?:~|OFF)};
+    like $res->content, qr{_https_info: (?:~|OFF)};
     like $res->content, qr{port: $port}, "port for $interface";
     like $res->content, qr{method: GET};
     like $res->content, qr{user: };

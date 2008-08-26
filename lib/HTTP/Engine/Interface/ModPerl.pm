@@ -109,7 +109,7 @@ sub handler : method
             method     => $r->method,
             port       => $server->port,
             user       => $r->user,
-            https_info => undef, # TODO: implement
+            _https_info => undef, # TODO: implement
         },
         hostname => $r->hostname,
     );

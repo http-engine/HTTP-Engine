@@ -21,7 +21,7 @@ sub handler : method {
     ok $REQ->protocol, 'HTTP/1.0', 'protocol';
     ok $REQ->method, 'GET', "method";
     ok $REQ->port =~ /^\d+$/;
-    ok $REQ->https_info, undef, 'https_info'; # XXX
+    ok $REQ->_https_info, undef, '_https_info'; # XXX
     ok $REQ->user, undef, 'user';
 
     ok $REQ->hostname, 'localhost', 'hostname';

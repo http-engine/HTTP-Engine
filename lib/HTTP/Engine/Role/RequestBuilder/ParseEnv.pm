@@ -16,7 +16,7 @@ sub _build_connection_info {
         method     => $env->{REQUEST_METHOD},
         port       => $env->{SERVER_PORT},
         user       => $env->{REMOTE_USER},
-        https_info => $env->{HTTPS},
+        _https_info => $env->{HTTPS},
     }
 }
 

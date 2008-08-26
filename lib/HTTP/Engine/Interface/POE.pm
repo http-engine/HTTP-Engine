@@ -104,7 +104,7 @@ sub _make_request {
             method     => $request->method,
             port       => $self->port,
             user       => undef,
-            https_info => 'OFF',
+            _https_info => 'OFF',
             protocol   => $request->protocol(),
         },
         _connection => {

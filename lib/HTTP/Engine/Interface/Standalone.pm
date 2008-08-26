@@ -268,7 +268,7 @@ sub _handle_one {
             port           => $self->port,
             protocol       => "HTTP/$protocol",
             user           => undef,
-            https_info     => undef,
+            _https_info     => undef,
         },
     );
 }

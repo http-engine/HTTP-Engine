@@ -59,7 +59,7 @@ sub run {
                             address     => $setup{peeraddr},
                             port        => $setup{localport},
                             user        => undef,
-                            https_info  => undef,
+                            _https_info  => undef,
                         },
                         headers     => $headers,
                         _connection => {

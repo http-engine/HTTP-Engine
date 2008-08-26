@@ -1,9 +1,8 @@
 package HTTP::Engine::Interface::CGI;
-use HTTP::Engine::Interface;
-
-builder 'CGI';
-
-writer { response_line => 0 };
+use HTTP::Engine::Interface
+    builder => 'CGI',
+    writer  => { response_line => 0 },
+;
 
 sub run {
     my ($self) = @_;

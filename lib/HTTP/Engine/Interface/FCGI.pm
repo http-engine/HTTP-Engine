@@ -1,5 +1,21 @@
 package HTTP::Engine::Interface::FCGI;
-use HTTP::Engine::Interface;
+use HTTP::Engine::Interface
+    builder => 'CGI',
+    writer  => {
+        response_line => 1,
+        'write' => sub {
+            my ($self, $buffer) = @_;
+            *STDOUT->syswrite($buffer);
+        },
+    }
+;
+# XXX: We can't use Engine's write() method because syswrite
+# appears to return bogus values instead of the number of bytes
+# written: http://www.fastcgi.com/om_archive/mail-archive/0128.html
+
+# FastCGI does not stream data properly if using 'print $handle',
+# but a syswrite appears to work properly.
+
 use constant RUNNING_IN_HELL => $^O eq 'MSWin32';
 use FCGI;
 
@@ -48,22 +64,6 @@ has listen => (
     is  => 'ro',
     isa => 'Str',
 );
-
-builder 'CGI';
-
-# XXX: We can't use Engine's write() method because syswrite
-# appears to return bogus values instead of the number of bytes
-# written: http://www.fastcgi.com/om_archive/mail-archive/0128.html
-
-# FastCGI does not stream data properly if using 'print $handle',
-# but a syswrite appears to work properly.
-writer {
-    response_line => 1,
-    'write' => sub {
-        my ($self, $buffer) = @_;
-        *STDOUT->syswrite($buffer);
-    },
-};
 
 sub run {
     my ( $self, ) = @_;

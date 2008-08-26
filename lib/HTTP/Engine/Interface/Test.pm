@@ -1,17 +1,16 @@
 package HTTP::Engine::Interface::Test;
-use HTTP::Engine::Interface;
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        finalize => sub {
+            my ( $self, $req, $res ) = @_;
+            $res->as_http_response;
+        },
+    }
+;
 
 use URI::WithBase;
 use IO::Scalar;
-
-builder 'NoEnv';
-
-writer {
-    finalize => sub {
-        my ( $self, $req, $res ) = @_;
-        $res->as_http_response;
-    },
-};
 
 sub run {
     my ( $self, $request, %args ) = @_;

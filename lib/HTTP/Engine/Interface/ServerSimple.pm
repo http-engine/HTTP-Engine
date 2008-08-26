@@ -1,5 +1,11 @@
 package HTTP::Engine::Interface::ServerSimple;
-use HTTP::Engine::Interface;
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        response_line => 1,
+    }
+;
+
 use HTTP::Server::Simple 0.34;
 use HTTP::Server::Simple::CGI;
 
@@ -21,12 +27,6 @@ has net_server => (
     default => undef,
 );
 no Moose;
-
-builder 'NoEnv';
-
-writer {
-    response_line => 1,
-};
 
 sub run {
     my ($self, ) = @_;

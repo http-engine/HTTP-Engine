@@ -1,5 +1,19 @@
 package HTTP::Engine::Interface::POE;
-use HTTP::Engine::Interface;
+
+our $CLIENT;
+
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  =>  {
+        response_line => 1,
+        'write' => sub {
+            my ($self, $buffer) = @_;
+            $CLIENT->put($buffer);
+            return 1;
+        }
+    }
+;
+
 use POE qw/
     Component::Server::TCP
     Filter::HTTPD
@@ -24,19 +38,6 @@ has alias => (
     is       => 'ro',
     isa      => 'Str | Undef',
 );
-
-builder 'NoEnv';
-
-our $CLIENT;
-
-writer {
-    response_line => 1,
-    'write' => sub {
-        my ($self, $buffer) = @_;
-        $CLIENT->put($buffer);
-        return 1;
-    }
-};
 
 my $filter = Moose::Meta::Class->create(
     'HTTP::Engine::Interface::POE::Filter',

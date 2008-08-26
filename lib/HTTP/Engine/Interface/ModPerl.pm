@@ -1,5 +1,22 @@
 package HTTP::Engine::Interface::ModPerl;
-use HTTP::Engine::Interface;
+use HTTP::Engine::Interface
+    builder => '+HTTP::Engine::Interface::ModPerl::RequestBuilder',
+    writer  => {
+        finalize => sub {
+            my ($self, $req, $res) = @_;
+            my $r = $req->_connection->{apache_request} or die "missing apache request";
+            $r->status( $res->status );
+            $req->headers->scan(
+                sub {
+                    my ($key, $val) = @_;
+                    $r->headers_out->add($key => $val);
+                }
+            );
+            $self->output_body($r, $res->body);
+        },
+    }
+;
+
 
 BEGIN
 {
@@ -26,23 +43,6 @@ has 'apache' => (
 );
 
 no Moose;
-
-builder 'HTTP::Engine::Interface::ModPerl::RequestBuilder';
-
-writer {
-    finalize => sub {
-        my ($self, $req, $res) = @_;
-        my $r = $req->_connection->{apache_request} or die "missing apache request";
-        $r->status( $res->status );
-        $req->headers->scan(
-            sub {
-                my ($key, $val) = @_;
-                $r->headers_out->add($key => $val);
-            }
-        );
-        $self->output_body($r, $res->body);
-    },
-);
 
 my %HE;
 

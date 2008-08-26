@@ -2,14 +2,41 @@ package HTTP::Engine::Interface;
 use Moose;
 use Moose::Exporter;
 
-Moose::Exporter->setup_import_methods(
-    with_caller => [ 'builder', 'writer', '__INTERFACE__'],
+my ($import, $unimport) = Moose::Exporter->build_import_methods(
+    with_caller => [ '__INTERFACE__'],
     also        => 'Moose',
 );
+*unimport = $unimport;
 
-my $WRITER;
+my $ARGS = {};
 
-sub builder {
+sub import {
+    my $class = shift;
+
+    my $caller  = caller(0);
+    $ARGS->{$caller} = {@_};
+
+    @_ = ($class, );
+    goto $import;
+}
+
+# fix up Interface.
+sub __INTERFACE__ {
+    my ($caller, ) = @_;
+
+    my %args = %{ delete $ARGS->{$caller} };
+
+    my $builder = delete $args{builder} or die "missing builder";
+    my $writer  = delete $args{writer}  or die "missing writer";
+
+    _setup_builder($caller, $builder);
+    _setup_writer($caller,  $writer);
+
+    Moose::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
+    $caller->meta->make_immutable;
+}
+
+sub _setup_builder {
     my ($caller, $builder ) = @_;
     $builder = ($builder =~ s/^\+(.+)$//) ? $1 : "HTTP::Engine::RequestBuilder::$builder";
     Class::MOP::load_class($builder);
@@ -19,29 +46,15 @@ sub builder {
     );
 }
 
-sub writer {
+sub _setup_writer {
     my ($caller, $args) = @_;
 
-    $WRITER->{$caller} = $args;
-}
-
-# fix up Interface.
-sub __INTERFACE__ {
-    my ($caller, ) = @_;
-
-    if (my $args = delete $WRITER->{$caller}) {
-        my $writer = _construct_writer($caller, $args)->new_object->new;
-        $caller->meta->make_mutable;
-        $caller->meta->add_method(
-            'response_writer' => sub {
-                $writer;
-            }
-        );
-    }
-
-    Moose::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
-
-    $caller->meta->make_immutable;
+    my $writer = _construct_writer($caller, $args)->new_object->new;
+    $caller->meta->add_method(
+        'response_writer' => sub {
+            $writer;
+        }
+    );
 }
 
 sub _construct_writer {

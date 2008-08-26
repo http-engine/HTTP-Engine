@@ -1,5 +1,24 @@
 package HTTP::Engine::Interface::Standalone;
-use HTTP::Engine::Interface;
+use HTTP::Engine::Interface
+    builder => 'NoEnv',
+    writer  => {
+        response_line => 1,
+        before => {
+            finalize => sub {
+                my($self, $req, $res) = @_;
+
+                $res->headers->date(time);
+
+                if ($req->_connection->{keepalive_available}) {
+                    $res->headers->header( Connection => 'keep-alive' );
+                } else {
+                    $res->headers->header( Connection => 'close' );
+                }
+            }
+        }
+    }
+;
+
 
 use Socket qw(:all);
 use IO::Socket::INET ();
@@ -56,25 +75,6 @@ has argv => (
 );
 
 no Moose;
-
-builder 'NoEnv';
-
-writer {
-    response_line => 1,
-    before => {
-        finalize => sub {
-            my($self, $req, $res) = @_;
-
-            $res->headers->date(time);
-
-            if ($req->_connection->{keepalive_available}) {
-                $res->headers->header( Connection => 'keep-alive' );
-            } else {
-                $res->headers->header( Connection => 'close' );
-            }
-        }
-    }
-};
 
 sub run {
     my ( $self ) = @_;

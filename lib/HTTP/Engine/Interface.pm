@@ -1,12 +1,7 @@
 package HTTP::Engine::Interface;
 use Moose;
-use Moose::Exporter;
 
-my ($import, $unimport) = Moose::Exporter->build_import_methods(
-    with_caller => [ '__INTERFACE__'],
-    also        => 'Moose',
-);
-*unimport = $unimport;
+*unimport = *Moose::unimport;
 
 my $ARGS = {};
 
@@ -16,8 +11,14 @@ sub import {
     my $caller  = caller(0);
     $ARGS->{$caller} = {@_};
 
+    no strict 'refs';
+    *{"$caller\::__INTERFACE__"} = sub {
+        my $caller = caller(0);
+        __INTERFACE__($caller);
+    };
+
     @_ = ($class, );
-    goto $import;
+    goto \&Moose::import;
 }
 
 # fix up Interface.

@@ -14,5 +14,5 @@ remove?
 
 =head2 ModPerl
 
-support $r->send_fd() (suggested by kazeburo++)
+support $r->send_filename() (suggested by kazeburo++)
 

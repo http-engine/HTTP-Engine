@@ -14,6 +14,7 @@ use IO::Scalar;
 
 sub run {
     my ( $self, $request, %args ) = @_;
+    Carp::croak "missing request" unless $request;
 
     return $self->handle_request(
         uri        => URI::WithBase->new( $request->uri ),

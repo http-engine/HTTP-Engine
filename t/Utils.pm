@@ -132,14 +132,16 @@ sub ok_response {
 }
 
 my $BUILDER = do {
-    my $builder_meta = Moose::Meta::Class->create_anon_class(
-        superclass => 'Moose::Meta::Class',
-        roles => [qw(
-            HTTP::Engine::Role::RequestBuilder
-            HTTP::Engine::Role::RequestBuilder::ParseEnv
-            HTTP::Engine::Role::RequestBuilder::HTTPBody
-        )],
-        cache => 1,
+    my $builder_meta = Moose::Meta::Class->create(
+        't::Utils::HTTPRequestBuilder' => (
+            superclass => 'Moose::Meta::Class',
+            roles => [qw(
+                HTTP::Engine::Role::RequestBuilder
+                HTTP::Engine::Role::RequestBuilder::ParseEnv
+                HTTP::Engine::Role::RequestBuilder::HTTPBody
+            )],
+            cache => 1,
+        )
     );
     $builder_meta->make_immutable;
     $builder_meta->name->new(

@@ -17,8 +17,13 @@ sub import {
         __INTERFACE__($caller);
     };
 
-    @_ = ($class, );
-    goto \&Moose::import;
+    strict->import;
+    warnings->import;
+
+    return if $caller eq 'main';
+
+    Moose::init_meta($caller);
+    Moose->import( { into => $caller } );
 }
 
 # fix up Interface.

@@ -28,13 +28,13 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Moose'         => '0.55_01';
+requires 'Moose'         => '0.55';
 requires 'MooseX::Types' => 0.04;
 requires 'Scalar::Util'  => 1.19;
 
 requires 'IO::Socket' => 1.30;
 
-requires 'File::Copy'       => 2.09;
+requires 'File::Copy'       => 0;
 requires 'IO::File'         => 1.14;
 requires 'File::Spec::Unix' => 3.2701;
 

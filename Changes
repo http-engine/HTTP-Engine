@@ -1,5 +1,14 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.15   2008-08-28T13:23:29+09:00
+         - all Interface design rewrote
+         - Interface::Standalone
+           some refactoring
+           added new option: keepalive_timeout
+           bug fixed: keepalive is does not work
+         - Interface::ServerSimple
+           chaged option: port is required
+
 0.0.14   2008-08-22T18:08:54+09:00
          - Interface::ModPerl broken code fix
          - Interface::POE fix the many problems

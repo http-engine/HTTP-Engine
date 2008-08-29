@@ -131,7 +131,7 @@ old style
 Interfaces can be specified as part of the HTTP::Engine constructor:
 
   my $interface = HTTP::Engine::Interface::FastCGI->new(
-    handler => ...
+    request_handler => ...
   );
   HTTP::Engine->new(
     interface => $interface
@@ -143,8 +143,8 @@ Or you can let HTTP::Engine instantiate the interface for you:
     interface => {
       module => 'FastCGI',
       args   => {
-        handler => ...
       }
+      request_handler => ...
     }
   )->run();
 

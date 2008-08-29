@@ -18,7 +18,6 @@ use POE qw/
     Component::Server::TCP
     Filter::HTTPD
 /;
-use HTTP::Request::AsCGI;
 use IO::Scalar;
 use URI::WithBase;
 

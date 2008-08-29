@@ -16,3 +16,4 @@ remove?
 
 support $r->send_fd() (suggested by kazeburo++)
 
+remove HTTP::Engine::Interface::ModPerl::RequestBuilder

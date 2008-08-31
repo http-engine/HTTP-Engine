@@ -10,7 +10,7 @@ sub finalize {
     my($self, $req, $res) = @_;
     Carp::croak "argument missing" unless $res;
 
-    $self->write($self->response_line($res) . $CRLF) if $self->does('HTTP::Engine::Role::ResponseWriter::ResponseLine');
+    $self->write($self->response_line($res) . $CRLF) if $self->can('response_line');
     $self->write($res->headers->as_string($CRLF));
     $self->write($CRLF);
 

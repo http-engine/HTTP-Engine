@@ -1,4 +1,12 @@
 use inc::Module::Install;
+
+{
+    no warnings 'redefine';
+    *recommends_hack = $Module::Install::VERSION > 0.70 ?
+        sub { recommends(@_); $_[0] } :
+        \&recommends;
+}
+
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
@@ -19,32 +27,32 @@ requires 'URI';
 features(
     'Interface::FCGI' => [
         -default => 0,
-        recommends('FCGI'),
+        recommends_hack('FCGI'),
     ],
 
     'Interface::ServerSimple' => [
         -default => 0,
-        recommends('HTTP::Server::Simple'),
+        recommends_hack('HTTP::Server::Simple'),
     ],
 
     'Interface::Standalone' => [
         -default => 0,
-        recommends('Errno'),
+        recommends_hack('Errno'),
     ],
 
     'Interface::Test' => [
         -default => 0,
-        recommends('HTTP::Request::AsCGI'),
+        recommends_hack('HTTP::Request::AsCGI'),
     ],
 
     'ModuleReload' => [
         -default => 0,
-        recommends('Module::Reload'),
+        recommends_hack('Module::Reload'),
     ],
 
     'DebugScreen' => [
         -default => 0,
-        recommends('Carp::Always'),
+        recommends_hack('Carp::Always'),
     ],
 );
 

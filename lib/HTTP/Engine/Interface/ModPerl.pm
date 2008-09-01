@@ -62,6 +62,11 @@ has 'apache' => (
     is_weak => 1,
 );
 
+has context_key => (
+    is      => 'rw',
+    isa     => 'Str',
+);
+
 no Moose;
 
 my %HE;
@@ -70,20 +75,21 @@ sub handler : method
 {
     my $class = shift;
     my $r     = shift;
+    my $server = $r->server;
 
     # ModPerl is currently the only environment where the inteface comes
     # before the actual invocation of HTTP::Engine
 
-    my $location = $r->location;
-    my $engine   = $HE{ $location };
+    my $context_key = join ':', $server->server_hostname, $server->port, $r->location;
+    my $engine   = $HE{ $context_key };
     if (! $engine ) {
-        $engine = $class->create_engine($r);
-        $HE{ $r->location } = $engine;
+        $engine = $class->create_engine($r, $context_key);
+        $HE{ $context_key } = $engine;
     }
 
     $engine->interface->apache( $r );
+    $engine->interface->context_key( $context_key );
 
-    my $server = $r->server;
     my $connection = $r->connection;
 
     $engine->interface->handle_request(

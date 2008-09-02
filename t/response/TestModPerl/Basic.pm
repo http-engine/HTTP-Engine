@@ -15,7 +15,7 @@ sub handler : method
 }
 
 sub create_engine {
-    my ( $self, $r ) = @_;
+    my ( $class, $r ) = @_;
 
     HTTP::Engine->new(
         interface => HTTP::Engine::Interface::ModPerl->new(

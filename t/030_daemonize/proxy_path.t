@@ -6,16 +6,16 @@ use Test::More;
 plan tests => 2*interfaces;
 
 use LWP::UserAgent;
-use HTTP::Request::Common qw(POST);
 use HTTP::Engine;
 
 daemonize_all sub {
     my ($port, $interface) = @_;
 
     my $ua = LWP::UserAgent->new(timeout => 10);
-    my $res = $ua->get("http://localhost:$port/http://wassr.jp/");
+    $ua->proxy('http', "http://localhost:$port/");
+    my $res = $ua->get("http://localhost:$port/?http=1");
     is $res->code, 200, $interface;
-    is $res->content, '/http://wassr.jp/';
+    is $res->content, '/'; # which one is best?
 } => <<'...';
     sub {
         my $port = shift;
@@ -29,7 +29,7 @@ daemonize_all sub {
                     my $req = shift;
                     HTTP::Engine::Response->new(
                         status => 200,
-                        body   => $req->path,
+                        body   => $req->uri->path,
                     );
                 },
             },

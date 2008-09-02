@@ -3,6 +3,7 @@ use warnings;
 use t::Utils;
 use Test::More;
 
+plan skip_all => "HTTP::Engine does not a proxy";
 plan tests => 2*interfaces;
 
 use LWP::UserAgent;

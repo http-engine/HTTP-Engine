@@ -13,12 +13,15 @@ use HTTP::Engine::Interface
             my ($self, $req, $res) = @_;
             my $r = $req->_connection->{apache_request} or die "missing apache request";
             $r->status( $res->status );
+            my $content_type;
             $res->headers->scan(
                 sub {
                     my ($key, $val) = @_;
+                    $content_type = $val if lc $key eq 'content-type';
                     $r->headers_out->add($key => $val);
                 }
             );
+            $r->content_type($content_type) if $content_type;
 
             sub {
                 my ($r, $body) = @_;

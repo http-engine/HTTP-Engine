@@ -13,7 +13,7 @@ use HTTP::Engine::Interface
             my ($self, $req, $res) = @_;
             my $r = $req->_connection->{apache_request} or die "missing apache request";
             $r->status( $res->status );
-            $req->headers->scan(
+            $res->headers->scan(
                 sub {
                     my ($key, $val) = @_;
                     $r->headers_out->add($key => $val);

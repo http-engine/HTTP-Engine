@@ -1,6 +1,6 @@
 package HTTP::Engine::Interface::ModPerl;
 use HTTP::Engine::Interface
-    builder => '+HTTP::Engine::Interface::ModPerl::RequestBuilder',
+    builder => 'CGI',
     writer  => {
         attribute => {
             chunk_size => {
@@ -62,7 +62,7 @@ has 'apache' => (
     is_weak => 1,
 );
 
-has context_key => (
+has 'context_key' => (
     is      => 'rw',
     isa     => 'Str',
 );
@@ -75,12 +75,13 @@ sub handler : method
 {
     my $class = shift;
     my $r     = shift;
-    my $server = $r->server;
+
+    local %ENV = %ENV;
 
     # ModPerl is currently the only environment where the inteface comes
     # before the actual invocation of HTTP::Engine
 
-    my $context_key = join ':', $server->server_hostname, $server->port, $r->location;
+    my $context_key = join ':', $ENV{SERVER_NAME}, $ENV{SERVER_PORT}, $r->location;
     my $engine   = $HE{ $context_key };
     if (! $engine ) {
         $engine = $class->create_engine($r, $context_key);
@@ -90,34 +91,13 @@ sub handler : method
     $engine->interface->apache( $r );
     $engine->interface->context_key( $context_key );
 
-    my $connection = $r->connection;
-
     $engine->interface->handle_request(
-        headers => HTTP::Headers->new(
-            %{ $r->headers_in }
-        ),
         _connection => {
             input_handle   => \*STDIN,
             output_handle  => \*STDOUT,
-            env            => {
-                REQUEST_METHOD => $r->method(),
-                REMOTE_ADDR    => $connection->remote_ip(),
-                SERVER_PORT    => $server->port(),
-                QUERY_STRING   => $r->args() || '',
-                HTTP_HOST      => $r->hostname(),
-                SERVER_PROTOCOL => $r->protocol,
-            },
+            env            => \%ENV,
             apache_request => $r,
         },
-        connection_info => {
-            address    => $connection->remote_ip(),
-            protocol   => $r->protocol,
-            method     => $r->method,
-            port       => $server->port,
-            user       => $r->user,
-            _https_info => undef, # TODO: implement
-        },
-        hostname => $r->hostname,
     );
 
     return &Apache2::Const::OK;
@@ -144,15 +124,24 @@ __END__
 
 HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
+=head1 CONFIG
+
+required configuration in httpd.conf
+
+    SetHandler modperl
+    PerlOptions +SetupEnv
+
+or
+
+    SetHandler perl-script
+
 =head1 AUTHORS
 
 Daisuke Maki
 
 Tokuhiro Matsuno
 
-=head1 KNOWN BUGS
-
-    cannot get https_info
+Kazuhiro Osawa
 
 =head1 SEE ALSO
 

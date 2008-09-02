@@ -1,0 +1,3 @@
+<IfModule mod_perl.c>
+    PerlOptions +SetupEnv
+</IfModule>

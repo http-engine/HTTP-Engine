@@ -15,5 +15,3 @@ remove?
 =head2 ModPerl
 
 support $r->send_fd() (suggested by kazeburo++)
-
-remove HTTP::Engine::Interface::ModPerl::RequestBuilder

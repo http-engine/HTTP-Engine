@@ -100,7 +100,7 @@ sub daemonize_all (&$@) {
             $args{interface}->{module} = $interface;
             $args{poe_kernel_run} = ($interface eq 'POE') if $poe_kernel_run;
             test_tcp(
-                client => $client_cb,
+                client => sub { $client_cb->(@_, $interface) },
                 server => sub {
                     my $poe_kernel_run = delete $args{poe_kernel_run};
                     HTTP::Engine->new(%args)->run;

@@ -48,11 +48,12 @@ sub run {
                 },
                 handler    => sub {
                     my $base = "http://$setup{localname}:$setup{localport}";
+                    my $uri = URI::WithBase->new(
+                        $base . $setup{request_uri},
+                        $base . '/',
+                    );
                     $self->handle_request(
-                        uri => URI::WithBase->new(
-                            $base . $setup{request_uri},
-                            $base . '/',
-                        ),
+                        uri => $uri,
                         connection_info => {
                             method      => $setup{method},
                             protocol    => $setup{protocol},

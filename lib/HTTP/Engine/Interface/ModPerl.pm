@@ -2,7 +2,7 @@ package HTTP::Engine::Interface::ModPerl;
 use HTTP::Engine::Interface
     builder => 'CGI',
     writer  => {
-        attribute => {
+        attributes => {
             chunk_size => {
                 is      => 'ro',
                 isa     => 'Int',

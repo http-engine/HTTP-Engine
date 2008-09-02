@@ -123,6 +123,8 @@ __INTERFACE__
 
 __END__
 
+=for stopwords httpd.conf
+
 =head1 NAME
 
 HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine

@@ -129,6 +129,67 @@ __END__
 
 HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
+=head1 SYNOPSIS
+
+  # App.pm
+  package App;
+  use Moose;
+  use Data::Dumper;
+  use HTTP::Engine;
+
+  sub run {
+      my($self, $conf) = @_;
+      $conf->{request_handler} = sub { $self->handle_request(@_) };
+      HTTP::Engine->new(
+          interface => $conf,
+      )->run;
+  }
+  
+  sub handle_request {
+      my($self, $req) = @_;
+      HTTP::Engine::Response(
+          status => 200,
+          body => Dumper($req),
+      );
+  }
+
+
+  # app.pl
+  use strict;
+  use warnings;
+  use App;
+  App->new->run({
+      module => 'ServerSimple',
+      args => { port => 9999 },
+  });
+
+
+  # App/ModPerl.pm
+  package App::ModPerl;
+  use Moose;
+  extends 'HTTP::Engine::Interface::ModPerl';
+  use App;
+  
+  sub create_engine {
+      my($class, $r, $context_key) = @_;
+
+      App->new->run({
+          module => 'ModPerl',
+      });
+  }
+
+
+  # in httpd.conf
+  <VirtualHost 127.0.0.1:8080>
+      <Location />
+          SetHandler modperl
+          PerlOptions +SetupEnv
+          PerlSwitches -Mlib=/foo/bar/app/lib
+          PerlResponseHandler App::ModPerl
+      </Location>
+  </VirtualHost>
+
+
 =head1 CONFIG
 
 required configuration in httpd.conf

@@ -1,5 +1,12 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.16   2008-09-03T16:26:05+09:00
+         - Interface::ModPerl
+           broken code fix
+           using %ENV for RequestBuilder
+           add content_type response head handling
+         - fixed HTTP::Engine POD
+
 0.0.15   2008-08-28T13:23:29+09:00
          - all Interface design rewrote
          - Interface::Standalone

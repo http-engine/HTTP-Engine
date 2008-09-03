@@ -1,13 +1,22 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 18;
 use t::Utils;
+
+{
+    package main;
+    use HTTP::Engine::Interface;
+    eval { main->meta };
+    main::like $@, qr/Can't locate object method "meta" via package "main"/;
+}
 
 {
     package Dummy1;
     use HTTP::Engine::Interface;
     eval { __INTERFACE__ };
     main::like $@, qr/missing builder/;
+    eval { Dummy1->meta };
+    main::ok !$@;
 }
 
 {
@@ -15,6 +24,8 @@ use t::Utils;
     use HTTP::Engine::Interface builder => 'CGI';
     eval { __INTERFACE__ };
     main::like $@, qr/missing writer/;
+    eval { Dummy2->meta };
+    main::ok !$@;
 }
 
 {
@@ -22,6 +33,8 @@ use t::Utils;
     use HTTP::Engine::Interface builder => 'CGI', writer => {};
     eval { __INTERFACE__ };
     main::like $@, qr/requires the method 'run' to be implemented by 'Dummy3'/;
+    eval { Dummy3->meta };
+    main::ok !$@;
 }
 
 {
@@ -32,6 +45,8 @@ use t::Utils;
     main::ok !$@;
     my $interface = Dummy4->new( request_handler => sub {} );
     main::is ref $interface->request_builder, 'HTTP::Engine::RequestBuilder::CGI';
+    eval { Dummy4->meta };
+    main::ok !$@;
 }
 
 {
@@ -44,6 +59,9 @@ use t::Utils;
         HTTP::Engine::Role::RequestBuilder::HTTPBody
     );
 
+    eval { Dummy5->meta };
+    main::ok !$@;
+
     no Moose;
     __PACKAGE__->meta->make_immutable;
 }
@@ -55,6 +73,8 @@ use t::Utils;
     main::ok !$@;
     my $interface = Dummy5->new( request_handler => sub {} );
     main::is ref $interface->request_builder, 'Dummy5::Builder';
+    eval { Dummy5->meta };
+    main::ok !$@;
 }
 
 {
@@ -72,4 +92,6 @@ use t::Utils;
     main::is $interface->response_writer->output_body, 'body';
     $interface->response_writer->attr('attr');
     main::is $interface->response_writer->attr('attr'), 'attr';
+    eval { Dummy6->meta };
+    main::ok !$@;
 }

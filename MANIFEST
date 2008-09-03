@@ -32,7 +32,6 @@ lib/HTTP/Engine/Interface.pm
 lib/HTTP/Engine/Interface/CGI.pm
 lib/HTTP/Engine/Interface/FCGI.pm
 lib/HTTP/Engine/Interface/ModPerl.pm
-lib/HTTP/Engine/Interface/ModPerl/RequestBuilder.pm
 lib/HTTP/Engine/Interface/POE.pm
 lib/HTTP/Engine/Interface/ServerSimple.pm
 lib/HTTP/Engine/Interface/Standalone.pm
@@ -106,6 +105,7 @@ t/020_interface/test.t
 t/020_interface/test_upload.t
 t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t
+t/030_daemonize/proxy_path.t
 t/030_daemonize/raw_body.t
 t/030_daemonize/responsewriter_io.t
 t/030_daemonize/upload.t

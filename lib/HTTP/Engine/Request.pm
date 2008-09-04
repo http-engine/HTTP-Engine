@@ -355,12 +355,39 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::Request - http request object
+HTTP::Engine::Request - Portable HTTP request object
 
 =head1 SYNOPSIS
 
+    # normally a request object is passed into your handler
     sub handle_request {
         my $req = shift;
+
+   };
+
+=head1 DESCRIPTION
+
+L<HTTP::Engine::Request> provides a consistent API for request objects across web
+server enviroments. 
+
+=head1 METHODS
+
+=head2 new
+
+    HTTP::Engine::Request->new(
+        request_builder => $BUILDER,
+        _connection => {
+            env           => \%ENV,
+            input_handle  => \*STDIN,
+            output_handle => \*STDOUT,
+        },
+        %args
+    );
+
+Normally, new() is not called directly, but a pre-built HTTP::Engine::Request
+object is passed for you into your request handler. You may build your own,
+following the example above. The C<$BUILDER> may be one of
+L<HTTP::Engine::RequestBuilder::CGI> or L<HTTP::Engine::RequestBuilder::NoEnv>.
 
 =head1 ATTRIBUTES
 

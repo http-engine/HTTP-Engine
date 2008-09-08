@@ -74,6 +74,7 @@ t/010_core/request-many_upload.t
 t/010_core/request-parameters.t
 t/010_core/request-params.t
 t/010_core/request-parse.t
+t/010_core/request-proxy_request.t
 t/010_core/request-raw_body.t
 t/010_core/request-readbody.t
 t/010_core/request-secure.t
@@ -97,6 +98,7 @@ t/010_core/responsewriter-broken_io.t
 t/010_core/responsewriter-with_io.t
 t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
+t/020_interface/poe-proxy.t
 t/020_interface/poe.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t

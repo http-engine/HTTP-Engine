@@ -366,7 +366,7 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
-=for stopwords Stringifies URI http https param CGI.pm-compatible referer uri IP hostname
+=for stopwords Stringifies URI http https param CGI.pm-compatible referer uri IP hostname API enviroments
 
 =head1 NAME
 

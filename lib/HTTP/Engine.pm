@@ -19,7 +19,7 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
-=for stopwords middlewares Middleware middleware nothingmuch kan
+=for stopwords middlewares Middleware middleware nothingmuch kan Stosberg
 
 =encoding utf8
 

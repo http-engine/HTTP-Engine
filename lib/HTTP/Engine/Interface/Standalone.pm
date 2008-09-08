@@ -250,6 +250,7 @@ sub _handle_one {
                 $u->scheme('http');
                 $u->host($headers->header('Host') || $self->host);
                 $u->port($self->port);
+                $u->path('/') if $uri =~ m!^https?://!i;
                 my $b = $u->clone;
                 $b->path_query('/');
                 ($u, $b);
@@ -268,7 +269,8 @@ sub _handle_one {
             port           => $self->port,
             protocol       => "HTTP/$protocol",
             user           => undef,
-            _https_info     => undef,
+            _https_info    => undef,
+            request_uri    => $uri,
         },
     );
 }

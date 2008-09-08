@@ -48,8 +48,10 @@ sub run {
                 },
                 handler    => sub {
                     my $base = "http://$setup{localname}:$setup{localport}";
+                    my $request_uri = $setup{request_uri};
+                    $request_uri = '/' if $request_uri =~ m!^https?://!i;
                     my $uri = URI::WithBase->new(
-                        $base . $setup{request_uri},
+                        $base . $request_uri,
                         $base . '/',
                     );
                     $self->handle_request(
@@ -60,7 +62,8 @@ sub run {
                             address     => $setup{peeraddr},
                             port        => $setup{localport},
                             user        => undef,
-                            _https_info  => undef,
+                            _https_info => undef,
+                            request_uri => $setup{request_uri},
                         },
                         headers     => $headers,
                         _connection => {

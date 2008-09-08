@@ -17,6 +17,7 @@ sub _build_connection_info {
         port       => $env->{SERVER_PORT},
         user       => $env->{REMOTE_USER},
         _https_info => $env->{HTTPS},
+        request_uri => $env->{REQUEST_URI},
     }
 }
 
@@ -60,6 +61,9 @@ sub _build_uri  {
 
     my $path = $base_path . ($env->{PATH_INFO} || '');
     $path =~ s{^/+}{};
+
+    # for proxy request
+    $path = $base_path = '/' if $req->proxy_request;
 
     my $uri = URI->new;
     $uri->scheme($scheme);

@@ -16,6 +16,3 @@ remove?
 
 support $r->send_fd() (suggested by kazeburo++)
 
-=head1 PROXY BRANCH
-
-proxy support

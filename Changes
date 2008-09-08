@@ -1,5 +1,11 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.17   2008-09-08T18:16:37+09:00
+         - Documentation improvements
+           HTTP::Engine, HTTP::Engine::Request
+         - HTTP::Engine::Request add methods
+           request_uri, proxy_request
+
 0.0.16   2008-09-03T16:26:05+09:00
          - Interface::ModPerl
            broken code fix

@@ -66,7 +66,7 @@ sub _build_cookies {
     $self->request_builder->_build_cookies($self);
 }
 
-foreach my $attr qw(address method protocol user port _https_info) {
+foreach my $attr qw(address method protocol user port _https_info request_uri) {
     has $attr => (
         is => 'rw',
         # isa => "Str",
@@ -104,6 +104,21 @@ sub _build_secure {
     }
 
     return 0;
+}
+
+# proxy request?
+has proxy_request => (
+    is         => 'rw',
+    isa        => 'Str', # TODO: union(Uri, Undef) type
+#    coerce     => 1,
+    lazy_build => 1,
+);
+
+sub _build_proxy_request {
+    my $self = shift;
+    return '' unless $self->request_uri;                   # TODO: return undef
+    return '' unless $self->request_uri =~ m!^https?://!i; # TODO: return undef
+    return $self->request_uri;                             # TODO: return URI->new($self->request_uri);
 }
 
 has uri => (

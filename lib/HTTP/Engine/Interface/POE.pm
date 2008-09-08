@@ -88,10 +88,11 @@ sub _make_request {
     {
         headers => $request->headers,
         uri     => URI::WithBase->new(do {
-            my $uri = $request->uri;
+            my $uri = $request->uri->clone;
             $uri->scheme('http');
             $uri->host($self->host);
             $uri->port($self->port);
+            $uri->path('/') if $request->uri =~ m!^https?://!i;
 
             my $b = $uri->clone;
             $b->path_query('/');
@@ -105,6 +106,7 @@ sub _make_request {
             user       => undef,
             _https_info => 'OFF',
             protocol   => $request->protocol(),
+            request_uri => "".$request->uri,
         },
         _connection => {
             input_handle  => do {

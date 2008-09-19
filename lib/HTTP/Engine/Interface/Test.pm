@@ -54,12 +54,13 @@ HTTP::Engine::Interface::Test - HTTP::Engine Test Interface
   my $response = HTTP::Engine->new(
       interface => {
           module => 'Test',
+          request_handler => sub {
+              my $req = shift;
+              HTTP::Engine::Response->new( body => Dumper($req) );
+          }
       },
-      request_handler => sub {
-          my $req = shift;
-          HTTP::Engine::Response->new( body => Dumper($req) );
-      }
-  )->run(HTTP::Request->new( GET => 'http://localhost/'), \%ENV);
+  )->run(HTTP::Request->new( GET => 'http://localhost/' ), env => \%ENV);
+  print $response->content;
 
 =head1 DESCRIPTION
 

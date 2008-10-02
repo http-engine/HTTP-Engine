@@ -16,6 +16,8 @@ test_tcp(
     },
     server => sub {
         my $port = shift;
+        $SIG{ALRM} = sub { die "timeout" };
+        alarm 10;
         HTTP::Engine->new(
             interface => {
                 module => 'Standalone',

@@ -47,7 +47,8 @@ sub run {
                     %setup = @_;
                 },
                 handler    => sub {
-                    my $base = "http://$setup{localname}:$setup{localport}";
+                    my $host = $headers->header('Host') || $setup{localname};
+                    my $base = "http://${host}:$setup{localport}";
                     my $request_uri = $setup{request_uri};
                     $request_uri = '/' if $request_uri =~ m!^https?://!i;
                     my $uri = URI::WithBase->new(

@@ -23,6 +23,7 @@ has body => (
     isa     => 'Any',
     default => '',
 );
+sub content { shift->body(@_) } # alias
 
 has cookies => (
     is      => 'rw',

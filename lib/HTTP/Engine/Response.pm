@@ -41,6 +41,8 @@ has status => (
     default => 200,
 );
 
+sub code { shift->status(@_) }
+
 has headers => (
     is      => 'rw',
     isa     => Header,

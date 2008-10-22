@@ -45,7 +45,7 @@ requires 'URI'                 => 1.36;
 
 # prevent tests from failing with HTTP::Server::Simple is present, but
 # but the version is too old. It has no real further dependencies anyway. 
-requires 'HTTP::Server::Simple' => 0.34;
+requires 'HTTP::Server::Simple' => 0.35;
 
 requires 'Test::Base'          => 0;
 

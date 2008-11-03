@@ -31,6 +31,7 @@ sub run {
         _https_info => undef,
         _connection => {
             input_handle  => IO::Scalar->new( \( $request->content ) ),
+            env           => ($args{env} || {}),
         },
         %args,
     );

@@ -2,7 +2,7 @@ package HTTP::Engine::Interface::FCGI;
 use HTTP::Engine::Interface
     builder => 'CGI',
     writer  => {
-        response_line => 1,
+        response_line => 0,
         'write' => sub {
             my ($self, $buffer) = @_;
             *STDOUT->syswrite($buffer);

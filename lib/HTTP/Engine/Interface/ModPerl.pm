@@ -180,11 +180,11 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
 
   # in httpd.conf
+  PerlSwitches -Mlib=/foo/bar/app/lib
   <VirtualHost 127.0.0.1:8080>
       <Location />
           SetHandler modperl
           PerlOptions +SetupEnv
-          PerlSwitches -Mlib=/foo/bar/app/lib
           PerlResponseHandler App::ModPerl
       </Location>
   </VirtualHost>

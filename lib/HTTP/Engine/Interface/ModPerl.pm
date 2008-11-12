@@ -146,7 +146,7 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
   
   sub handle_request {
       my($self, $req) = @_;
-      HTTP::Engine::Response(
+      HTTP::Engine::Response->new(
           status => 200,
           body => Dumper($req),
       );

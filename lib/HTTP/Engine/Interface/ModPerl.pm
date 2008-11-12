@@ -58,7 +58,6 @@ use Apache2::RequestUtil;
 use Apache2::ServerRec;
 use APR::Table;
 use HTTP::Engine;
-ndler 
 has 'apache' => (
     is      => 'rw',
     isa     => 'Apache2::RequestRec',

@@ -6,13 +6,16 @@ TODO
 
 =head2 Standalone
 
-L<Parallel::Prefork> ?
+# L<Parallel::Prefork> ?
 
-keepalive doesn't works?
+# keepalive doesn't works?
 
-remove?
+remove
 
 =head2 ModPerl
 
 support $r->send_fd() (suggested by kazeburo++)
 
+=head2 FCGI
+
+mod_fastcgi + apache2 test

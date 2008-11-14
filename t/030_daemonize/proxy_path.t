@@ -1,9 +1,10 @@
 use strict;
 use warnings;
+BEGIN { $ENV{TEST_LIGHTTPD} = 0 }
 use t::Utils;
 use Test::More;
 
-plan tests => 2*interfaces;
+plan tests => 4*interfaces;
 
 use LWP::UserAgent;
 use HTTP::Engine;
@@ -16,6 +17,10 @@ daemonize_all sub {
     my $res = $ua->get("http://example.com/foo?http=1");
     is $res->code, 200, $interface;
     is $res->content, '/|http://example.com/foo?http=1'; # which one is best?
+
+    $res = $ua->get("http://example.com:8080/foo?http=1");
+    is $res->code, 200, $interface;
+    is $res->content, '/|http://example.com:8080/foo?http=1'; # which one is best?
 } => <<'...';
     sub {
         my $port = shift;

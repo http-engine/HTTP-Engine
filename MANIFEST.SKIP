@@ -27,3 +27,4 @@
 ^t/TEST$
 ^t/TEST.PL$
 ^t/htdocs/.+.html$
+^logo.jpg$

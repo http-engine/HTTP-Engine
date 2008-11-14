@@ -86,6 +86,7 @@ t/010_core/request_processor-catch_error.t
 t/010_core/request_processor-make_request.t
 t/010_core/request_processor-response_error.t
 t/010_core/request_upload-basename.t
+t/010_core/response-code.t
 t/010_core/response-coerce_headers.t
 t/010_core/response-content_length.t
 t/010_core/response-cookie.t

@@ -1,5 +1,20 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.18   2008-11-14T18:00:54+09:00
+         - Interface::ServerSimple
+           base uri build add source from Host header
+         - Interface::ModPerl
+           SYNOPSIS fixed
+         - Interface::Test
+           set env to _connection
+           fix pod synopsis so it actually works and is a bit clearer
+         - Interface::FCGI
+           change: no output response_line
+         - HTTP::Engine::Request
+           add $res->code method for compatibility with HTTP::Response
+         - HTTP::Engine::Response
+           add content method for compatibility
+
 0.0.17   2008-09-08T18:16:37+09:00
          - Documentation improvements
            HTTP::Engine, HTTP::Engine::Request

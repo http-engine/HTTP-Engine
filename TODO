@@ -19,3 +19,5 @@ support $r->send_fd() (suggested by kazeburo++)
 =head2 FCGI
 
 mod_fastcgi + apache2 test
+
+proxy_request support

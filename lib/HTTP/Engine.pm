@@ -2,7 +2,7 @@ package HTTP::Engine;
 use 5.00800;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-our $VERSION = '0.0.17';
+our $VERSION = '0.0.18';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
@@ -206,6 +206,10 @@ nothingmuch
 kan
 
 Mark Stosberg (documentation)
+
+walf443
+
+kawa0117
 
 =head1 SEE ALSO
 

@@ -3,6 +3,7 @@ use Shika;
 
 use HTTP::Status ();
 use HTTP::Headers;
+use HTTP::Engine::Types;
 
 # Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
@@ -46,14 +47,7 @@ sub code { shift->status(@_) }
 has headers => (
     is      => 'rw',
     # isa     => Header,
-    coerce  => sub {
-        my $param = shift;
-        if (ref($param) eq 'HASH') {
-            HTTP::Headers->new(%$param);
-        } else {
-            $param;
-        }
-    },
+    coerce  => \&coerce_headers,
     default => sub { HTTP::Headers->new },
     handles => [ qw(content_encoding content_length content_type header) ],
 );

@@ -1,12 +1,12 @@
 package HTTP::Engine::Request;
-use Moose;
-
+use Shika;
 use Carp;
 use HTTP::Headers;
 use HTTP::Body;
-use HTTP::Engine::Types::Core qw( Uri Header );
+use HTTP::Engine::Types;
 use HTTP::Request;
 use URI::QueryParam;
+use HTTP::Engine::Types;
 
 # Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
@@ -123,8 +123,7 @@ sub _build_proxy_request {
 
 has uri => (
     is     => 'rw',
-    isa    => Uri,
-    coerce => 1,
+    coerce => \&coerce_uri,
     lazy_build => 1,
     handles => [qw(base path)],
 );
@@ -147,8 +146,7 @@ sub _build_raw_body {
 
 has headers => (
     is      => 'rw',
-    isa     => Header,
-    coerce  => 1,
+    coerce  => \&coerce_headers,
     lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );
@@ -226,8 +224,6 @@ sub _build_uploads {
     my $self = shift;
     $self->request_builder->_prepare_uploads($self);
 }
-
-no Moose;
 
 # aliases
 *body_params  = \&body_parameters;
@@ -360,8 +356,6 @@ sub as_string {
 sub parse {
     croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
 }
-
-__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

@@ -1,18 +1,15 @@
 package HTTP::Engine::Request::Upload;
-
-use Moose;
-
+use Shika;
 use File::Copy ();
 use IO::File   ();
 use File::Spec::Unix;
 
-has filename => ( is => 'rw' );
-has headers  => ( is => 'rw' );
-has size     => ( is => 'rw' );
-has tempname => ( is => 'rw' );
-has type     => ( is => 'rw' );
+has filename => ();
+has headers  => ();
+has size     => ();
+has tempname => ();
+has type     => ();
 has basename => (
-    is      => 'rw',
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -25,8 +22,6 @@ has basename => (
 );
 
 has fh => (
-    is       => 'rw',
-    required => 1,
     lazy     => 1,
     default  => sub {
         my $self = shift;
@@ -39,8 +34,6 @@ has fh => (
         return $fh;
     },
 );
-
-no Moose;
 
 sub copy_to {
     my $self = shift;
@@ -68,8 +61,6 @@ sub slurp {
 
     $content;
 }
-
-__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

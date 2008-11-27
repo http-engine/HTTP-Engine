@@ -1,21 +1,18 @@
 package HTTP::Engine;
 use 5.00800;
-use Moose;
-use HTTP::Engine::Types::Core qw( Interface );
+use Shika;
 our $VERSION = '0.0.18';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
+use HTTP::Engine::Types;
 
 has 'interface' => (
     is      => 'ro',
-    does    => Interface,
-    coerce  => 1,
+    coerce  => \&coerce_interface,
     handles => [ qw(run) ],
 );
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
 1;
 __END__
 

@@ -50,6 +50,6 @@ sub runtest {
 
 runtest("-Ilib $herun");
 runtest("-Ilib -e 'use HTTP::Engine'");
-runtest("-Ilib -e 'package F; use Moose'");
+runtest("-Ilib -e 'package F; use Shka'");
 runtest("-Ilib -e 'use Class::MOP'");
 

@@ -74,8 +74,6 @@ has argv => (
     default => sub { [] },
 );
 
-no Moose;
-
 sub run {
     my ( $self ) = @_;
 

@@ -5,7 +5,7 @@ use HTTP::Status ();
 use HTTP::Headers;
 use HTTP::Engine::Types;
 
-# Moose role merging is borked with attributes
+# Shka role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
 
 sub BUILD {

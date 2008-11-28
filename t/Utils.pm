@@ -130,8 +130,6 @@ sub ok_response {
 }
 
 my $BUILDER = do {
-    require HTTP::Engine::Role::RequestBuilder::ParseEnv; # XXX Moose 0.55_01 has a bug... please fix t/030/031
-
     {
         package t::Utils::HTTPRequestBuilder;
         use Shika;

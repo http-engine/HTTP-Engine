@@ -27,7 +27,6 @@ has net_server => (
     isa     => 'Str | Undef',
     default => undef,
 );
-no Moose;
 
 sub run {
     my ($self, ) = @_;

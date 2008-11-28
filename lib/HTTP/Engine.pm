@@ -212,7 +212,7 @@ kawa0117
 
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
-L<Moose>
+L<Shka>
 
 =head1 REPOSITORY
 

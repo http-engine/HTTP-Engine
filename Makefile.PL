@@ -39,7 +39,7 @@ requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
 requires 'HTTP::Body'          => '1.04';
-requires 'HTTP::Headers'       => 5.810;
+requires 'HTTP::Headers::Fast' => 0.01;
 requires 'URI'                 => 1.36;
 
 # prevent tests from failing with HTTP::Server::Simple is present, but

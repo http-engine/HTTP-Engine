@@ -1,8 +1,5 @@
 package HTTP::Engine::Request::Upload;
 use Shika;
-use File::Copy ();
-use File::Spec::Unix;
-
 has filename => ();
 has headers  => ();
 has size     => ();
@@ -12,6 +9,7 @@ has basename => (
     lazy    => 1,
     default => sub {
         my $self = shift;
+        HTTP::Engine::Util::require_once('File/Spec/Unix.pm');
         my $basename = $self->filename;
         $basename =~ s|\\|/|g;
         $basename = ( File::Spec::Unix->splitpath($basename) )[2];
@@ -32,6 +30,7 @@ has fh => (
 
 sub copy_to {
     my $self = shift;
+    HTTP::Engine::Util::require_once('File/Copy.pm');
     File::Copy::copy( $self->tempname, @_ );
 }
 

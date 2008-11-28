@@ -2,7 +2,6 @@ package HTTP::Engine::Request::Upload;
 
 use Moose;
 
-use File::Copy ();
 use File::Spec::Unix;
 
 has filename => ( is => 'rw' );
@@ -39,6 +38,7 @@ no Moose;
 
 sub copy_to {
     my $self = shift;
+    HTTP::Engine::Util::require_once('File/Copy.pm');
     File::Copy::copy( $self->tempname, @_ );
 }
 

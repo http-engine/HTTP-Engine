@@ -9,6 +9,7 @@ sub _build_cookies {
     my($self, $req) = @_;
 
     if (my $header = $req->header('Cookie')) {
+        HTTP::Engine::Util::require_once('CGI/Simple/Cookie.pm');
         return { CGI::Simple::Cookie->parse($header) };
     } else {
         return {};

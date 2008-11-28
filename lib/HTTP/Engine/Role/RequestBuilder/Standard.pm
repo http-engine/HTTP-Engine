@@ -1,7 +1,7 @@
 package HTTP::Engine::Role::RequestBuilder::Standard;
 use Moose::Role;
 
-use IO::Socket qw[AF_INET inet_aton];
+use Socket qw[AF_INET inet_aton];
 
 with qw(HTTP::Engine::Role::RequestBuilder);
 

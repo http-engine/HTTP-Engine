@@ -2,8 +2,6 @@ package HTTP::Engine::Request::Upload;
 
 use Moose;
 
-use File::Spec::Unix;
-
 has filename => ( is => 'rw' );
 has headers  => ( is => 'rw' );
 has size     => ( is => 'rw' );
@@ -14,6 +12,7 @@ has basename => (
     lazy    => 1,
     default => sub {
         my $self = shift;
+        HTTP::Engine::Util::require_once('File/Spec/Unix.pm');
         my $basename = $self->filename;
         $basename =~ s|\\|/|g;
         $basename = ( File::Spec::Unix->splitpath($basename) )[2];

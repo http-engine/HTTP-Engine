@@ -27,7 +27,7 @@ sub _build_headers {
 
     my $env = $req->_connection->{env};
 
-    HTTP::Headers->new(
+    HTTP::Headers::Fast->new(
         map {
             (my $field = $_) =~ s/^HTTPS?_//;
             ( $field => $env->{$_} );

@@ -230,10 +230,10 @@ sub _parse_header {
                 last;
             }
         }
-        HTTP::Headers->new(@hdr);
+        HTTP::Headers::Fast->new(@hdr);
     }
     else {
-        HTTP::Headers->new;
+        HTTP::Headers::Fast->new;
     }
 }
 

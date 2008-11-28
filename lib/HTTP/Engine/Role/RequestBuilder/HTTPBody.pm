@@ -78,7 +78,7 @@ sub _prepare_uploads  {
         my @uploads;
         for my $upload (@{ $files }) {
             my $u = HTTP::Engine::Request::Upload->new;
-            $u->headers(HTTP::Headers->new(%{ $upload->{headers} }));
+            $u->headers(HTTP::Headers::Fast->new(%{ $upload->{headers} }));
             $u->type($u->headers->content_type);
             $u->tempname($upload->{tempname});
             $u->size($upload->{size});

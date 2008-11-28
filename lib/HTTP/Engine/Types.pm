@@ -19,7 +19,7 @@ sub import {
 sub coerce_headers {
     my $param = shift;
     if (ref($param) eq 'HASH') {
-        HTTP::Headers->new(%$param);
+        HTTP::Headers::Fast->new(%$param);
     } else {
         $param;
     }

@@ -1,12 +1,12 @@
 package HTTP::Engine::Request;
 use Shika;
-use Carp;
-use HTTP::Headers;
+use HTTP::Headers::Fast;
 use HTTP::Body;
 use HTTP::Engine::Types;
 use HTTP::Request;
 use URI::QueryParam;
 use HTTP::Engine::Types;
+require Carp; # Carp->import is too heavy =(
 
 # Shika role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
@@ -304,7 +304,7 @@ sub upload {
 sub uri_with {
     my($self, $args) = @_;
     
-    carp( 'No arguments passed to uri_with()' ) unless $args;
+    Carp::carp( 'No arguments passed to uri_with()' ) unless $args;
 
     for my $value (values %{ $args }) {
         next unless defined $value;
@@ -342,7 +342,7 @@ sub content {
     my ( $self, @args ) = @_;
 
     if ( @args ) {
-        croak "The HTTP::Request method 'content' is unsupported when used as a writer, use HTTP::Engine::RequestBuilder";
+        Carp::croak "The HTTP::Request method 'content' is unsupported when used as a writer, use HTTP::Engine::RequestBuilder";
     } else {
         return $self->raw_body;
     }
@@ -354,7 +354,7 @@ sub as_string {
 }
 
 sub parse {
-    croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
+    Carp::croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
 }
 
 1;

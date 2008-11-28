@@ -18,8 +18,6 @@ has chunk_size => (
     default => 4096,
 );
 
-use HTTP::Body 1.04;
-
 sub _build_http_body {
     my ( $self, $req ) = @_;
 
@@ -43,6 +41,7 @@ sub _build_read_state {
     my $length = $req->content_length || 0;
     my $type   = $req->header('Content-Type');
 
+    HTTP::Engine::Util::require_once('HTTP/Body.pm');
     my $body = HTTP::Body->new($type, $length);
     $body->tmpdir( $self->upload_tmp) if $self->upload_tmp;
 

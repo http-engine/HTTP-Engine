@@ -3,7 +3,6 @@ use Moose;
 
 use Carp;
 use HTTP::Headers;
-use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
 

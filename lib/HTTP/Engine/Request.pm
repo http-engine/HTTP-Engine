@@ -8,7 +8,7 @@ use HTTP::Request;
 use URI::QueryParam;
 use HTTP::Engine::Types;
 
-# Shka role merging is borked with attributes
+# Shika role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
 
 # this object constructs all our lazy fields for us

@@ -212,7 +212,7 @@ kawa0117
 
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
-L<Shka>
+L<Shika>
 
 =head1 REPOSITORY
 

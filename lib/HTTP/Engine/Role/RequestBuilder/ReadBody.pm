@@ -3,8 +3,6 @@
 package HTTP::Engine::Role::RequestBuilder::ReadBody;
 use Moose::Role;
 
-use IO::Handle;
-
 requires "_handle_read_chunk";
 
 sub _read_init {

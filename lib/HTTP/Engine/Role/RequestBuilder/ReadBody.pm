@@ -4,8 +4,6 @@ package HTTP::Engine::Role::RequestBuilder::ReadBody;
 use Shika::Role;
 use Carp ();
 
-use IO::Handle;
-
 requires "_handle_read_chunk";
 
 sub _read_init {

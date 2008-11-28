@@ -56,7 +56,7 @@ my $req = HTTP::Request->new(
 
 sub test_path {
     my ($lhs, $rhs) = @_;
-    is index(Cwd::realpath($rhs), Cwd::realpath($rhs)), 0;
+    is index(Cwd::realpath($lhs), Cwd::realpath($rhs)), 0;
 }
 
 run_engine {

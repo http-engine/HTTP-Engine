@@ -1,7 +1,6 @@
 package HTTP::Engine::Request::Upload;
 use Shika;
 use File::Copy ();
-use IO::File   ();
 use File::Spec::Unix;
 
 has filename => ();
@@ -26,11 +25,7 @@ has fh => (
     default  => sub {
         my $self = shift;
 
-        my $fh = IO::File->new( $self->tempname, IO::File::O_RDONLY );
-        unless ( defined $fh ) {
-            my $filename = $self->tempname;
-            die "Can't open '$filename': '$!'";
-        }
+        open my $fh, '<', $self->tempname or die "Can't open '@{[ $self->tempname ]}': '$!'";
         return $fh;
     },
 );

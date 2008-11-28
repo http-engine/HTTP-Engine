@@ -183,7 +183,7 @@ Or you can let HTTP::Engine instantiate the interface for you:
 
 =head1 AUTHOR
 
-Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>
+Kazuhiro Osawa E<lt>yappo <at> shibuya <döt> plE<gt>
 
 Daisuke Maki
 

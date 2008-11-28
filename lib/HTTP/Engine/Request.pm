@@ -1,9 +1,7 @@
 package HTTP::Engine::Request;
 use Shika;
 use HTTP::Headers::Fast;
-use HTTP::Body;
 use HTTP::Engine::Types;
-use HTTP::Request;
 use URI::QueryParam;
 use HTTP::Engine::Types;
 require Carp; # Carp->import is too heavy =(
@@ -325,6 +323,7 @@ sub uri_with {
 
 sub as_http_request {
     my $self = shift;
+    HTTP::Engine::Util::require_once('HTTP/Request.pm');
     HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->raw_body );
 }
 

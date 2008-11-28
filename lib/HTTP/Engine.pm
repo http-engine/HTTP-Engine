@@ -6,6 +6,7 @@ use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
 use HTTP::Engine::Types;
+use HTTP::Engine::Util;
 
 has 'interface' => (
     is      => 'ro',

@@ -4,7 +4,6 @@ use warnings;
 use CGI::Simple::Cookie ();
 use Scalar::Util        ();
 use Carp                ();
-use File::stat          ();
 
 sub finalize {
     my ($class, $req, $res) = @_;
@@ -17,10 +16,11 @@ sub finalize {
     if ($res->body) {
         # get the length from a filehandle
         if ((Scalar::Util::blessed($res->body) && $res->body->can('read')) || (ref($res->body) eq 'GLOB')) {
-            if (my $stat = eval { File::stat::stat $res->body }) {
+            HTTP::Engine::Util::require_once('File/stat.pm');
+            if (my $stat = eval { File::stat::stat($res->body) }) {
                 $res->content_length($stat->size);
             } else {
-                die 'Serving filehandle without a content-length';
+                die "Serving filehandle without a content-length($@)";
             }
         } else {
             $res->content_length(bytes::length($res->body));

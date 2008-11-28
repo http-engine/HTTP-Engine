@@ -3,7 +3,6 @@ use Shika;
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types;
 use URI::QueryParam;
-use HTTP::Engine::Types;
 require Carp; # Carp->import is too heavy =(
 
 # Shika role merging is borked with attributes

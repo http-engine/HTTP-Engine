@@ -40,7 +40,7 @@ sub run {
             methods => {
                 headers => sub {
                     my ( $self, $args ) = @_;
-                    $headers = HTTP::Headers->new(@$args);
+                    $headers = HTTP::Headers::Fast->new(@$args);
                 },
                 setup => sub {
                     shift; # $self;

@@ -1,7 +1,6 @@
 package HTTP::Engine::ResponseFinalizer;
 use strict;
 use warnings;
-use CGI::Simple::Cookie ();
 use Scalar::Util        ();
 use Carp                ();
 
@@ -51,22 +50,28 @@ sub finalize {
 sub _finalize_cookies  {
     my ($class, $res) = @_;
 
-    for my $name (keys %{ $res->cookies }) {
-        my $val = $res->cookies->{$name};
-        my $cookie = (
-            Scalar::Util::blessed($val)
-            ? $val
-            : CGI::Simple::Cookie->new(
-                -name    => $name,
-                -value   => $val->{value},
-                -expires => $val->{expires},
-                -domain  => $val->{domain},
-                -path    => $val->{path},
-                -secure  => ($val->{secure} || 0)
-            )
-        );
+    my $cookies = $res->cookies;
+    my @keys = keys %$cookies;
+    if (@keys) {
+        HTTP::Engine::Util::require_once('CGI/Simple/Cookie.pm');
 
-        $res->headers->push_header('Set-Cookie' => $cookie->as_string);
+        for my $name (@keys) {
+            my $val = $cookies->{$name};
+            my $cookie = (
+                Scalar::Util::blessed($val)
+                ? $val
+                : CGI::Simple::Cookie->new(
+                    -name    => $name,
+                    -value   => $val->{value},
+                    -expires => $val->{expires},
+                    -domain  => $val->{domain},
+                    -path    => $val->{path},
+                    -secure  => ($val->{secure} || 0)
+                )
+            );
+
+            $res->headers->push_header('Set-Cookie' => $cookie->as_string);
+        }
     }
 }
 

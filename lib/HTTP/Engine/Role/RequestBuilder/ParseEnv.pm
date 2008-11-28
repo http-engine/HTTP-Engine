@@ -1,7 +1,8 @@
 package HTTP::Engine::Role::RequestBuilder::ParseEnv;
-use Moose::Role;
+use Shika::Role;
 
-with 'HTTP::Engine::Role::RequestBuilder::Standard' => {
+with {
+    role  => 'HTTP::Engine::Role::RequestBuilder::Standard',
     alias => { _build_hostname => "_resolve_hostname" }, # we might be able to get it from the env
 };
 

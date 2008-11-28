@@ -43,7 +43,7 @@ SKIP: {
     use HTTP::Engine::Interface builder => 'CGI', writer => {};
     eval { __INTERFACE__ };
     sub run {};
-    main::ok !$@;
+    main::ok !$@, $@;
     my $interface = Dummy4->new( request_handler => sub {} );
     main::is ref $interface->request_builder, 'HTTP::Engine::RequestBuilder::CGI';
     eval { Dummy4->meta };
@@ -52,7 +52,7 @@ SKIP: {
 
 {
     package Dummy5::Builder;
-    use Moose;
+    use Shika;
 
     with qw(
         HTTP::Engine::Role::RequestBuilder
@@ -62,9 +62,6 @@ SKIP: {
 
     eval { Dummy5->meta };
     main::ok !$@;
-
-    no Moose;
-    __PACKAGE__->meta->make_immutable;
 }
 {
     package Dummy5;

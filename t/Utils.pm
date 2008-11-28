@@ -1,5 +1,4 @@
 package t::Utils;
-
 use strict;
 use warnings;
 use HTTP::Engine;
@@ -77,7 +76,7 @@ sub daemonize_all (&$@) {
                     );
                     delete $args{interface};
 
-                    Moose::Meta::Class
+                    Class::MOP::Class
                         ->create_anon_class(
                             superclasses => ['HTTP::Server::Simple::CGI'],
                             methods => {
@@ -134,19 +133,16 @@ sub ok_response {
 my $BUILDER = do {
     require HTTP::Engine::Role::RequestBuilder::ParseEnv; # XXX Moose 0.55_01 has a bug... please fix t/030/031
 
-    my $builder_meta = Moose::Meta::Class->create(
-        't::Utils::HTTPRequestBuilder' => (
-            superclass => 'Moose::Meta::Class',
-            roles => [qw(
-                HTTP::Engine::Role::RequestBuilder
-                HTTP::Engine::Role::RequestBuilder::ParseEnv
-                HTTP::Engine::Role::RequestBuilder::HTTPBody
-            )],
-            cache => 1,
-        )
-    );
-    $builder_meta->make_immutable;
-    $builder_meta->name->new(
+    {
+        package t::Utils::HTTPRequestBuilder;
+        use Shika;
+        with qw(
+            HTTP::Engine::Role::RequestBuilder
+            HTTP::Engine::Role::RequestBuilder::ParseEnv
+            HTTP::Engine::Role::RequestBuilder::HTTPBody
+        );
+    }
+    t::Utils::HTTPRequestBuilder->new(
         chunk_size => 1,
     );
 };

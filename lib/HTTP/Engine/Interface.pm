@@ -63,6 +63,7 @@ sub _setup_writer {
 
 sub _construct_writer {
     my ($caller, $args, ) = @_;
+    require Moose;
 
     my $writer = Moose::Meta::Class->create( $caller . '::ResponseWriter',
         superclasses => ['Moose::Object'],

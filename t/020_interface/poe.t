@@ -80,7 +80,7 @@ POE::Session->create(
                 my $req = HTTP::Request->new(
                     'POST',
                     "http://localhost:$port/",
-                    HTTP::Headers->new(),
+                    HTTP::Headers::Fast->new(),
                     "FOO=BAR",
                 );
                 $req->protocol('HTTP/0.9'); # POST request in HTTP/0.9 is invalid.
@@ -95,7 +95,7 @@ POE::Session->create(
                 my $req = HTTP::Request->new(
                     'GET',
                     "http://localhost:$port2/",
-                    HTTP::Headers->new(),
+                    HTTP::Headers::Fast->new(),
                 );
                 $req->protocol('HTTP/1.0');
                 $kernel->post(

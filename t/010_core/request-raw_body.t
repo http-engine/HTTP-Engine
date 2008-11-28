@@ -13,7 +13,7 @@ my $content = "Your base are belongs to us.";
 my $r = HTTP::Request->new(
     'POST',
     'http://example.com/',
-    HTTP::Headers->new(
+    HTTP::Headers::Fast->new(
         'Content-Type',   'application/octet−stream',
         'Content-Length', length($content)
     ),

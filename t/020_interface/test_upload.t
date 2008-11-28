@@ -24,7 +24,7 @@ run {
         my $content = delete $block->request->{content};
         $content =~ s/\r\n/\n/g;
         $content =~ s/\n/\r\n/g;
-        $test = HTTP::Request->new( POST => 'http://localhost/', HTTP::Headers->new( %{ $block->request } ), $content );
+        $test = HTTP::Request->new( POST => 'http://localhost/', HTTP::Headers::Fast->new( %{ $block->request } ), $content );
     } else {
         $test = HTTP::Request->new( GET => 'http://localhost/');
     }

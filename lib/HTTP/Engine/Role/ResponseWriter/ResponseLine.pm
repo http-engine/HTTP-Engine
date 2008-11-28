@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::ResponseLine;
-use Moose::Role;
+use Shika::Role;
 use HTTP::Status ();
 
 sub response_line {

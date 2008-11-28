@@ -1,4 +1,5 @@
 package HTTP::Engine::Interface::POE;
+require Moose;
 
 our $CLIENT;
 

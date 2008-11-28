@@ -56,49 +56,48 @@ sub _setup_builder {
 sub _setup_writer {
     my ($caller, $args) = @_;
 
-    my $writer = _construct_writer($caller, $args)->new_object->new;
+    my $writer = _construct_writer($caller, $args)->new;
     no strict 'refs';
     *{"$caller\::response_writer"} = sub { $writer };
 }
 
 sub _construct_writer {
     my ($caller, $args, ) = @_;
-    require Moose;
 
-    my $writer = Moose::Meta::Class->create( $caller . '::ResponseWriter',
-        superclasses => ['Moose::Object'],
-        cache => 1,
-    );
+    my $writer = $caller . '::ResponseWriter';
+    Shika::init_class($writer);
 
     {
+        no strict 'refs';
+
         my @roles;
         my $apply = sub { push @roles, "HTTP::Engine::Role::ResponseWriter::$_[0]" };
         if ($args->{finalize}) {
-            $writer->add_method(finalize => $args->{finalize});
+            *{"$writer\::finalize"} = $args->{finalize};
         } else {
             if ($args->{response_line}) {
                 $apply->('ResponseLine');
             }
             if (my $code = $args->{output_body}) {
-                $writer->add_method('output_body' => $code);
+                *{"$writer\::output_body"} = $code;
             } else {
                 $apply->('OutputBody');
             }
             if (my $code = $args->{write}) {
-                $writer->add_method('write' => $code);
+                *{"$writer\::write"} = $code;
             } else {
                 $apply->('WriteSTDOUT');
             }
             $apply->('Finalize');
         }
-        Moose::Util::apply_all_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
+        Shika::apply_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
     }
 
     for my $before (keys %{ $args->{before} || {} }) {
-        $writer->add_before_method_modifier( $before => $args->{before}->{$before} );
+        Shika::add_before_method_modifier( $writer, $before => $args->{before}->{$before} );
     }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
-        $writer->add_attribute( $attribute => $args->{attributes}->{$attribute} );
+        Shika::add_attribute( $writer, $attribute, $args->{attributes}->{$attribute} );
     }
 
     return $writer;

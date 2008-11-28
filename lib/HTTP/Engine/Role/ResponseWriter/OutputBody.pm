@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::OutputBody;
-use Moose::Role;
+use Shika::Role;
 
 has chunk_size => (
     is      => 'ro',

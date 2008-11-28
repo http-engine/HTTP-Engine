@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::Finalize;
-use Moose::Role;
+use Shika::Role;
 use Carp ();
 
 requires qw(write output_body);

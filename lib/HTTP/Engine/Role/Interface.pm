@@ -53,7 +53,7 @@ HTTP::Engine::Role::Interface - The Interface Role Definition
 =head1 SYNOPSIS
 
   package HTTP::Engine::Interface::CGI;
-  use Moose;
+  use Shika;
   with 'HTTP::Engine::Role::Interface';
 
 =head1 DESCRIPTION

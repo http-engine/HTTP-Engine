@@ -3,6 +3,7 @@ use warnings;
 use Test::More tests => 4;
 use t::Utils;
 use CGI::Simple::Cookie;
+use HTTP::Request;
 
 my $res = run_engine {
     my $req = shift;

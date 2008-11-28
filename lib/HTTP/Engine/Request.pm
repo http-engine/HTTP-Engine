@@ -5,7 +5,6 @@ use Carp;
 use HTTP::Headers;
 use HTTP::Body;
 use HTTP::Engine::Types::Core qw( Uri Header );
-use HTTP::Request;
 use URI::QueryParam;
 
 # Moose role merging is borked with attributes
@@ -329,6 +328,7 @@ sub uri_with {
 
 sub as_http_request {
     my $self = shift;
+    HTTP::Engine::Util::require_once('HTTP/Request.pm');
     HTTP::Request->new( $self->method, $self->uri, $self->headers, $self->raw_body );
 }
 

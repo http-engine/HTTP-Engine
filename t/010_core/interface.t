@@ -28,7 +28,8 @@ use t::Utils;
     main::ok !$@;
 }
 
-{
+SKIP: {
+    skip "requires doesn't implemented yet in Shika", 2;
     package Dummy3;
     use HTTP::Engine::Interface builder => 'CGI', writer => {};
     eval { __INTERFACE__ };

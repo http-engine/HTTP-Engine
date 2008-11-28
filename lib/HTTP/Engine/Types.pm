@@ -11,7 +11,7 @@ use Scalar::Util qw/blessed/;
 sub import {
     my $pkg = caller(0);
     no strict 'refs';
-    for my $meth (qw/coerce_headers coerce_uri coerce_interface/) {
+    for my $meth (qw/coerce_headers coerce_uri coerce_interface coerce_handler/) {
         *{"$pkg\::$meth"} = *{__PACKAGE__ . "::$meth"};
     }
 }
@@ -59,6 +59,15 @@ sub coerce_interface {
         return $module->new( %$args );
     } else {
         $param;
+    }
+}
+
+sub coerce_handler {
+    my $param = shift;
+    if (ref $param) {
+        $param;
+    } else {
+        \&{$param}
     }
 }
 

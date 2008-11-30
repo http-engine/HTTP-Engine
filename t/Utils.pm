@@ -1,6 +1,17 @@
-package t::Utils;
 use strict;
 use warnings;
+use HTTP::Headers;
+{
+    ## too bad hack
+    package HTTP::Headers;
+    use HTTP::Headers::Fast;
+    no warnings 'redefine';
+    sub new {
+        shift;
+        HTTP::Headers::Fast->new('HTTP::Headers::Fast', @_);
+    }
+}
+package t::Utils;
 use HTTP::Engine;
 use HTTP::Engine::ClassCreator;
 use HTTP::Request::AsCGI;

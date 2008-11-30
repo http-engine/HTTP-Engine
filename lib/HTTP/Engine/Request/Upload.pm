@@ -1,10 +1,13 @@
 package HTTP::Engine::Request::Upload;
 use Shika;
 has filename => ();
-has headers  => ();
+has headers  => (
+    handles => {
+        type => 'content_type'
+    },
+);
 has size     => ();
 has tempname => ();
-has type     => ();
 has basename => (
     lazy    => 1,
     default => sub {

@@ -81,7 +81,6 @@ sub _prepare_uploads  {
                 @uploads,
                 HTTP::Engine::Request::Upload->new(
                     headers  => $headers,
-                    type     => $headers->content_type,
                     tempname => $upload->{tempname},
                     size     => $upload->{size},
                     filename => $upload->{filename},

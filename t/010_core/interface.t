@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 16;
 use t::Utils;
 
 {
@@ -25,16 +25,6 @@ use t::Utils;
     eval { __INTERFACE__ };
     main::like $@, qr/missing writer/;
     eval { Dummy2->meta };
-    main::ok !$@;
-}
-
-SKIP: {
-    skip "requires doesn't implemented yet in Shika", 2;
-    package Dummy3;
-    use HTTP::Engine::Interface builder => 'CGI', writer => {};
-    eval { __INTERFACE__ };
-    main::like $@, qr/requires the method 'run' to be implemented by 'Dummy3'/;
-    eval { Dummy3->meta };
     main::ok !$@;
 }
 

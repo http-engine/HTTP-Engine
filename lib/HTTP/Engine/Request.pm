@@ -1,7 +1,7 @@
 package HTTP::Engine::Request;
 use Shika;
 use HTTP::Headers::Fast;
-use HTTP::Engine::Types;
+use HTTP::Engine::Types::Core;
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 
@@ -120,7 +120,8 @@ sub _build_proxy_request {
 
 has uri => (
     is     => 'rw',
-    coerce => \&coerce_uri,
+    isa => 'Uri',
+    coerce => 1,
     lazy_build => 1,
     handles => [qw(base path)],
 );
@@ -143,7 +144,8 @@ sub _build_raw_body {
 
 has headers => (
     is      => 'rw',
-    coerce  => \&coerce_headers,
+    isa => 'Headers',
+    coerce  => 1,
     lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
 );

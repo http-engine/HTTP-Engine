@@ -5,12 +5,13 @@ our $VERSION = '0.0.18';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
-use HTTP::Engine::Types;
+use HTTP::Engine::Types::Core qw( Interface );
 use HTTP::Engine::Util;
 
 has 'interface' => (
     is      => 'ro',
-    coerce  => \&coerce_interface,
+    isa => 'Interface',
+    coerce  => 1,
     handles => [ qw(run) ],
 );
 

@@ -1,3 +1,5 @@
+use Carp;
+croak 'A';
 package HTTP::Engine::Types;
 use strict;
 use warnings;

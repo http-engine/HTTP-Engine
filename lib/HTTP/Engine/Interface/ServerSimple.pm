@@ -31,7 +31,7 @@ no Moose;
 sub run {
     my ($self, ) = @_;
 
-    my $headers;
+    my $headers = HTTP::Headers->new;
     my %setup;
     my $server;
     $server = Moose::Meta::Class
@@ -40,7 +40,7 @@ sub run {
             methods => {
                 headers => sub {
                     my ( $self, $args ) = @_;
-                    $headers = HTTP::Headers->new(@$args);
+                    $headers->header(@$args);
                 },
                 setup => sub {
                     shift; # $self;

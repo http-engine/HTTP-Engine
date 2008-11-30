@@ -31,7 +31,7 @@ has net_server => (
 sub run {
     my ($self, ) = @_;
 
-    my $headers;
+    my $headers = HTTP::Headers::Fast->new;
     my %setup;
     my $server;
     $server = HTTP::Engine::ClassCreator
@@ -40,7 +40,7 @@ sub run {
             methods => {
                 headers => sub {
                     my ( $self, $args ) = @_;
-                    $headers = HTTP::Headers::Fast->new(@$args);
+                    $headers->header(@$args);
                 },
                 setup => sub {
                     shift; # $self;

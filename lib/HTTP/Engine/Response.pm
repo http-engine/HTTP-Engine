@@ -3,7 +3,7 @@ use Shika;
 
 use HTTP::Status ();
 use HTTP::Headers::Fast;
-use HTTP::Engine::Types::Core;
+use HTTP::Engine::Types::Core qw( Handlers );
 
 # Shika role merging is borked with attributes
 #with qw(HTTP::Engine::Response);

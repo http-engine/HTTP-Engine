@@ -1,7 +1,7 @@
 package HTTP::Engine::Request;
 use Shika;
 use HTTP::Headers::Fast;
-use HTTP::Engine::Types::Core;
+use HTTP::Engine::Types::Core qw( Uri Handlers );
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 

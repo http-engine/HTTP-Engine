@@ -26,7 +26,7 @@ do {
 
             Shika::Util::load_class($module);
 
-            return $module->new( %$args );
+            $_[0] = $module->new( %$args );
         },
     };
 };
@@ -44,7 +44,7 @@ do {
             $base .= '/' unless $base =~ /\/$/;
             $uri->query(undef);
             $uri->path($base);
-            URI::WithBase->new($_[0], $uri);
+            $_[0] = URI::WithBase->new($_[0], $uri);
         },
     };
 };
@@ -53,14 +53,14 @@ do {
     class_type Header => { class => "HTTP::Headers" };
 
     coerce Header => +{
-        ArrayRef => sub { HTTP::Headers->new( @{ $_[0] } ) },
-        HashRef  => sub { HTTP::Headers->new( %{ $_[0] } ) },
+        ArrayRef => sub { $_[0] = HTTP::Headers->new( @{ $_[0] } ) },
+        HashRef  => sub { $_[0] = HTTP::Headers->new( %{ $_[0] } ) },
     };
 };
 
 do {
     subtype Handler => \&Shika::Util::TypeConstraints::_CodeRef;
-    coerce Handler => +{ Str => sub { \&{$_[0]} } };
+    coerce Handler => +{ Str => sub { $_[0] = \&{$_[0]} } };
 };
 
 1;

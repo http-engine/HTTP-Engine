@@ -50,7 +50,9 @@ do {
 };
 
 do {
-    class_type Header => { class => "HTTP::Headers::Fast" };
+    subtype Header => sub {
+        defined $_[0] && (ref($_[0]) eq 'HTTP::Headers::Fast' || ref($_[0]) eq 'HTTP::Headers');
+    };
 
     coerce Header => +{
         ArrayRef => sub { $_[0] = HTTP::Headers::Fast->new( @{ $_[0] } ) },

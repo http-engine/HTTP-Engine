@@ -1,14 +1,15 @@
 package HTTP::Engine::Role::Interface;
 use strict;
 use Shika::Role;
-use HTTP::Engine::Types;
+use HTTP::Engine::Types::Core qw(Handler);
 use HTTP::Engine::ResponseFinalizer;
 
 requires 'run';
 
 has request_handler => (
     is       => 'rw',
-    coerce   => \&coerce_handler,
+    isa      => 'Handler',
+    coerce   => 1,
     required => 1,
 );
 

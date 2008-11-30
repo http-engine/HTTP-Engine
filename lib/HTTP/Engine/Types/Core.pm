@@ -59,7 +59,7 @@ do {
 };
 
 do {
-    subtype Handler => \&Shika::Util::TypeConstraints::_CodeRef;
+    subtype Handler => \&Shika::Util::TypeConstraints::_check_CodeRef;
     coerce Handler => +{ Str => sub { $_[0] = \&{$_[0]} } };
 };
 

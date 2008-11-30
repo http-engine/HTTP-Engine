@@ -3,7 +3,7 @@ use Shika;
 
 use HTTP::Status ();
 use HTTP::Headers::Fast;
-use HTTP::Engine::Types::Core qw( Handlers );
+use HTTP::Engine::Types::Core qw( Header );
 
 # Shika role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
@@ -46,7 +46,7 @@ sub code { shift->status(@_) }
 
 has headers => (
     is      => 'rw',
-     isa    => 'Headers',
+    isa     => 'Header',
     coerce  => 1,
     default => sub { HTTP::Headers::Fast->new },
     handles => [ qw(content_encoding content_length content_type header) ],

@@ -8,7 +8,7 @@ use Shika::Util::TypeConstraints
 use URI;
 use URI::WithBase;
 use URI::QueryParam;
-use HTTP::Headers;
+use HTTP::Headers::Fast;
 
 do {
     role_type Interface => { role => "HTTP::Engine::Role::Interface" };
@@ -50,11 +50,11 @@ do {
 };
 
 do {
-    class_type Header => { class => "HTTP::Headers" };
+    class_type Header => { class => "HTTP::Headers::Fast" };
 
     coerce Header => +{
-        ArrayRef => sub { $_[0] = HTTP::Headers->new( @{ $_[0] } ) },
-        HashRef  => sub { $_[0] = HTTP::Headers->new( %{ $_[0] } ) },
+        ArrayRef => sub { $_[0] = HTTP::Headers::Fast->new( @{ $_[0] } ) },
+        HashRef  => sub { $_[0] = HTTP::Headers::Fast->new( %{ $_[0] } ) },
     };
 };
 

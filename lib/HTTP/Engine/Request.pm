@@ -1,7 +1,7 @@
 package HTTP::Engine::Request;
 use Shika;
 use HTTP::Headers::Fast;
-use HTTP::Engine::Types::Core qw( Uri Handlers );
+use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 
@@ -144,7 +144,7 @@ sub _build_raw_body {
 
 has headers => (
     is      => 'rw',
-    isa => 'Headers',
+    isa => 'Header',
     coerce  => 1,
     lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],

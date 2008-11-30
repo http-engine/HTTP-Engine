@@ -15,13 +15,14 @@ sub finalize {
     if ($res->body) {
         # get the length from a filehandle
         if ((Scalar::Util::blessed($res->body) && $res->body->can('read')) || (ref($res->body) eq 'GLOB')) {
-            HTTP::Engine::Util::require_once('File/stat.pm');
-            if (my $stat = eval { File::stat::stat($res->body) }) {
-                $res->content_length($stat->size);
+            my $st_size = 7; # see perldoc -f stat
+            if (my $size = eval { (stat($res->body))[$st_size] }) {
+                $res->content_length($size);
             } else {
                 die "Serving filehandle without a content-length($@)";
             }
         } else {
+            use bytes;
             $res->content_length(bytes::length($res->body));
         }
     } else {

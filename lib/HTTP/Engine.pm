@@ -48,7 +48,26 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
   }
 
 
-=head1 CONCEPT RELEASE
+=head1 MILESTONE
+
+=head2 0.x.x
+
+A substantial document. (A tutorial, the Cookbook and hacking HowTo)
+
+=head2 0.1.x
+
+Improvement in performance and resource efficiency.
+Most specifications are frozen.
+The specification is changed by the situation. 
+
+I want to perform Async support. (AnyEvent? Danga::Socket? IO::Async?)
+
+=head2 0.0.99_x
+
+It is now here.
+It is an adjustment stage to the following version.
+
+=head2 0.0.x
 
 Version 0.0.x is a concept release, the internal interface is still fluid. 
 It is mostly based on the code of Catalyst::Engine.

@@ -2,6 +2,7 @@
 
 package HTTP::Engine::Role::RequestBuilder::HTTPBody;
 use Shika::Role;
+use HTTP::Body;
 
 with qw(
     HTTP::Engine::Role::RequestBuilder::ReadBody
@@ -41,7 +42,6 @@ sub _build_read_state {
     my $length = $req->content_length || 0;
     my $type   = $req->header('Content-Type');
 
-    HTTP::Engine::Util::require_once('HTTP/Body.pm');
     my $body = HTTP::Body->new($type, $length);
     $body->tmpdir( $self->upload_tmp) if $self->upload_tmp;
 

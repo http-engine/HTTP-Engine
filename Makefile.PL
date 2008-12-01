@@ -32,10 +32,7 @@ requires 'Moose'         => 0.59;
 requires 'MooseX::Types' => 0.04;
 requires 'Scalar::Util'  => 1.19;
 
-requires 'IO::Socket' => 1.30;
-
 requires 'File::Copy'       => 0;
-requires 'IO::File'         => 1.14;
 requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
@@ -63,6 +60,7 @@ features(
     'Interface::Standalone' => [
         -default => 0,
         recommends_hack('Errno' => 1.0901),
+        recommends_hack('IO::Socket::INET' => 1.31),
     ],
 
     'Interface::Test' => [
@@ -90,6 +88,8 @@ build_requires 'IO::Scalar';
 build_requires 'File::Temp' => '0.20';
 build_requires 'HTTP::Request::AsCGI';
 build_requires 'Test::TCP' => 0.02;
+build_requires 'IO::Socket' => 1.30;
+build_requires 'IO::File' => 1.14;
 
 use_test_base;
 auto_include;

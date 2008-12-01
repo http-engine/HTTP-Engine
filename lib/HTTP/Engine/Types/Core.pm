@@ -1,62 +1,68 @@
 package HTTP::Engine::Types::Core;
 use strict;
 
-use MooseX::Types
-    -declare => [qw/Interface Uri Header Handler/];
-use MooseX::Types::Moose qw( Object HashRef ArrayRef CodeRef );
+use Shika::Util;
+use Shika::Util::TypeConstraints 
+    -export => [qw/Interface Uri Header Handler/];
 
-use Class::MOP;
 use URI;
 use URI::WithBase;
 use URI::QueryParam;
-use HTTP::Headers;
+use HTTP::Headers::Fast;
 
 do {
-    role_type Interface, { role => "HTTP::Engine::Role::Interface" };
+    role_type Interface => { role => "HTTP::Engine::Role::Interface" };
 
-    coerce Interface, from HashRef => via {
-        my $module  = $_->{module};
-        my $plugins = $_->{plugins} || [];
-        my $args    = $_->{args};
-        $args->{request_handler} = $_->{request_handler};
+    coerce Interface => +{
+        HashRef => sub {
+            my $module  = $_[0]->{module};
+            my $plugins = $_[0]->{plugins} || [];
+            my $args    = $_[0]->{args};
+            $args->{request_handler} = $_[0]->{request_handler};
 
-        if ($module !~ s{^\+}{}) {
-            $module = join('::', "HTTP", "Engine", "Interface", $module);
-        }
+            if ($module !~ s{^\+}{}) {
+                $module = join('::', "HTTP", "Engine", "Interface", $module);
+            }
 
-        Class::MOP::load_class($module);
+            Shika::Util::load_class($module);
 
-        return $module->new( %$args );
+            $_[0] = $module->new( %$args );
+        },
     };
 };
 
 do {
-    class_type Uri, { class => "URI::WithBase" };
+    class_type Uri => { class => "URI::WithBase" };
 
-    coerce Uri, from Str => via { 
-        # generate base uri
-        my $uri = URI->new($_);
-        my $base = $uri->path;
-        $base =~ s{^/+}{};
-        $uri->path($base);
-        $base .= '/' unless $base =~ /\/$/;
-        $uri->query(undef);
-        $uri->path($base);
-        URI::WithBase->new($_, $uri);
+    coerce Uri => +{
+        Str => sub { 
+            # generate base uri
+            my $uri = URI->new($_[0]);
+            my $base = $uri->path;
+            $base =~ s{^/+}{};
+            $uri->path($base);
+            $base .= '/' unless $base =~ /\/$/;
+            $uri->query(undef);
+            $uri->path($base);
+            $_[0] = URI::WithBase->new($_[0], $uri);
+        },
     };
 };
 
 do {
-    class_type Header, { class => "HTTP::Headers" };
+    subtype Header => sub {
+        defined $_[0] && (ref($_[0]) eq 'HTTP::Headers::Fast' || ref($_[0]) eq 'HTTP::Headers');
+    };
 
-    coerce Header,
-        from ArrayRef => via { HTTP::Headers->new( @{ $_ } ) },
-        from HashRef  => via { HTTP::Headers->new( %{ $_ } ) };
+    coerce Header => +{
+        ArrayRef => sub { $_[0] = HTTP::Headers::Fast->new( @{ $_[0] } ) },
+        HashRef  => sub { $_[0] = HTTP::Headers::Fast->new( %{ $_[0] } ) },
+    };
 };
 
 do {
-    subtype Handler, as 'CodeRef';
-    coerce Handler, from Str => via { \&{$_} };
+    subtype Handler => as 'CodeRef';
+    coerce Handler => +{ Str => sub { $_[0] = \&{$_[0]} } };
 };
 
 1;

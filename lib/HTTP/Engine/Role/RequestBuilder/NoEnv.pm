@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::RequestBuilder::NoEnv;
-use Moose::Role;
+use Shika::Role;
 
 # all of these will be passed to handle_request
 sub _build_uri             { die "explicit parameter(uri)"             }

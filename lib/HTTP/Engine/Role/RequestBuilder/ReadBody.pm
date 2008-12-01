@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Role::RequestBuilder::ReadBody;
-use Moose::Role;
+use Shika::Role;
+use Carp ();
 
 requires "_handle_read_chunk";
 
@@ -9,7 +10,7 @@ sub _read_init {
     my ( $self, $read_state ) = @_;
 
     foreach my $key qw(input_handle content_length) {
-        confess "read initialization must set $key"
+        Carp::confess "read initialization must set $key"
             unless defined $read_state->{$key};
     }
 
@@ -89,7 +90,7 @@ sub _read_chunk {
 sub _io_read {
     my ( $self, $handle ) = ( shift, shift );
 
-    confess "no handle" unless defined $handle;
+    Carp::confess "no handle" unless defined $handle;
 
     return $handle->read(@_);
 }

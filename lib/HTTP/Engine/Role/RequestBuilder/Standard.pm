@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::RequestBuilder::Standard;
-use Moose::Role;
+use Shika::Role;
 
 use Socket qw[AF_INET inet_aton];
 

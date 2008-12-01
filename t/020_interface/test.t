@@ -24,7 +24,7 @@ run {
             request_handler => sub {
                 my $req = shift;
                 my $res = HTTP::Engine::Response->new(
-                    headers => HTTP::Headers->new(
+                    headers => HTTP::Headers::Fast->new(
                         'X-Req-Test' => "ping"
                     ),
                     body => 'OK!',

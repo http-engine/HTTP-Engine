@@ -3,7 +3,7 @@ use overload qw{""} => sub { 'bless' };
 sub new { bless {}, shift }
 
 package DummyRW;
-use Moose;
+use Shika;
 with qw(
     HTTP::Engine::Role::ResponseWriter
     HTTP::Engine::Role::ResponseWriter::Finalize

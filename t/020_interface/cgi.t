@@ -27,7 +27,7 @@ run {
                 my $req = shift;
                 HTTP::Engine::Response->new(
                     status  => 200,
-                    headers => HTTP::Headers->new( 'X-Req-Base' => $req->base, ),
+                    headers => HTTP::Headers::Fast->new( 'X-Req-Base' => $req->base, ),
                     body    => 'OK!',
                 );
             },

@@ -10,7 +10,7 @@ my $body = 'foo=bar';
 my $req = HTTP::Request->new(
     'POST',
     '/',
-    HTTP::Headers->new(
+    HTTP::Headers::Fast->new(
         'content-length' => length($body),
         'Content-Type' => 'application/x-www-form-urlencoded',
     ),

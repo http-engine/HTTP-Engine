@@ -1,22 +1,20 @@
 package HTTP::Engine;
 use 5.00800;
-use Moose;
-use HTTP::Engine::Types::Core qw( Interface );
+use Shika;
 our $VERSION = '0.0.19';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
+use HTTP::Engine::Types::Core qw( Interface );
 use HTTP::Engine::Util;
 
 has 'interface' => (
     is      => 'ro',
-    does    => Interface,
+    isa => 'Interface',
     coerce  => 1,
     handles => [ qw(run) ],
 );
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
 1;
 __END__
 
@@ -218,7 +216,7 @@ mattn
 
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
-L<Moose>
+L<Shika>
 
 =head1 REPOSITORY
 

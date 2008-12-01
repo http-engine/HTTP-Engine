@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::WriteSTDOUT;
-use Moose::Role;
+use Shika::Role;
 
 sub write {
     my($self, $buffer) = @_;

@@ -28,8 +28,7 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Moose'         => 0.59;
-requires 'MooseX::Types' => 0.04;
+requires 'Shika'         => 0.01;
 requires 'Scalar::Util'  => 1.19;
 
 requires 'File::Copy'       => 0;
@@ -37,7 +36,7 @@ requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
 requires 'HTTP::Body'          => '1.04';
-requires 'HTTP::Headers'       => 5.810;
+requires 'HTTP::Headers::Fast' => 0.01;
 requires 'URI'                 => 1.36;
 
 # prevent tests from failing with HTTP::Server::Simple is present, but

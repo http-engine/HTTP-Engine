@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 16;
 use t::Utils;
 
 {
@@ -29,20 +29,11 @@ use t::Utils;
 }
 
 {
-    package Dummy3;
-    use HTTP::Engine::Interface builder => 'CGI', writer => {};
-    eval { __INTERFACE__ };
-    main::like $@, qr/requires the method 'run' to be implemented by 'Dummy3'/;
-    eval { Dummy3->meta };
-    main::ok !$@;
-}
-
-{
     package Dummy4;
     use HTTP::Engine::Interface builder => 'CGI', writer => {};
     eval { __INTERFACE__ };
     sub run {};
-    main::ok !$@;
+    main::ok !$@, $@;
     my $interface = Dummy4->new( request_handler => sub {} );
     main::is ref $interface->request_builder, 'HTTP::Engine::RequestBuilder::CGI';
     eval { Dummy4->meta };
@@ -51,7 +42,7 @@ use t::Utils;
 
 {
     package Dummy5::Builder;
-    use Moose;
+    use Shika;
 
     with qw(
         HTTP::Engine::Role::RequestBuilder
@@ -61,9 +52,6 @@ use t::Utils;
 
     eval { Dummy5->meta };
     main::ok !$@;
-
-    no Moose;
-    __PACKAGE__->meta->make_immutable;
 }
 {
     package Dummy5;

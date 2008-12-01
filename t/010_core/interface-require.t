@@ -1,4 +1,4 @@
-BEGIN { $ENV{SHIKA_DEBUG} = 1 }
+BEGIN { $ENV{SHIKA_DEVEL} = 1 }
 use strict;
 use warnings;
 use Test::More tests => 2;

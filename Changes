@@ -1,5 +1,18 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.19   2008-12-01T11:44:14+09:00
+         # next release is 0.1.x series
+         # no Moose, use Shika HTTP::Headers::Fast more fast and tiny memory futures
+         - Interface::ServerSimple
+           fixed bug no headers request's problem miyagawa++
+         - lazy loading
+           HTTP::Request, HTTP::Body, File::Copy, File::Spec::Unix, File::stat, CGI::Simple::Cookie
+         - test
+           check with backslash separator instead of slash on win32
+           added test case for HTTP::Engine::Request::Upload
+         - remove dependency
+           IO::Socket, IO::Handle, IO::File
+
 0.0.18   2008-11-14T18:00:54+09:00
          - Interface::ServerSimple
            base uri build add source from Host header

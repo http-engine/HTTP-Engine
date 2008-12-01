@@ -2,7 +2,7 @@ package HTTP::Engine;
 use 5.00800;
 use Moose;
 use HTTP::Engine::Types::Core qw( Interface );
-our $VERSION = '0.0.18';
+our $VERSION = '0.0.19';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;

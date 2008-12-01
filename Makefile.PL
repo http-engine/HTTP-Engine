@@ -28,7 +28,7 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Shika'         => 0.01;
+requires 'Shika'         => '0.01_01';
 requires 'Scalar::Util'  => 1.19;
 
 requires 'File::Copy'       => 0;

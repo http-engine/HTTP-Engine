@@ -44,3 +44,6 @@ kawa
 walf
 shibuya
 mattn
+AnyEvent
+Async
+HowTo

@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use 5.00800;
 use Shika;
-our $VERSION = '0.0.19';
+our $VERSION = '0.0.99_01';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;

@@ -1,7 +1,5 @@
 Changes
 examples/dumper.pl
-examples/lighty/access.log
-examples/lighty/error.log
 examples/lighty/lighty.conf
 examples/lighty/lighty_external_fcgi.conf
 examples/lighty/test_fastcgi.pl
@@ -61,13 +59,14 @@ lib/HTTP/Engine/Role/ResponseWriter/Finalize.pm
 lib/HTTP/Engine/Role/ResponseWriter/OutputBody.pm
 lib/HTTP/Engine/Role/ResponseWriter/ResponseLine.pm
 lib/HTTP/Engine/Role/ResponseWriter/WriteSTDOUT.pm
-lib/HTTP/Engine/Types.pm
+lib/HTTP/Engine/Types/Core.pm
 lib/HTTP/Engine/Util.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
 t/00_compile.t
+t/010_core/interface-require.t
 t/010_core/interface.t
 t/010_core/request-absolute_uri.t
 t/010_core/request-as_http_request.t

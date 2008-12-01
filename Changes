@@ -1,8 +1,13 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.99_01 2008-12-02T02:47:36+09:00
+         - merged shika branche
+         - s/Moose/Shika/
+         - s/HTTP::Header/HTTP::Header::Fast/
+
 0.0.19   2008-12-01T11:44:14+09:00
          # next release is 0.1.x series
-         # no Moose, use Shika HTTP::Headers::Fast more fast and tiny memory futures
+         # no Moose, use Shika HTTP::Headers::Fast more fast and tiny memory feature
          - Interface::ServerSimple
            fixed bug no headers request's problem miyagawa++
          - lazy loading

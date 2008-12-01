@@ -61,7 +61,7 @@ do {
 };
 
 do {
-    subtype Handler => as 'CodeRef';
+    subtype Handler => +{ as => 'CodeRef' };
     coerce Handler => +{ Str => sub { $_[0] = \&{$_[0]} } };
 };
 

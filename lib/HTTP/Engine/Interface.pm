@@ -29,7 +29,7 @@ sub import {
     no warnings 'redefine';
     *{ $caller . '::meta' } = sub { $meta };
 
-    Mouse->export_to_level( 1, @_ );
+    Mouse->export_to_level( 1 );
 }
 
 # fix up Interface.

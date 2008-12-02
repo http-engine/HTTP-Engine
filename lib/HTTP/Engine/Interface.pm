@@ -1,5 +1,5 @@
 package HTTP::Engine::Interface;
-use Shika;
+use Mouse;
 use UNIVERSAL::require;
 
 my $ARGS = {};
@@ -21,7 +21,15 @@ sub import {
     strict->import;
     warnings->import;
 
-    Shika::init_class($caller);
+    my $meta = Mouse::Meta::Class->initialize($caller);
+    $meta->superclasses('Mouse::Object')
+      unless $meta->superclasses;
+
+    no strict 'refs';
+    no warnings 'redefine';
+    *{ $caller . '::meta' } = sub { $meta };
+
+    Mouse->export_to_level( 1, @_ );
 }
 
 # fix up Interface.
@@ -36,7 +44,7 @@ sub __INTERFACE__ {
     _setup_builder($caller, $builder);
     _setup_writer($caller,  $writer);
 
-    Shika::apply_roles($caller, 'HTTP::Engine::Role::Interface');
+    Mouse::apply_roles($caller, 'HTTP::Engine::Role::Interface');
 
     "END_OF_MODULE";
 }
@@ -65,7 +73,7 @@ sub _construct_writer {
     my ($caller, $args, ) = @_;
 
     my $writer = $caller . '::ResponseWriter';
-    Shika::init_class($writer);
+    Mouse::init_class($writer);
 
     {
         no strict 'refs';
@@ -90,14 +98,14 @@ sub _construct_writer {
             }
             $apply->('Finalize');
         }
-        Shika::apply_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
+        Mouse::apply_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
     }
 
     for my $before (keys %{ $args->{before} || {} }) {
-        Shika::add_before_method_modifier( $writer, $before => $args->{before}->{$before} );
+        Mouse::add_before_method_modifier( $writer, $before => $args->{before}->{$before} );
     }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
-        Shika::add_attribute( $writer, $attribute, $args->{attributes}->{$attribute} );
+        Mouse::add_attribute( $writer, $attribute, $args->{attributes}->{$attribute} );
     }
 
     return $writer;

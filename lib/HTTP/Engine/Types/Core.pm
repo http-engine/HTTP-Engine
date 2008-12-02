@@ -24,7 +24,7 @@ do {
                 $module = join('::', "HTTP", "Engine", "Interface", $module);
             }
 
-            Shika::Util::load_class($module);
+            Mouse::Util::load_class($module);
 
             $_[0] = $module->new( %$args );
         },

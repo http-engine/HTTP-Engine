@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::RequestBuilder::ParseEnv;
-use Shika::Role;
+use Mouse::Role;
 
 with {
     role  => 'HTTP::Engine::Role::RequestBuilder::Standard',

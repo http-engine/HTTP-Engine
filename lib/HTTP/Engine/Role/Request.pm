@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::Request;
-use Shika::Role;
+use Mouse::Role;
 
 requires qw(
     context

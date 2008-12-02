@@ -1,5 +1,5 @@
 package HTTP::Engine::RequestBuilder::NoEnv;
-use Shika;
+use Mouse;
 
 with qw(
     HTTP::Engine::Role::RequestBuilder

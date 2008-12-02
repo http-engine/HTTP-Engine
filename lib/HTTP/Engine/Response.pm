@@ -1,11 +1,11 @@
 package HTTP::Engine::Response;
-use Shika;
+use Mouse;
 
 use HTTP::Status ();
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Header );
 
-# Shika role merging is borked with attributes
+# Mouse role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
 
 sub BUILD {

@@ -1,5 +1,5 @@
 package HTTP::Engine::Request::Upload;
-use Shika;
+use Mouse;
 has filename => ();
 has headers  => (
     handles => {

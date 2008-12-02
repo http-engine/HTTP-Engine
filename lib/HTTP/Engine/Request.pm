@@ -1,11 +1,11 @@
 package HTTP::Engine::Request;
-use Shika;
+use Mouse;
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 
-# Shika role merging is borked with attributes
+# Mouse role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
 
 # this object constructs all our lazy fields for us

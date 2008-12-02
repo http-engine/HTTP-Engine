@@ -4,6 +4,17 @@ use UNIVERSAL::require;
 
 my $ARGS = {};
 
+sub init_class {
+    my $klass = shift;
+    my $meta = Mouse::Meta::Class->initialize($klass);
+    $meta->superclasses('Mouse::Object')
+      unless $meta->superclasses;
+
+    no strict 'refs';
+    no warnings 'redefine';
+    *{ $klass . '::meta' } = sub { $meta };
+}
+
 sub import {
     my $class = shift;
 
@@ -21,13 +32,7 @@ sub import {
     strict->import;
     warnings->import;
 
-    my $meta = Mouse::Meta::Class->initialize($caller);
-    $meta->superclasses('Mouse::Object')
-      unless $meta->superclasses;
-
-    no strict 'refs';
-    no warnings 'redefine';
-    *{ $caller . '::meta' } = sub { $meta };
+    init_class($caller);
 
     Mouse->export_to_level( 1 );
 }
@@ -44,7 +49,7 @@ sub __INTERFACE__ {
     _setup_builder($caller, $builder);
     _setup_writer($caller,  $writer);
 
-    Mouse::apply_roles($caller, 'HTTP::Engine::Role::Interface');
+    Mouse::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
 
     "END_OF_MODULE";
 }
@@ -73,7 +78,7 @@ sub _construct_writer {
     my ($caller, $args, ) = @_;
 
     my $writer = $caller . '::ResponseWriter';
-    Mouse::init_class($writer);
+    init_class($writer);
 
     {
         no strict 'refs';
@@ -98,7 +103,9 @@ sub _construct_writer {
             }
             $apply->('Finalize');
         }
-        Mouse::apply_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
+        for my $role (@roles, 'HTTP::Engine::Role::ResponseWriter') {
+            Mouse::Util::apply_all_roles($writer, $role);
+        }
     }
 
     for my $before (keys %{ $args->{before} || {} }) {

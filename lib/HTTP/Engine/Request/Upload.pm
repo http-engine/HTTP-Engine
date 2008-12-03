@@ -15,6 +15,7 @@ has tempname => (
     is => 'ro',
 );
 has basename => (
+    is => 'ro',
     lazy    => 1,
     default => sub {
         my $self = shift;

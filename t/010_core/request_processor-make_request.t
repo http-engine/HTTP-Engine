@@ -26,6 +26,7 @@ do {
 do {
     no strict 'refs';
     no warnings 'redefine';
+    no warnings 'once';
     local *HTTP::Engine::Request::new = sub { return };
     local $@;
     eval {

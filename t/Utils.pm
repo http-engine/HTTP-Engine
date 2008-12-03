@@ -69,10 +69,8 @@ sub daemonize_all (&$@) {
 
                     $args{interface}->{args}->{request_handler} = $args{interface}->{request_handler};
                     my $interface = HTTP::Engine::Interface::CGI->new($args{interface}->{args});
-                    Mouse::apply_roles(
-                        $interface->response_writer,
-                        'HTTP::Engine::Role::ResponseWriter::ResponseLine'
-                    );
+                    require HTTP::Engine::Role::ResponseWriter::ResponseLine;
+                    HTTP::Engine::Role::ResponseWriter::ResponseLine->meta->apply( $interface->response_writer->meta );
                     delete $args{interface};
 
                     HTTP::Engine::ClassCreator

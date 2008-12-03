@@ -4,12 +4,12 @@ sub new { bless {}, shift }
 
 package DummyRW;
 use Mouse;
-with qw(
-    HTTP::Engine::Role::ResponseWriter
+with $_ for qw(
+    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+    HTTP::Engine::Role::ResponseWriter::OutputBody
     HTTP::Engine::Role::ResponseWriter::Finalize
     HTTP::Engine::Role::ResponseWriter::ResponseLine
-    HTTP::Engine::Role::ResponseWriter::OutputBody
-    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+    HTTP::Engine::Role::ResponseWriter
 );
 
 package main;

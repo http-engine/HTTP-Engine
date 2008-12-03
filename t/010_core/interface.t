@@ -44,10 +44,10 @@ use t::Utils;
     package Dummy5::Builder;
     use Mouse;
 
-    with qw(
-        HTTP::Engine::Role::RequestBuilder
+    with $_ for qw(
         HTTP::Engine::Role::RequestBuilder::ParseEnv
         HTTP::Engine::Role::RequestBuilder::HTTPBody
+        HTTP::Engine::Role::RequestBuilder
     );
 
     eval { Dummy5->meta };

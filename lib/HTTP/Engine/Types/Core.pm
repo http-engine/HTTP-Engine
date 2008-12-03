@@ -46,7 +46,9 @@ do {
 };
 
 do {
-    class_type Header, { class => "HTTP::Headers::Fast|HTTP::Headers" };
+    subtype Header,
+        as 'Object',
+        where { $_->isa('HTTP::Headers::Fast') || $_->isa('HTTP::Headers') };
 
     coerce Header,
         from ArrayRef => via { HTTP::Headers::Fast->new( @{$_} ) },

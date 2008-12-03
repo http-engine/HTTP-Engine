@@ -5,7 +5,7 @@ use Test::More tests => 3;
 
 {
     package t::AnonBuilder;
-    use Shika;
+    use Mouse;
 
     with(
         'HTTP::Engine::Role::RequestBuilder::NoEnv',

@@ -1,7 +1,6 @@
 package HTTP::Engine::Types::Core;
 use strict;
 
-use Shika::Util;
 use MouseX::Types -declare => [qw/Interface Uri Header Handler/];
 
 use URI;

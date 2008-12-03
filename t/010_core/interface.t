@@ -42,7 +42,7 @@ use t::Utils;
 
 {
     package Dummy5::Builder;
-    use Shika;
+    use Mouse;
 
     with qw(
         HTTP::Engine::Role::RequestBuilder

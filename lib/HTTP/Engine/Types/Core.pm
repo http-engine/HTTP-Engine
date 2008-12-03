@@ -46,7 +46,7 @@ do {
 };
 
 do {
-    class_type Header, { class => "HTTP::Headers::Fast" };
+    class_type Header, { class => "HTTP::Headers::Fast|HTTP::Headers" };
 
     coerce Header,
         from ArrayRef => via { HTTP::Headers::Fast->new( @{$_} ) },

@@ -46,7 +46,7 @@ sub code { shift->status(@_) }
 
 has headers => (
     is      => 'rw',
-    isa     => 'Header',
+    isa     => Header,
     coerce  => 1,
     default => sub { HTTP::Headers::Fast->new },
     handles => [ qw(content_encoding content_length content_type header) ],

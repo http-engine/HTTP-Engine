@@ -10,7 +10,7 @@ use HTTP::Engine::Util;
 
 has 'interface' => (
     is      => 'ro',
-    isa => 'Interface',
+    isa => Interface,
     coerce  => 1,
     handles => [ qw(run) ],
 );

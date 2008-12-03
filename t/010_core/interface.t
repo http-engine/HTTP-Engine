@@ -74,6 +74,7 @@ use t::Utils;
         },
     };
     eval { __INTERFACE__ };
+    die $@ if $@;
     sub run {};
     main::ok !$@;
     my $interface = Dummy6->new( request_handler => sub {} );

@@ -1,13 +1,19 @@
 package HTTP::Engine::Request::Upload;
 use Mouse;
-has filename => ();
+has filename => (
+    is => 'ro',
+);
 has headers  => (
     handles => {
         type => 'content_type'
     },
 );
-has size     => ();
-has tempname => ();
+has size     => (
+    is => 'ro',
+);
+has tempname => (
+    is => 'ro',
+);
 has basename => (
     lazy    => 1,
     default => sub {
@@ -22,6 +28,7 @@ has basename => (
 );
 
 has fh => (
+    is => 'ro',
     lazy     => 1,
     default  => sub {
         my $self = shift;

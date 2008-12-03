@@ -69,7 +69,7 @@ sub daemonize_all (&$@) {
 
                     $args{interface}->{args}->{request_handler} = $args{interface}->{request_handler};
                     my $interface = HTTP::Engine::Interface::CGI->new($args{interface}->{args});
-                    Shika::apply_roles(
+                    Mouse::apply_roles(
                         $interface->response_writer,
                         'HTTP::Engine::Role::ResponseWriter::ResponseLine'
                     );
@@ -130,11 +130,11 @@ sub ok_response {
 my $BUILDER = do {
     {
         package t::Utils::HTTPRequestBuilder;
-        use Shika;
-        with qw(
-            HTTP::Engine::Role::RequestBuilder
+        use Mouse;
+        with $_ for qw(
             HTTP::Engine::Role::RequestBuilder::ParseEnv
             HTTP::Engine::Role::RequestBuilder::HTTPBody
+            HTTP::Engine::Role::RequestBuilder
         );
     }
     t::Utils::HTTPRequestBuilder->new(

@@ -1,6 +1,5 @@
 package t::Utils;
 use HTTP::Engine;
-use HTTP::Engine::ClassCreator;
 use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
 
@@ -73,8 +72,8 @@ sub daemonize_all (&$@) {
                     HTTP::Engine::Role::ResponseWriter::ResponseLine->meta->apply( $interface->response_writer->meta );
                     delete $args{interface};
 
-                    HTTP::Engine::ClassCreator
-                        ->create_anon(
+                    Mouse::Meta::Class
+                        ->create_anon_class(
                             superclasses => ['HTTP::Server::Simple::CGI'],
                             methods => {
                                 handler => sub {
@@ -84,7 +83,7 @@ sub daemonize_all (&$@) {
                                     )->run;
                                 },
                             },
-                        )->new(
+                        )->name->new(
                             $port
                         )->run;
                 },

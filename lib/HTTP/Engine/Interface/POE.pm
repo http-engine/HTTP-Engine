@@ -12,7 +12,6 @@ use HTTP::Engine::Interface
         }
     }
 ;
-use HTTP::Engine::ClassCreator;
 use HTTP::Engine::Types::Core 'StrOrUndef';
 
 use POE qw/
@@ -39,7 +38,7 @@ has alias => (
     isa      => StrOrUndef,
 );
 
-my $filter = HTTP::Engine::ClassCreator->create(
+my $filter = Mouse::Meta::Class->create(
     'HTTP::Engine::Interface::POE::Filter',
     superclasses => ['POE::Filter::HTTPD'],
     methods => {
@@ -48,7 +47,7 @@ my $filter = HTTP::Engine::ClassCreator->create(
             return @_;
         }
     },
-);
+)->name;
 
 sub run {
     my ($self) = @_;

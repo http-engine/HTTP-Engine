@@ -5,7 +5,6 @@ use HTTP::Engine::Interface
         response_line => 1,
     }
 ;
-use HTTP::Engine::ClassCreator;
 use HTTP::Engine::Types::Core 'StrOrUndef';
 
 use HTTP::Server::Simple 0.34;
@@ -35,8 +34,8 @@ sub run {
     my $headers = HTTP::Headers::Fast->new;
     my %setup;
     my $server;
-    $server = HTTP::Engine::ClassCreator
-        ->create_anon(
+    $server = Mouse::Meta::Class
+        ->create_anon_class(
             superclasses => ['HTTP::Server::Simple'],
             methods => {
                 headers => sub {
@@ -80,7 +79,7 @@ sub run {
                 net_server => sub { $self->net_server },
             },
             cache => 1
-        )->new(
+        )->name->new(
             $self->port
         );
     $server->host($self->host);

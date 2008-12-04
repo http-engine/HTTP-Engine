@@ -51,6 +51,8 @@ sub __INTERFACE__ {
 
     Mouse::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
 
+    $caller->meta->make_immutable;
+
     "END_OF_MODULE";
 }
 
@@ -115,6 +117,8 @@ sub _construct_writer {
         Mouse::Meta::Attribute->create( $writer->meta, $attribute,
             %{ $args->{attributes}->{$attribute} } );
     }
+
+    $writer->meta->make_immutable;
 
     return $writer;
 }

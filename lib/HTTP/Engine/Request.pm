@@ -357,6 +357,8 @@ sub parse {
     Carp::croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
 }
 
+no Mouse;
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 

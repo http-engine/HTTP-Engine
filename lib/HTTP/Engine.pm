@@ -15,6 +15,8 @@ has 'interface' => (
     handles => [ qw(run) ],
 );
 
+no Mouse;
+__PACKAGE__->meta->make_immutable();
 1;
 __END__
 

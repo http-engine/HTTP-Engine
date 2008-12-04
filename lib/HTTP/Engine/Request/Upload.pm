@@ -4,6 +4,7 @@ has filename => (
     is => 'ro',
 );
 has headers  => (
+    is => 'ro',
     handles => {
         type => 'content_type'
     },

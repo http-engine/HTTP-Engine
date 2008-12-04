@@ -13,6 +13,7 @@ use HTTP::Engine::Interface
     }
 ;
 use HTTP::Engine::ClassCreator;
+use HTTP::Engine::Types::Core 'StrOrUndef';
 
 use POE qw/
     Component::Server::TCP
@@ -35,7 +36,7 @@ has port => (
 
 has alias => (
     is       => 'ro',
-    isa      => 'Str | Undef',
+    isa      => StrOrUndef,
 );
 
 my $filter = HTTP::Engine::ClassCreator->create(

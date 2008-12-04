@@ -6,6 +6,7 @@ use HTTP::Engine::Interface
     }
 ;
 use HTTP::Engine::ClassCreator;
+use HTTP::Engine::Types::Core 'StrOrUndef';
 
 use HTTP::Server::Simple 0.34;
 use HTTP::Server::Simple::CGI;
@@ -24,7 +25,7 @@ has port => (
 
 has net_server => (
     is      => 'ro',
-    isa     => 'Str | Undef',
+    isa     => StrOrUndef,
     default => undef,
 );
 

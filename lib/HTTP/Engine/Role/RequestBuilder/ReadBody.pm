@@ -95,7 +95,7 @@ sub _io_read {
     return $handle->read(@_);
 }
 
-__PACKAGE__
+1;
 
 __END__
 

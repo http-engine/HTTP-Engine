@@ -29,7 +29,6 @@ inc/Test/Builder/Module.pm
 inc/Test/More.pm
 inc/Test/TCP.pm
 lib/HTTP/Engine.pm
-lib/HTTP/Engine/ClassCreator.pm
 lib/HTTP/Engine/Cookbook.pod
 lib/HTTP/Engine/Interface.pm
 lib/HTTP/Engine/Interface/CGI.pm

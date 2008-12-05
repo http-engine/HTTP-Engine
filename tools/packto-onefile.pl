@@ -35,6 +35,8 @@ my @files = qw(
     HTTP/Engine/Interface/CGI.pm
 );
 
+say "package HTTP::Engine::CGI;";
+
 # Mouse::Tiny
 sub {
     my $src = join '', read_file($PATH_TO_MOUSE_TINY);
@@ -80,5 +82,7 @@ for my $file (@files) {
     $content =~ s/^__END__$//smg;
     say "{\n$content\n}\n";
 }
+
+say "1;";
 
 __END__

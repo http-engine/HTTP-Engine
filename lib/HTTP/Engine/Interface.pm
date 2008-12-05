@@ -2,7 +2,7 @@ package HTTP::Engine::Interface;
 use Mouse;
 use UNIVERSAL::require;
 
-my $ARGS = {};
+my $ARGS;
 
 sub init_class {
     my $klass = shift;

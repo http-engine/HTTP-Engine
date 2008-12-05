@@ -1,7 +1,7 @@
 package HTTP::Engine::Types::Core;
 use strict;
 
-use MouseX::Types -declare => [qw/Interface Uri Header Handler StrOrUndef/];
+use MouseX::Types -declare => [qw/Interface Uri Header Handler/];
 
 use URI;
 use URI::WithBase;
@@ -57,11 +57,6 @@ do {
 do {
     subtype Handler, as 'CodeRef';
     coerce Handler, from Str => via { \&{$_} };
-};
-
-do {
-    # FIXME: temporary hack
-    subtype StrOrUndef, where { 1 };
 };
 
 1;

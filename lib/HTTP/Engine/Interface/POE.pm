@@ -12,7 +12,6 @@ use HTTP::Engine::Interface
         }
     }
 ;
-use HTTP::Engine::Types::Core 'StrOrUndef';
 
 use POE qw/
     Component::Server::TCP
@@ -35,7 +34,7 @@ has port => (
 
 has alias => (
     is       => 'ro',
-    isa      => StrOrUndef,
+    isa      => 'Str | Undef',
 );
 
 my $filter = Mouse::Meta::Class->create(

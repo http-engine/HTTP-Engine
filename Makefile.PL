@@ -29,6 +29,7 @@ name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
 requires 'Mouse'         => '0.11';
+requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;
 
 requires 'File::Copy'       => 0;

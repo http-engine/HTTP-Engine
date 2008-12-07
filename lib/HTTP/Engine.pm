@@ -16,7 +16,12 @@ has 'interface' => (
 );
 
 no Mouse;
-__PACKAGE__->meta->make_immutable();
+$_->meta->make_immutable(inline_destructor => 1) for qw(
+    HTTP::Engine::Request::Upload
+    HTTP::Engine::Request
+    HTTP::Engine::Response
+    HTTP::Engine
+);
 1;
 __END__
 

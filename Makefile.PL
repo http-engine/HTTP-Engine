@@ -36,7 +36,7 @@ requires 'File::Copy'       => 0;
 requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
-requires 'HTTP::Body'          => '1.04';
+requires 'HTTP::Body'          => '1.05';
 requires 'HTTP::Headers::Fast' => 0.01;
 requires 'URI'                 => 1.36;
 

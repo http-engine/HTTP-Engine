@@ -1,9 +1,10 @@
 package HTTP::Engine::MinimalCGI;
 use strict;
 use warnings;
-use Scalar::Util ();
-use HTTP::Headers::Fast;
-use HTTP::Engine::ResponseFinalizer;
+use Scalar::Util                    ();
+use HTTP::Headers::Fast             ();
+use HTTP::Engine::ResponseFinalizer ();
+use CGI::Simple                     ();
 
 my $CRLF = "\015\012";
 
@@ -100,7 +101,6 @@ sub run {
 {
     package # hide from pause
         HTTP::Engine::Request;
-    require CGI::Simple;
 
     sub new {
         my ($class, ) = @_;

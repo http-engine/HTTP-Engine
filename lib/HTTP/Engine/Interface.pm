@@ -1,8 +1,19 @@
 package HTTP::Engine::Interface;
-use Shika;
+use Mouse;
 use UNIVERSAL::require;
 
-my $ARGS = {};
+my $ARGS;
+
+sub init_class {
+    my $klass = shift;
+    my $meta = Mouse::Meta::Class->initialize($klass);
+    $meta->superclasses('Mouse::Object')
+      unless $meta->superclasses;
+
+    no strict 'refs';
+    no warnings 'redefine';
+    *{ $klass . '::meta' } = sub { $meta };
+}
 
 sub import {
     my $class = shift;
@@ -21,7 +32,9 @@ sub import {
     strict->import;
     warnings->import;
 
-    Shika::init_class($caller);
+    init_class($caller);
+
+    Mouse->export_to_level( 1 );
 }
 
 # fix up Interface.
@@ -36,7 +49,9 @@ sub __INTERFACE__ {
     _setup_builder($caller, $builder);
     _setup_writer($caller,  $writer);
 
-    Shika::apply_roles($caller, 'HTTP::Engine::Role::Interface');
+    Mouse::Util::apply_all_roles($caller, 'HTTP::Engine::Role::Interface');
+
+    $caller->meta->make_immutable(inline_destructor => 1);
 
     "END_OF_MODULE";
 }
@@ -65,7 +80,7 @@ sub _construct_writer {
     my ($caller, $args, ) = @_;
 
     my $writer = $caller . '::ResponseWriter';
-    Shika::init_class($writer);
+    init_class($writer);
 
     {
         no strict 'refs';
@@ -90,15 +105,20 @@ sub _construct_writer {
             }
             $apply->('Finalize');
         }
-        Shika::apply_roles($writer, @roles, "HTTP::Engine::Role::ResponseWriter");
+        for my $role (@roles, 'HTTP::Engine::Role::ResponseWriter') {
+            Mouse::Util::apply_all_roles($writer, $role);
+        }
     }
 
     for my $before (keys %{ $args->{before} || {} }) {
-        Shika::add_before_method_modifier( $writer, $before => $args->{before}->{$before} );
+        $writer->meta->add_before_method_modifier( $before => $args->{before}->{$before} );
     }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
-        Shika::add_attribute( $writer, $attribute, $args->{attributes}->{$attribute} );
+        Mouse::Meta::Attribute->create( $writer->meta, $attribute,
+            %{ $args->{attributes}->{$attribute} } );
     }
+
+    $writer->meta->make_immutable(inline_destructor => 1);
 
     return $writer;
 }

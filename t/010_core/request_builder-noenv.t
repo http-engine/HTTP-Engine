@@ -5,13 +5,13 @@ use Test::More tests => 3;
 
 {
     package t::AnonBuilder;
-    use Shika;
+    use Mouse;
 
-    with(
+    with $_ for (
         'HTTP::Engine::Role::RequestBuilder::NoEnv',
-        'HTTP::Engine::Role::RequestBuilder',
         'HTTP::Engine::Role::RequestBuilder::Standard',
-        'HTTP::Engine::Role::RequestBuilder::HTTPBody'
+        'HTTP::Engine::Role::RequestBuilder::HTTPBody',
+        'HTTP::Engine::Role::RequestBuilder',
     );
 }
 

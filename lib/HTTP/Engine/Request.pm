@@ -1,11 +1,11 @@
 package HTTP::Engine::Request;
-use Shika;
+use Mouse;
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 
-# Shika role merging is borked with attributes
+# Mouse role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
 
 # this object constructs all our lazy fields for us
@@ -120,7 +120,7 @@ sub _build_proxy_request {
 
 has uri => (
     is     => 'rw',
-    isa => 'Uri',
+    isa => Uri,
     coerce => 1,
     lazy_build => 1,
     handles => [qw(base path)],
@@ -144,7 +144,7 @@ sub _build_raw_body {
 
 has headers => (
     is      => 'rw',
-    isa => 'Header',
+    isa => Header,
     coerce  => 1,
     lazy_build => 1,
     handles => [ qw(content_encoding content_length content_type header referer user_agent) ],
@@ -357,6 +357,7 @@ sub parse {
     Carp::croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
 }
 
+no Mouse;
 1;
 __END__
 

@@ -1,6 +1,6 @@
 package HTTP::Engine::Role::Interface;
 use strict;
-use Shika::Role;
+use Mouse::Role;
 use HTTP::Engine::Types::Core qw(Handler);
 use HTTP::Engine::ResponseFinalizer;
 
@@ -8,7 +8,7 @@ requires 'run';
 
 has request_handler => (
     is       => 'rw',
-    isa      => 'Handler',
+    isa      => Handler,
     coerce   => 1,
     required => 1,
 );
@@ -54,7 +54,7 @@ HTTP::Engine::Role::Interface - The Interface Role Definition
 =head1 SYNOPSIS
 
   package HTTP::Engine::Interface::CGI;
-  use Shika;
+  use Mouse;
   with 'HTTP::Engine::Role::Interface';
 
 =head1 DESCRIPTION

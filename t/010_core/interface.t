@@ -42,12 +42,12 @@ use t::Utils;
 
 {
     package Dummy5::Builder;
-    use Shika;
+    use Mouse;
 
-    with qw(
-        HTTP::Engine::Role::RequestBuilder
+    with $_ for qw(
         HTTP::Engine::Role::RequestBuilder::ParseEnv
         HTTP::Engine::Role::RequestBuilder::HTTPBody
+        HTTP::Engine::Role::RequestBuilder
     );
 
     eval { Dummy5->meta };
@@ -74,6 +74,7 @@ use t::Utils;
         },
     };
     eval { __INTERFACE__ };
+    die $@ if $@;
     sub run {};
     main::ok !$@;
     my $interface = Dummy6->new( request_handler => sub {} );

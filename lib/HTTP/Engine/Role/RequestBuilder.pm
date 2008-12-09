@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Role::RequestBuilder;
-use Shika::Role;
+use Mouse::Role;
 
 # initialize reading structures
 requires "_build_read_state";

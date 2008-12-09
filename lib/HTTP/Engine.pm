@@ -1,6 +1,6 @@
 package HTTP::Engine;
 use 5.00800;
-use Shika;
+use Mouse;
 our $VERSION = '0.0.99_01';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
@@ -10,11 +10,18 @@ use HTTP::Engine::Util;
 
 has 'interface' => (
     is      => 'ro',
-    isa => 'Interface',
+    isa => Interface,
     coerce  => 1,
     handles => [ qw(run) ],
 );
 
+no Mouse;
+$_->meta->make_immutable(inline_destructor => 1) for qw(
+    HTTP::Engine::Request::Upload
+    HTTP::Engine::Request
+    HTTP::Engine::Response
+    HTTP::Engine
+);
 1;
 __END__
 
@@ -235,7 +242,7 @@ mattn
 
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
-L<Shika>
+L<Mouse>
 
 =head1 REPOSITORY
 

@@ -1,6 +1,5 @@
 package t::Utils;
 use HTTP::Engine;
-use HTTP::Engine::ClassCreator;
 use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
 
@@ -69,14 +68,12 @@ sub daemonize_all (&$@) {
 
                     $args{interface}->{args}->{request_handler} = $args{interface}->{request_handler};
                     my $interface = HTTP::Engine::Interface::CGI->new($args{interface}->{args});
-                    Shika::apply_roles(
-                        $interface->response_writer,
-                        'HTTP::Engine::Role::ResponseWriter::ResponseLine'
-                    );
+                    require HTTP::Engine::Role::ResponseWriter::ResponseLine;
+                    HTTP::Engine::Role::ResponseWriter::ResponseLine->meta->apply( $interface->response_writer->meta );
                     delete $args{interface};
 
-                    HTTP::Engine::ClassCreator
-                        ->create_anon(
+                    Mouse::Meta::Class
+                        ->create_anon_class(
                             superclasses => ['HTTP::Server::Simple::CGI'],
                             methods => {
                                 handler => sub {
@@ -86,7 +83,7 @@ sub daemonize_all (&$@) {
                                     )->run;
                                 },
                             },
-                        )->new(
+                        )->name->new(
                             $port
                         )->run;
                 },
@@ -130,11 +127,11 @@ sub ok_response {
 my $BUILDER = do {
     {
         package t::Utils::HTTPRequestBuilder;
-        use Shika;
-        with qw(
-            HTTP::Engine::Role::RequestBuilder
+        use Mouse;
+        with $_ for qw(
             HTTP::Engine::Role::RequestBuilder::ParseEnv
             HTTP::Engine::Role::RequestBuilder::HTTPBody
+            HTTP::Engine::Role::RequestBuilder
         );
     }
     t::Utils::HTTPRequestBuilder->new(

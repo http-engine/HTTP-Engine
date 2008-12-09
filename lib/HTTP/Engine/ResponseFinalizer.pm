@@ -45,7 +45,7 @@ sub finalize {
         $res->header( Connection => 'close' );
     }
 
-    $res->body('') if $req->method eq 'HEAD';
+    $res->body('') if ((defined $req->method) and ($req->method eq 'HEAD'));
 }
 
 sub _finalize_cookies  {

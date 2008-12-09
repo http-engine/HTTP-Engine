@@ -1,11 +1,11 @@
 package HTTP::Engine::Response;
-use Shika;
+use Mouse;
 
 use HTTP::Status ();
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Header );
 
-# Shika role merging is borked with attributes
+# Mouse role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
 
 sub BUILD {
@@ -46,7 +46,7 @@ sub code { shift->status(@_) }
 
 has headers => (
     is      => 'rw',
-    isa     => 'Header',
+    isa     => Header,
     coerce  => 1,
     default => sub { HTTP::Headers::Fast->new },
     handles => [ qw(content_encoding content_length content_type header) ],
@@ -79,6 +79,7 @@ sub as_http_response {
     );
 }
 
+no Mouse;
 1;
 __END__
 

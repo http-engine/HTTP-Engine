@@ -1,9 +1,7 @@
 package HTTP::Engine::Types::Core;
 use strict;
 
-use Shika::Util;
-use Shika::Util::TypeConstraints 
-    -export => [qw/Interface Uri Header Handler/];
+use MouseX::Types -declare => [qw/Interface Uri Header Handler/];
 
 use URI;
 use URI::WithBase;
@@ -11,58 +9,54 @@ use URI::QueryParam;
 use HTTP::Headers::Fast;
 
 do {
-    role_type Interface => { role => "HTTP::Engine::Role::Interface" };
+    role_type Interface, { role => "HTTP::Engine::Role::Interface" };
 
-    coerce Interface => +{
-        HashRef => sub {
-            my $module  = $_[0]->{module};
-            my $plugins = $_[0]->{plugins} || [];
-            my $args    = $_[0]->{args};
-            $args->{request_handler} = $_[0]->{request_handler};
+    coerce Interface, from HashRef => via {
+        my $module  = $_->{module};
+        my $plugins = $_->{plugins} || [];
+        my $args    = $_->{args};
+        $args->{request_handler} = $_->{request_handler};
 
-            if ($module !~ s{^\+}{}) {
-                $module = join('::', "HTTP", "Engine", "Interface", $module);
-            }
+        if ( $module !~ s{^\+}{} ) {
+            $module = join( '::', "HTTP", "Engine", "Interface", $module );
+        }
 
-            Shika::Util::load_class($module);
+        Mouse::load_class($module);
 
-            $_[0] = $module->new( %$args );
-        },
+        return $module->new(%$args);
     };
 };
 
 do {
-    class_type Uri => { class => "URI::WithBase" };
+    class_type Uri, { class => "URI::WithBase" };
 
-    coerce Uri => +{
-        Str => sub { 
-            # generate base uri
-            my $uri = URI->new($_[0]);
-            my $base = $uri->path;
-            $base =~ s{^/+}{};
-            $uri->path($base);
-            $base .= '/' unless $base =~ /\/$/;
-            $uri->query(undef);
-            $uri->path($base);
-            $_[0] = URI::WithBase->new($_[0], $uri);
-        },
+    coerce Uri, from Str => via {
+
+        # generate base uri
+        my $uri  = URI->new($_);
+        my $base = $uri->path;
+        $base =~ s{^/+}{};
+        $uri->path($base);
+        $base .= '/' unless $base =~ /\/$/;
+        $uri->query(undef);
+        $uri->path($base);
+        URI::WithBase->new( $_, $uri );
     };
 };
 
 do {
-    subtype Header => sub {
-        defined $_[0] && (ref($_[0]) eq 'HTTP::Headers::Fast' || ref($_[0]) eq 'HTTP::Headers');
-    };
+    subtype Header,
+        as 'Object',
+        where { $_->isa('HTTP::Headers::Fast') || $_->isa('HTTP::Headers') };
 
-    coerce Header => +{
-        ArrayRef => sub { $_[0] = HTTP::Headers::Fast->new( @{ $_[0] } ) },
-        HashRef  => sub { $_[0] = HTTP::Headers::Fast->new( %{ $_[0] } ) },
-    };
+    coerce Header,
+        from ArrayRef => via { HTTP::Headers::Fast->new( @{$_} ) },
+        from HashRef  => via { HTTP::Headers::Fast->new( %{$_} ) };
 };
 
 do {
-    subtype Handler => +{ as => 'CodeRef' };
-    coerce Handler => +{ Str => sub { $_[0] = \&{$_[0]} } };
+    subtype Handler, as 'CodeRef';
+    coerce Handler, from Str => via { \&{$_} };
 };
 
 1;
@@ -75,7 +69,7 @@ HTTP::Engine::Types::Core - Core HTTP::Engine Types
 
 =head1 SYNOPSIS
 
-  use Moose;
+  use Mouse;
   use HTTP::Engine::Types::Core qw( Interface );
 
   has 'interface' => (
@@ -93,6 +87,6 @@ Kazuhiro Osawa and HTTP::Engine Authors.
 
 =head1 SEE ALSO
 
-L<HTTP::Engine>, L<MooseX::Types>
+L<HTTP::Engine>, L<MouseX::Types>
 
 =cut

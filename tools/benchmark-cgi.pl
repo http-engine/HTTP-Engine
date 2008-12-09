@@ -49,7 +49,11 @@ sub runtest {
 }
 
 runtest("-Ilib $herun");
+runtest("-Ilib -e 'use CGI'");
 runtest("-Ilib -e 'use HTTP::Engine'");
+runtest("-Ilib -e 'use HTTP::Engine;use HTTP::Engine::Interface::CGI'");
+runtest("-Ilib -e 'package F; use HTTP::Body'");
 runtest("-Ilib -e 'package F; use Shika'");
+runtest("-Ilib -e 'package F; use Moose'");
 runtest("-Ilib -e 'use Class::MOP'");
 

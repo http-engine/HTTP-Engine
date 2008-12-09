@@ -3,13 +3,13 @@ use overload qw{""} => sub { 'bless' };
 sub new { bless {}, shift }
 
 package DummyRW;
-use Shika;
-with qw(
-    HTTP::Engine::Role::ResponseWriter
+use Mouse;
+with $_ for qw(
+    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+    HTTP::Engine::Role::ResponseWriter::OutputBody
     HTTP::Engine::Role::ResponseWriter::Finalize
     HTTP::Engine::Role::ResponseWriter::ResponseLine
-    HTTP::Engine::Role::ResponseWriter::OutputBody
-    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+    HTTP::Engine::Role::ResponseWriter
 );
 
 package main;

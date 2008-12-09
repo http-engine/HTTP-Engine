@@ -28,14 +28,15 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Shika'         => '0.01_01';
+requires 'Mouse'         => '0.11';
+requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;
 
 requires 'File::Copy'       => 0;
 requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
-requires 'HTTP::Body'          => '1.04';
+requires 'HTTP::Body'          => '1.05';
 requires 'HTTP::Headers::Fast' => 0.01;
 requires 'URI'                 => 1.36;
 

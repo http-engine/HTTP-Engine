@@ -1,14 +1,22 @@
 package HTTP::Engine::Request::Upload;
-use Shika;
-has filename => ();
+use Mouse;
+has filename => (
+    is => 'ro',
+);
 has headers  => (
+    is => 'ro',
     handles => {
         type => 'content_type'
     },
 );
-has size     => ();
-has tempname => ();
+has size     => (
+    is => 'ro',
+);
+has tempname => (
+    is => 'ro',
+);
 has basename => (
+    is => 'ro',
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -22,6 +30,7 @@ has basename => (
 );
 
 has fh => (
+    is => 'ro',
     lazy     => 1,
     default  => sub {
         my $self = shift;
@@ -59,6 +68,7 @@ sub slurp {
     $content;
 }
 
+no Mouse;
 1;
 __END__
 

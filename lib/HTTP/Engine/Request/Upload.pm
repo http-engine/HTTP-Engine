@@ -20,7 +20,7 @@ has basename => (
     lazy    => 1,
     default => sub {
         my $self = shift;
-        HTTP::Engine::Util::require_once('File/Spec/Unix.pm');
+        require File::Spec::Unix;
         my $basename = $self->filename;
         $basename =~ s|\\|/|g;
         $basename = ( File::Spec::Unix->splitpath($basename) )[2];
@@ -42,7 +42,7 @@ has fh => (
 
 sub copy_to {
     my $self = shift;
-    HTTP::Engine::Util::require_once('File/Copy.pm');
+    require File::Copy;
     File::Copy::copy( $self->tempname, @_ );
 }
 

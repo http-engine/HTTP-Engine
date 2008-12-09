@@ -117,7 +117,7 @@ sub run {
 
 __END__
 
-=haed1 NAME
+=head1 NAME
 
 HTTP::Engine::MinimalCGI - poor man's HTTP::Engine::Interface
 
@@ -153,6 +153,34 @@ If you can use CGI only, you would use this :P
 B<DO NOT LOAD FULL SPEC HTTP::Engine AND THIS MODULE IN ONE PROCESS>
 
 This module is evil.This module mangle L<HTTP::Engine>, L<HTTP::Engine::Request>, L<HTTP::Engine::Response> namespace.
+
+=head1 SUPPORTED METHODS
+
+    Request
+        new
+        hostname
+        protocol
+        method
+        param
+        upload
+    Response
+        new
+        header
+        headers
+        status
+        body
+        protocol
+        content_length
+        content_type
+        cookies
+
+=head1 WHY WE NEED THIS?
+
+Some people says "HTTP::Engine is too heavy in my rental server".
+
+OK, I know, professional web engineer doesn't use CGI, and you are professional web engineer.
+
+But, newbie uses CGI at rental server. and, Perl needs new brains.
 
 =head1 DEPENDENCIES
 

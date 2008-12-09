@@ -39,7 +39,7 @@ sub run {
         my ($class, %args) = @_;
         unless (Scalar::Util::blessed($args{interface})) {
             if ($args{interface}->{module} ne 'MinimalCGI') {
-                die "ha?";
+                die "MinimalCGI is the only interface supported. Use the real HTTP::Engine for others.";
             }
             $args{interface} = HTTP::Engine::MinimalCGI->new(
                 request_handler => $args{interface}->{request_handler}
@@ -119,13 +119,13 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine::MinimalCGI - poor man's HTTP::Engine::Interface
+HTTP::Engine::MinimalCGI - fast loading, minimal HTTP::Engine::Interface
 
 =head1 SYNOPSIS
 
     use HTTP::Engine::MinimalCGI;
 
-    HTTP::Engine->new(
+    my $engine = HTTP::Engine->new(
         interface => {
             module => 'MinimalCGI',
             request_handler => sub {
@@ -137,22 +137,14 @@ HTTP::Engine::MinimalCGI - poor man's HTTP::Engine::Interface
             },
         },
     );
+    $engine->run;
 
 =head1 DESCRIPTION
 
-This module gives
-
-    fast bootstrap
-    forward compatibility for HTTP::Engine
-    less features
-
-If you can use CGI only, you would use this :P
-
-=head1 WARNINGS
-
-B<DO NOT LOAD FULL SPEC HTTP::Engine AND THIS MODULE IN ONE PROCESS>
-
-This module is evil.This module mangle L<HTTP::Engine>, L<HTTP::Engine::Request>, L<HTTP::Engine::Response> namespace.
+HTTP::Engine::MinimalCGI implemens a minimal version of the HTTP::Engine spec
+for the vanilla CGI environment. It has a very fast compile time-- on par with
+CGI::Simple or CGI.pm-- and is forward-compatible with the full HTTP::Engine
+spec. However, it is missing some features.
 
 =head1 SUPPORTED METHODS
 
@@ -163,6 +155,7 @@ This module is evil.This module mangle L<HTTP::Engine>, L<HTTP::Engine::Request>
         method
         param
         upload
+
     Response
         new
         header
@@ -174,13 +167,19 @@ This module is evil.This module mangle L<HTTP::Engine>, L<HTTP::Engine::Request>
         content_type
         cookies
 
-=head1 WHY WE NEED THIS?
+=head1 WHY DO WE NEED THIS?
 
-Some people says "HTTP::Engine is too heavy in my rental server".
+Some people says "HTTP::Engine is too heavy on my shared hosting account".
+Perhaps you believe that professional web developers don't use vanilla CGI.
+But newbies and small projects use shared hosting accounts and will find the
+performance of this solution in vanilla CGI is sufficient. 
 
-OK, I know, professional web engineer doesn't use CGI, and you are professional web engineer.
+=head1 WARNINGS
 
-But, newbie uses CGI at rental server. and, Perl needs new brains.
+B<DO NOT LOAD FULL SPEC HTTP::Engine AND THIS MODULE IN ONE PROCESS>.  HTTP::Engine::MinimalCGI
+provides alternative, conflicting implementations of the L<HTTP::Engine>,
+L<HTTP::Engine::Request>, L<HTTP::Engine::Response> namespaces.
+
 
 =head1 DEPENDENCIES
 
@@ -189,4 +188,8 @@ L<CGI::Simple>, L<HTTP::Headers::Fast>, L<Scalar::Util>
 =head1 AUTHORS
 
 tokuhirom
+
+=head1 CONTRIBUTORS
+
+Mark Stosberg <mark@summersault.com> - helped with the documentation.
 

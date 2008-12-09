@@ -4,7 +4,7 @@ use Test::Base;
 use HTTP::Engine::MinimalCGI;
 local *HTTP::Headers::Fast::as_string_without_sort = *HTTP::Headers::Fast::as_string;
 
-plan tests => 2*blocks;
+plan tests => 6;
 
 sub crlf {
     local $_ = shift;
@@ -14,6 +14,11 @@ sub crlf {
 
 sub run_engine {
     my $src = shift;
+
+    local %ENV = (
+        REQUEST_METHOD => 'GET',
+    );
+
     my $code = eval "sub { $src }";
     die $@ if $@;
 
@@ -79,3 +84,35 @@ Status: 200
 
 hello
 
+===
+--- handler
+$ENV{QUERY_STRING} = 'oo=ps';
+
+my $req = shift;
+HTTP::Engine::Response->new(
+    status => 200,
+    body => $req->param('oo')||'MISSING oo',
+);
+--- response
+Content-Length: 2
+Content-Type: text/html
+Status: 200
+
+ps
+
+===
+--- handler
+$ENV{HTTP_X_FOOBAR} = '2000';
+my $req = shift;
+my $body  = $req->header('X-Foobar') || 'MISSING HEADER';
+   $body .= $req->header('x_fOOBAR') || 'MISSING HEADER';
+HTTP::Engine::Response->new(
+    status => 200,
+    body   => $body
+);
+--- response
+Content-Length: 8
+Content-Type: text/html
+Status: 200
+
+20002000

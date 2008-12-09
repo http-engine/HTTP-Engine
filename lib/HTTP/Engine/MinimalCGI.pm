@@ -111,9 +111,25 @@ sub run {
     sub protocol { $ENV{SERVER_PROTOCOL} || 'HTTP/1.0' }
     sub method   { $ENV{HTTP_METHOD} || 'GET' }
 
-    *HTTP::Engine::Request::param  = *CGI::Simple::param;
-    *HTTP::Engine::Request::upload = *CGI::Simple::upload;
+    sub param {
+        my $self = shift;
+        $self->{cs} ||= CGI::Simple->new();
+        $self->{cs}->param(@_);
+    }
+    sub upload {
+        my $self = shift;
+        $self->{cs} ||= CGI::Simple->new();
+        $self->{cs}->upload(@_);
+    }
+    sub header {
+        my ($self, $key) = @_;
+        $key = uc $key;
+        $key =~ s/-/_/;
+        $ENV{'HTTP_' . $key} || $ENV{'HTTPS_' . $key};
+    }
 }
+
+1;
 
 __END__
 

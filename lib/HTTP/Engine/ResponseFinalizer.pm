@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Scalar::Util        ();
 use Carp                ();
+use CGI::Simple::Cookie;
 
 sub finalize {
     my ($class, $req, $res) = @_;
@@ -54,8 +55,6 @@ sub _finalize_cookies  {
     my $cookies = $res->cookies;
     my @keys = keys %$cookies;
     if (@keys) {
-        HTTP::Engine::Util::require_once('CGI/Simple/Cookie.pm');
-
         for my $name (@keys) {
             my $val = $cookies->{$name};
             my $cookie = (

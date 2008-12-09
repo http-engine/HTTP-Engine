@@ -44,8 +44,6 @@ requires 'URI'                 => 1.36;
 # but the version is too old. It has no real further dependencies anyway. 
 requires 'HTTP::Server::Simple' => 0.35;
 
-requires 'Test::Base'          => 0;
-
 features(
     'Interface::FCGI' => [
         -default => 0,
@@ -83,6 +81,7 @@ if (HAVE_MP) {
     tests('t/*.t t/*/*.t ');
 }
 
+build_requires 'YAML'; # Test::Base requires this
 build_requires 'Test::More';
 build_requires 'IO::Scalar';
 build_requires 'File::Temp' => '0.20';

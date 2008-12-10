@@ -1,7 +1,9 @@
 Revision history for Perl extension HTTP::Engine
 
+         - Added HTTP::Engine::MinimalCGI, a very fast minimal version optimized for vanilla CGI.
+
 0.0.99_01 2008-12-02T02:47:36+09:00
-         - merged shika branche
+         - merged shika branch
          - s/Moose/Shika/
          - s/HTTP::Header/HTTP::Header::Fast/
 

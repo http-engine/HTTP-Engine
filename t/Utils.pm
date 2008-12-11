@@ -6,7 +6,7 @@ use Test::TCP qw/test_tcp empty_port/;
 use IO::Socket::INET;
 
 use Sub::Exporter -setup => {
-    exports => [qw/ daemonize_all interfaces run_engine ok_response req /],
+    exports => [qw/ daemonize_all interfaces run_engine ok_response req running_interface/],
     groups  => { default => [':all'] }
 };
 
@@ -26,6 +26,10 @@ sub interfaces() {
     return @interfaces;
 }
 
+my $running_interface;
+
+sub running_interface { $running_interface }
+
 sub daemonize_all (&$@) {
     my($client, $codesrc) = @_;
 
@@ -38,6 +42,7 @@ sub daemonize_all (&$@) {
 
     my @interfaces = interfaces;
     for my $interface (@interfaces) {
+        $running_interface = $interface;
         my $client_cb = sub { $client->(@_, $interface) };
         if ($interface eq 'FCGI') {
             require t::FCGIUtils;

@@ -157,7 +157,7 @@ HTTP::Engine::MinimalCGI - fast loading, minimal HTTP::Engine::Interface
 
 =head1 DESCRIPTION
 
-HTTP::Engine::MinimalCGI implemens a minimal version of the HTTP::Engine spec
+HTTP::Engine::MinimalCGI implements a minimal version of the HTTP::Engine spec
 for the vanilla CGI environment. It has a very fast compile time-- on par with
 CGI::Simple or CGI.pm-- and is forward-compatible with the full HTTP::Engine
 spec. However, it is missing some features.

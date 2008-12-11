@@ -113,6 +113,7 @@ t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t
 t/030_daemonize/proxy_path.t
 t/030_daemonize/raw_body.t
+t/030_daemonize/request_independence.t
 t/030_daemonize/responsewriter_io.t
 t/030_daemonize/upload-methods.t
 t/030_daemonize/upload.t

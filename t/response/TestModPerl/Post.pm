@@ -1,18 +1,8 @@
 package TestModPerl::Post;
 use strict;
 use base qw(HTTP::Engine::Interface::ModPerl);
-use Apache::Test;
-
-sub handler : method
-{
-    my ($class, $r) = @_;
-
-    plan($r, tests => 1);
-
-    my $res = $class->SUPER::handler($r);
-    ok(1);
-    return $res;
-}
+use Apache::Test ':withtestmore';
+use Test::More;
 
 sub create_engine {
     my ( $class, $r ) = @_;
@@ -23,7 +13,7 @@ sub create_engine {
                 my $req = shift;
                 HTTP::Engine::Response->new(
                     status => 200,
-                    content => $req->body_parameters->{hoge},
+                    body   => $req->body_parameters->{hoge},
                 )
             },
         )

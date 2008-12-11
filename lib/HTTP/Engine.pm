@@ -24,7 +24,7 @@ $_->meta->make_immutable(inline_destructor => 1) for qw(
 1;
 __END__
 
-=for stopwords middlewares Middleware middleware nothingmuch kan Stosberg
+=for stopwords middlewares Middleware middleware nothingmuch kan Stosberg otsune
 
 =encoding utf8
 
@@ -236,6 +236,8 @@ walf443
 kawa0117
 
 mattn
+
+otsune
 
 =head1 SEE ALSO
 

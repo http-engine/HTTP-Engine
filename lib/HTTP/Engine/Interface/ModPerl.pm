@@ -91,9 +91,10 @@ sub handler : method
     $engine->interface->apache( $r );
     $engine->interface->context_key( $context_key );
 
+
     $engine->interface->handle_request(
         _connection => {
-            input_handle   => \*STDIN,
+            input_handle   => $r,
             output_handle  => \*STDOUT,
             env            => \%ENV,
             apache_request => $r,

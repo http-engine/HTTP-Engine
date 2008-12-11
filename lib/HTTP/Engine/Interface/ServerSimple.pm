@@ -30,20 +30,21 @@ has net_server => (
 sub run {
     my ($self, ) = @_;
 
-    my $headers = HTTP::Headers::Fast->new;
+    my $headers;
     my %setup;
     my $server;
     $server = Mouse::Meta::Class
         ->create_anon_class(
             superclasses => ['HTTP::Server::Simple'],
             methods => {
+                setup => sub {
+                    shift; # $self;
+                    $headers = HTTP::Headers::Fast->new;
+                    %setup = @_;
+                },
                 headers => sub {
                     my ( $self, $args ) = @_;
                     $headers->header(@$args);
-                },
-                setup => sub {
-                    shift; # $self;
-                    %setup = @_;
                 },
                 handler    => sub {
                     my($host, $port) = $headers->header('Host') ?

@@ -26,7 +26,7 @@ do {
 };
 
 do {
-    my $tmp = File::Temp->new();
+    my $tmp = File::Temp->new(UNLINK => 1);
     $tmp->write("OK!");
     $tmp->flush();
     $tmp->seek(0, File::Temp::SEEK_SET);

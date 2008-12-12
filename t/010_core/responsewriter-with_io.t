@@ -47,7 +47,7 @@ use t::Utils;
 
 my $writer = DummyRW->new();
 
-my $tmp = File::Temp->new();
+my $tmp = File::Temp->new(UNLINK => 1);
 $tmp->write("OK!");
 $tmp->flush();
 $tmp->seek(0, File::Temp::SEEK_SET);
@@ -110,7 +110,7 @@ use t::Utils;
 
 my $writer = DummyRW->new();
 
-my $ftmp = File::Temp->new();
+my $ftmp = File::Temp->new(UNLINK => 1);
 $ftmp->write('dummy'x5000);
 $ftmp->flush();
 $ftmp->seek(0, File::Temp::SEEK_SET);
@@ -174,7 +174,7 @@ use t::Utils;
 
 my $writer = DummyRW->new();
 
-my $tmp = File::Temp->new();
+my $tmp = File::Temp->new(ULINK => 1);
 $tmp->write("OK!");
 $tmp->flush();
 $tmp->seek(0, File::Temp::SEEK_SET);

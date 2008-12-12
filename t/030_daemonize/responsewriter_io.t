@@ -12,7 +12,7 @@ plan tests => 3*interfaces;
 
 my $str = 'foo' x 100000;
 
-my ($fh, $fname) = File::Temp::tempfile();
+my ($fh, $fname) = File::Temp::tempfile( UNLINK => 1 );
 print {$fh} $str;
 close $fh;
 

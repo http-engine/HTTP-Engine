@@ -11,6 +11,7 @@ inc/HTTP/Request/AsCGI.pm
 inc/IO/File.pm
 inc/IO/Scalar.pm
 inc/IO/Socket.pm
+inc/IO/Socket/INET.pm
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -104,6 +105,7 @@ t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
 t/020_interface/poe-proxy.t
 t/020_interface/poe.t
+t/020_interface/server_simple-not-send-header-bug.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t

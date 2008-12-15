@@ -91,6 +91,8 @@ build_requires 'IO::Socket' => 1.30;
 build_requires 'IO::Socket::INET';
 build_requires 'IO::File' => 1.14;
 
+author_tests('xt');
+
 use_test_base;
 auto_include;
 WriteAll;

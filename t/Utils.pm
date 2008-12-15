@@ -8,7 +8,12 @@ use File::Temp qw/tempdir/;
 
 use IO::Socket::INET;
 
+
+# XXX dirty hack section XXX
 {
+    %ENV = (); # clean up %ENV
+
+    # set temporary directory
     no warnings 'redefine';
     my $tmpdir = tempdir( CLEANUP => 1 );
     *HTTP::Engine::RequestBuilder::CGI::upload_tmp   = sub {

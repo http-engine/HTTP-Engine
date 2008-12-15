@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use t::Utils;
 use Test::More;
 eval "use HTTP::Server::Simple";
 plan skip_all => 'this test requires HTTP::Server::Simple' if $@;

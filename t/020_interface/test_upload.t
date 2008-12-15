@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use t::Utils;
 use HTTP::Engine;
 use HTTP::Headers;
 use HTTP::Request;

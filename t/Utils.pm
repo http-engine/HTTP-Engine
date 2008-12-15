@@ -2,8 +2,28 @@ package t::Utils;
 use HTTP::Engine;
 use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
+use HTTP::Engine::RequestBuilder::CGI;
+use HTTP::Engine::RequestBuilder::NoEnv;
+use File::Temp qw/tempdir/;
 
 use IO::Socket::INET;
+
+{
+    no warnings 'redefine';
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    *HTTP::Engine::RequestBuilder::CGI::upload_tmp   = sub {
+        my $self = shift;
+        $self->{upload_tmp} ||= $tmpdir;
+        $self->{upload_tmp} = shift if @_;
+        $self->{upload_tmp};
+    };
+    *HTTP::Engine::RequestBuilder::NoEnv::upload_tmp = sub {
+        my $self = shift;
+        $self->{upload_tmp} ||= $tmpdir;
+        $self->{upload_tmp} = shift if @_;
+        $self->{upload_tmp};
+    };
+}
 
 use Sub::Exporter -setup => {
     exports => [qw/ daemonize_all interfaces run_engine ok_response req running_interface/],

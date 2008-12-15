@@ -22,6 +22,7 @@ sub finalize {
                 die "Serving filehandle without a content-length($@)";
             }
         } else {
+            use bytes;
             $res->content_length(bytes::length($res->body));
         }
     } else {

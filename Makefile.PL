@@ -88,6 +88,7 @@ build_requires 'File::Temp' => '0.20';
 build_requires 'HTTP::Request::AsCGI';
 build_requires 'Test::TCP' => 0.02;
 build_requires 'IO::Socket' => 1.30;
+build_requires 'IO::Socket::INET';
 build_requires 'IO::File' => 1.14;
 
 use_test_base;

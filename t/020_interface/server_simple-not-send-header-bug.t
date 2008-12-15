@@ -4,8 +4,6 @@ use Test::More;
 eval "use HTTP::Server::Simple";
 plan skip_all => 'this test requires HTTP::Server::Simple' if $@;
 plan tests => 2;
-use LWP::UserAgent;
-use HTTP::Request::Common qw(GET);
 use IO::Socket;
 use HTTP::Engine;
 use Test::TCP;

@@ -12,7 +12,9 @@ inc/HTTP/Request/AsCGI.pm
 inc/IO/File.pm
 inc/IO/Scalar.pm
 inc/IO/Socket.pm
+inc/IO/Socket/INET.pm
 inc/Module/Install.pm
+inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
@@ -109,6 +111,7 @@ t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
 t/020_interface/poe-proxy.t
 t/020_interface/poe.t
+t/020_interface/server_simple-not-send-header-bug.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t
@@ -118,6 +121,7 @@ t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t
 t/030_daemonize/proxy_path.t
 t/030_daemonize/raw_body.t
+t/030_daemonize/request_independence.t
 t/030_daemonize/responsewriter_io.t
 t/030_daemonize/upload-methods.t
 t/030_daemonize/upload.t
@@ -125,6 +129,11 @@ t/030_daemonize/uri.t
 t/040_minimal/001_simple.t
 t/FCGIUtils.pm
 t/response/TestModPerl/Basic.pm
+t/response/TestModPerl/Post.pm
 t/response/TestModPerl/Whole.pm
 t/Utils.pm
 TODO
+xt/97_podspell.t
+xt/98_perlcritic.t
+xt/99_pod.t
+xt/perlcriticrc

@@ -79,6 +79,7 @@ if (HAVE_MP) {
     tests('t/*.t t/*/*.t t/modperl/basic.t t/modperl/whole.t');
 } else {
     tests('t/*.t t/*/*.t ');
+    author_tests('xt');
 }
 
 build_requires 'YAML'; # Test::Base requires this
@@ -90,8 +91,6 @@ build_requires 'Test::TCP' => 0.02;
 build_requires 'IO::Socket' => 1.30;
 build_requires 'IO::Socket::INET';
 build_requires 'IO::File' => 1.14;
-
-author_tests('xt');
 
 use_test_base;
 auto_include;

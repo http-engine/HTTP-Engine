@@ -1,6 +1,9 @@
 Revision history for Perl extension HTTP::Engine
 
+0.0.99_02 2009-01-21T14:31:57+09:00
+         - s/Shika/Mouse/
          - Added HTTP::Engine::MinimalCGI, a very fast minimal version optimized for vanilla CGI.
+         - [BUG] fixed : cannot get http body at Interface::ModPerl. but, this is a dirty hack...
 
 0.0.99_01 2008-12-02T02:47:36+09:00
          - merged shika branch

@@ -1,2 +1,4 @@
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Mouse Mouse::Role HTTP::Engine::Interface
 [TestingAndDebugging::ProhibitNoStrict]
 allow=refs

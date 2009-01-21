@@ -7,6 +7,12 @@ Revision history for Perl extension HTTP::Engine
          - s/Moose/Shika/
          - s/HTTP::Header/HTTP::Header::Fast/
 
+0.0.21   2008-12-15T17:28:02+09:00
+	  # maintenance release
+         - Interface::ServerSimple: fixed to client does not send a header problem bug
+         - fixed bug content-length cannot make
+         - test: fixed Cleaning up /tmp directory (rt #41356) ANDK++ tokuhirom++
+
 0.0.20   2008-12-11T12:01:40+09:00
 	 # maintenance release
          - [BUG] Interface::ServerSimple?: cleanup HTTP::Headers::Fast instance in each request... orz

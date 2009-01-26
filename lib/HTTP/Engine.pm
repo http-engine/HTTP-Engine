@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use 5.00800;
 use Mouse;
-our $VERSION = '0.0.99_02';
+our $VERSION = '0.0.99_03';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;

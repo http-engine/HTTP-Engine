@@ -28,8 +28,8 @@ BEGIN {
         *_build_hostname = sub {
             my ( $self, $req ) = @_;
             my $address = $req->address;
-            return 'localhost' if $address;
-            return gethostbyaddr( inet_aton( $req->address ), AF_INET );
+            return 'localhost' if $address eq '127.0.0.1';
+            return gethostbyaddr( inet_aton( $address ), AF_INET );
         };
     }
 }

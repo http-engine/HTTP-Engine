@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.1    2009-02-06T11:47:54+09:00
+         - new dependence to Mouse 0.15 and MouseX::Types
+         - added to HTTP::Engine::Cookbook documentation # gugod++
+         - $req->hostname: loopback address hacks for win32
+
 0.0.99_03 2009-01-26T13:53:21+09:00
          - fixed to dependency bugs
            no UNIVERSAL::require, use Mouse::load_class

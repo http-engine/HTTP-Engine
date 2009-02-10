@@ -83,13 +83,16 @@ sub _client_input {
 sub _make_request {
     my ($self, $request, $heap) = @_;
 
+    my($host, $port) = $request->headers->header('Host') ?
+        split(':', $request->headers->header('Host')) : ($self->host, $self->port);
+
     {
         headers => $request->headers,
         uri     => URI::WithBase->new(do {
             my $uri = $request->uri->clone;
             $uri->scheme('http');
-            $uri->host($self->host);
-            $uri->port($self->port);
+            $uri->host($host);
+            $uri->port($port);
             $uri->path('/') if $request->uri =~ m!^https?://!i;
 
             my $b = $uri->clone;
@@ -100,7 +103,7 @@ sub _make_request {
         connection_info => {
             address    => $heap->{remote_ip},
             method     => $request->method,
-            port       => $self->port,
+            port       => $port,
             user       => undef,
             _https_info => 'OFF',
             protocol   => $request->protocol(),

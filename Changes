@@ -1,5 +1,9 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.2    2009-02-10T18:47:51+09:00
+         - depend to latest version(Mouse 0.16)
+         - added to Middleware notice documentation
+
 0.1.1    2009-02-06T11:47:54+09:00
          - new dependence to Mouse 0.15 and MouseX::Types
          - added to HTTP::Engine::Cookbook documentation # gugod++

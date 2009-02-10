@@ -85,6 +85,10 @@ using L<HTTP::Engine::Compat> module if you want compatibility of version under 
 
 version 0.0.13 is unsupported of context and middleware.
 
+=head1 MIDDLEWARE
+
+Middleware can be used if you wish. Please see L<HTTP::Engine::Middleware>.
+
 =head1 DESCRIPTION
 
 HTTP::Engine abstracts handling the input and output of various web server
@@ -242,6 +246,7 @@ gugod
 
 =head1 SEE ALSO
 
+L<HTTP::Engine::Middleware>,
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
 L<Mouse>

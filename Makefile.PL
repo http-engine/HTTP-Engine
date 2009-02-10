@@ -28,7 +28,7 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Mouse'         => '0.15';
+requires 'Mouse'         => '0.16';
 requires 'MouseX::Types' => '0.01';
 requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;

@@ -23,12 +23,20 @@ has host => (
     is      => 'ro',
     isa     => 'Str',
     default => '127.0.0.1',
+    trigger  => sub {
+        my $self = shift;
+        utf8::downgrade($self->{host});
+    },
 );
 
 has port => (
     is       => 'ro',
     isa      => 'Int',
     default  => 1978,
+    trigger  => sub {
+        my $self = shift;
+        utf8::downgrade($self->{port});
+    },
 );
 
 has alias => (
@@ -83,7 +91,7 @@ sub _client_input {
 sub _make_request {
     my ($self, $request, $heap) = @_;
 
-    my($host, $port) = $request->headers->header('Host') ?
+    my ($host, $port) = $request->headers->header('Host') ?
         split(':', $request->headers->header('Host')) : ($self->host, $self->port);
 
     {

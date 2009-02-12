@@ -1,7 +1,17 @@
 package HTTP::Engine::Types::Core;
 use strict;
+use Any::Moose;
 
-use MouseX::Types -declare => [qw/Interface Uri Header Handler/];
+BEGIN {
+    if (Any::Moose::is_moose_loaded()) {
+        require MooseX::Types;
+        MooseX::Types->import(-declare => [qw/Interface Uri Header Handler/]);        
+    }
+    else {
+        require MouseX::Types; 
+        MouseX::Types->import(-declare => [qw/Interface Uri Header Handler/]);
+    }
+}
 
 use URI;
 use URI::WithBase;
@@ -21,7 +31,7 @@ do {
             $module = join( '::', "HTTP", "Engine", "Interface", $module );
         }
 
-        Mouse::load_class($module);
+        Any::Moose::load_class($module);
 
         return $module->new(%$args);
     };

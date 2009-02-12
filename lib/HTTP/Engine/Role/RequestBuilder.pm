@@ -1,7 +1,17 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Role::RequestBuilder;
-use Mouse::Role;
+use Any::Moose ();
+BEGIN {
+    if (Any::Moose::is_moose_loaded()) {
+        require Moose::Role;
+        Moose::Role->import();
+    }
+    else {
+        require Mouse::Role;
+        Mouse::Role->import();        
+    }
+}
 
 # initialize reading structures
 requires "_build_read_state";

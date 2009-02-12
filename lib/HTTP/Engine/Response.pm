@@ -1,5 +1,5 @@
 package HTTP::Engine::Response;
-use Mouse;
+use Any::Moose;
 
 use HTTP::Status ();
 use HTTP::Headers::Fast;
@@ -79,7 +79,7 @@ sub as_http_response {
     );
 }
 
-no Mouse;
+no Any::Moose;
 1;
 __END__
 

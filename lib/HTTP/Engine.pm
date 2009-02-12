@@ -14,7 +14,7 @@ has 'interface' => (
     handles => [ qw(run) ],
 );
 
-no Mouse;
+no Any::Moose;
 $_->meta->make_immutable(inline_destructor => 1) for qw(
     HTTP::Engine::Request::Upload
     HTTP::Engine::Request

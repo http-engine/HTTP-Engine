@@ -1,7 +1,17 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Role::RequestBuilder::HTTPBody;
-use Mouse::Role;
+use Any::Moose ();
+BEGIN {
+    if (Any::Moose::is_moose_loaded()) {
+        require Moose::Role;
+        Moose::Role->import();
+    }
+    else {
+        require Mouse::Role;
+        Mouse::Role->import();        
+    }
+}
 
 with qw(
     HTTP::Engine::Role::RequestBuilder::ReadBody

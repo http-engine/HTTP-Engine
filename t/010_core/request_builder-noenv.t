@@ -5,14 +5,23 @@ use Test::More tests => 3;
 
 {
     package t::AnonBuilder;
-    use Mouse;
-
-    with $_ for (
-        'HTTP::Engine::Role::RequestBuilder::NoEnv',
-        'HTTP::Engine::Role::RequestBuilder::Standard',
-        'HTTP::Engine::Role::RequestBuilder::HTTPBody',
-        'HTTP::Engine::Role::RequestBuilder',
-    );
+    use Any::Moose;
+    if (Any::Moose::is_moose_loaded()) {
+        with (
+            'HTTP::Engine::Role::RequestBuilder::NoEnv',
+            'HTTP::Engine::Role::RequestBuilder::Standard',
+            'HTTP::Engine::Role::RequestBuilder::HTTPBody',
+            'HTTP::Engine::Role::RequestBuilder',
+        );        
+    }
+    else {
+        with $_ for (
+            'HTTP::Engine::Role::RequestBuilder::NoEnv',
+            'HTTP::Engine::Role::RequestBuilder::Standard',
+            'HTTP::Engine::Role::RequestBuilder::HTTPBody',
+            'HTTP::Engine::Role::RequestBuilder',
+        );
+    }
 }
 
 my $req = req(

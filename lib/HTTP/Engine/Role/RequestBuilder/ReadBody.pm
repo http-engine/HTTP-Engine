@@ -1,7 +1,17 @@
 #!/usr/bin/perl
 
 package HTTP::Engine::Role::RequestBuilder::ReadBody;
-use Mouse::Role;
+use Any::Moose ();
+BEGIN {
+    if (Any::Moose::is_moose_loaded()) {
+        require Moose::Role;
+        Moose::Role->import();
+    }
+    else {
+        require Mouse::Role;
+        Mouse::Role->import();        
+    }
+}
 use Carp ();
 
 requires "_handle_read_chunk";

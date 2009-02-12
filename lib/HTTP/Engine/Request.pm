@@ -1,5 +1,5 @@
 package HTTP::Engine::Request;
-use Mouse;
+use Any::Moose;
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
@@ -357,7 +357,7 @@ sub parse {
     Carp::croak "The HTTP::Request method 'parse' is unsupported, use HTTP::Engine::RequestBuilder";
 }
 
-no Mouse;
+no Any::Moose;
 1;
 __END__
 

@@ -1,6 +1,16 @@
 package HTTP::Engine::Role::Interface;
 use strict;
-use Mouse::Role;
+use Any::Moose ();
+BEGIN {
+    if (Any::Moose::is_moose_loaded()) {
+        require Moose::Role;
+        Moose::Role->import();
+    }
+    else {
+        require Mouse::Role;
+        Mouse::Role->import();        
+    }
+}
 use HTTP::Engine::Types::Core qw(Handler);
 use HTTP::Engine::ResponseFinalizer;
 
@@ -54,7 +64,7 @@ HTTP::Engine::Role::Interface - The Interface Role Definition
 =head1 SYNOPSIS
 
   package HTTP::Engine::Interface::CGI;
-  use Mouse;
+  use Any::Moose;
   with 'HTTP::Engine::Role::Interface';
 
 =head1 DESCRIPTION

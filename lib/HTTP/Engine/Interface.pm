@@ -1,15 +1,8 @@
 package HTTP::Engine::Interface;
 use Any::Moose;
-
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Util;
-        *apply_all_roles = \&Moose::Util::apply_all_roles;        
-    }
-    else {
-        *apply_all_roles = \&Mouse::Util::apply_all_roles;
-    }
-}
+use Any::Moose (
+    '::Util' => [qw/apply_all_roles/],
+);
 
 my $ARGS;
 
@@ -77,15 +70,9 @@ sub _setup_builder {
         Any::Moose::load_class($builder);
         $@ and die $@;
     }
-    my $instance = $builder->new;
 
-    if (Any::Moose::is_moose_loaded()) {
-        $caller->meta->add_method(request_builder => sub { $instance });
-    }
-    else {
-        no strict 'refs';
-        *{"$caller\::request_builder"} = sub { $instance };
-    }
+    my $instance = $builder->new;
+    $caller->meta->add_method(request_builder => sub { $instance });
 }
 
 sub _setup_writer {
@@ -93,13 +80,7 @@ sub _setup_writer {
 
     my $writer = _construct_writer($caller, $args)->new;
     
-    if (Any::Moose::is_moose_loaded()) {
-        $caller->meta->add_method(response_writer => sub { $writer });
-    }
-    else {
-        no strict 'refs';
-        *{"$caller\::response_writer"} = sub { $writer };
-    }
+    $caller->meta->add_method(response_writer => sub { $writer });
 }
 
 sub _construct_writer {
@@ -116,48 +97,26 @@ sub _construct_writer {
         my @roles;
         my $apply = sub { push @roles, "HTTP::Engine::Role::ResponseWriter::$_[0]" };
         if ($args->{finalize}) {
-            if (Any::Moose::is_moose_loaded()) {
-                $writer->meta->add_method(finalize => $args->{finalize});               
-            }
-            else {
-                no strict 'refs';
-                *{"$writer\::finalize"} = $args->{finalize};
-            }
+            $writer->meta->add_method(finalize => $args->{finalize});               
         } else {
             if ($args->{response_line}) {
                 $apply->('ResponseLine');
             }
             if (my $code = $args->{output_body}) {
-                if (Any::Moose::is_moose_loaded()) {
-                    $writer->meta->add_method(output_body => $code);
-                } 
-                else {
-                    no strict 'refs';                    
-                    *{"$writer\::output_body"} = $code;
-                }
+                $writer->meta->add_method(output_body => $code);
             } else {
                 $apply->('OutputBody');
             }
             if (my $code = $args->{write}) {
-                if (Any::Moose::is_moose_loaded()) {
-                    $writer->meta->add_method(write => $code);
-                } 
-                else {   
-                    no strict 'refs';                                 
-                    *{"$writer\::write"} = $code;
-                }
+                $writer->meta->add_method(write => $code);
             } else {
                 $apply->('WriteSTDOUT');
             }
             $apply->('Finalize');
         }
-        if (Any::Moose::is_moose_loaded()) {
-            apply_all_roles($writer, @roles, 'HTTP::Engine::Role::ResponseWriter');
-        }
-        else {
-            for my $role (@roles, 'HTTP::Engine::Role::ResponseWriter') {
-                apply_all_roles($writer, $role);
-            }
+
+        for my $role (@roles, 'HTTP::Engine::Role::ResponseWriter') {
+            apply_all_roles($writer, $role);
         }
     }
 

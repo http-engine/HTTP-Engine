@@ -93,6 +93,11 @@ sub _construct_writer {
             if ($args->{response_line}) {
                 $apply->('ResponseLine');
             }
+            if (my $code = $args->{output_header}) {
+                *{"$writer\::output_header"} = $code;
+            } else {
+                $apply->('OutputHeader');
+            }
             if (my $code = $args->{output_body}) {
                 *{"$writer\::output_body"} = $code;
             } else {

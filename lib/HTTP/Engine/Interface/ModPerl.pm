@@ -1,15 +1,9 @@
 package HTTP::Engine::Interface::ModPerl;
+my $CURRENT_ENGINE;
 use HTTP::Engine::Interface
     builder => 'CGI',
     writer  => {
-        attributes => {
-            chunk_size => {
-                is      => 'ro',
-                isa     => 'Int',
-                default => 4096,
-            }
-        },
-        finalize => sub {
+        output_header => sub {
             my ($self, $req, $res) = @_;
             my $r = $req->_connection->{apache_request} or die "missing apache request";
             $r->status( $res->status );
@@ -22,20 +16,10 @@ use HTTP::Engine::Interface
                 }
             );
             $r->content_type($content_type) if $content_type;
-
-            sub {
-                my ($r, $body) = @_;
-                no warnings 'uninitialized';
-                if ((Scalar::Util::blessed($body) && $body->can('read')) || (ref($body) eq 'GLOB')) {
-                    while (!eof $body) {
-                        read $body, my ($buffer), $self->chunk_size;
-                        last unless $r->print($buffer);
-                    }
-                    close $body;
-                } else {
-                    $r->print($body);
-                }
-            }->($r, $res->body);
+        },
+        write => sub {
+            my ($self, $buffer) = @_;
+            $CURRENT_ENGINE->interface->apache->print( $buffer );
         },
     }
 ;
@@ -87,6 +71,7 @@ sub handler : method
         $engine = $class->create_engine($r, $context_key);
         $HE{ $context_key } = $engine;
     }
+    $CURRENT_ENGINE = $engine;
 
     $engine->interface->apache( $r );
     $engine->interface->context_key( $context_key );

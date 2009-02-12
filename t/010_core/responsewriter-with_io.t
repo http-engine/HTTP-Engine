@@ -7,6 +7,7 @@ use Mouse;
 with $_ for qw(
     HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
     HTTP::Engine::Role::ResponseWriter::OutputBody
+    HTTP::Engine::Role::ResponseWriter::OutputHeader
     HTTP::Engine::Role::ResponseWriter::Finalize
     HTTP::Engine::Role::ResponseWriter::ResponseLine
     HTTP::Engine::Role::ResponseWriter

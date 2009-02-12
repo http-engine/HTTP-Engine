@@ -113,3 +113,20 @@ X-Req-Test: ping
 
 OK!
 
+=== $req->post_body
+--- preprocess
+$req->method('POST');
+$req->content("foobar=baz");
+$req->content_length( bytes::length($req->content) );
+$req->content_type('application/x-www-form-urlencoded');
+--- code
+$res->header('X-Req-Foobar' => $req->body_params->{foobar});
+--- response
+Content-Length: 3
+Content-Type: text/html
+Status: 200
+X-Req-Foobar: baz
+X-Req-Test: ping
+
+OK!
+

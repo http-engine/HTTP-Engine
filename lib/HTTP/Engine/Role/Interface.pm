@@ -1,16 +1,5 @@
 package HTTP::Engine::Role::Interface;
-use strict;
-use Any::Moose ();
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Role;
-        Moose::Role->import();
-    }
-    else {
-        require Mouse::Role;
-        Mouse::Role->import();        
-    }
-}
+use Any::Moose '::Role';
 use HTTP::Engine::Types::Core qw(Handler);
 use HTTP::Engine::ResponseFinalizer;
 

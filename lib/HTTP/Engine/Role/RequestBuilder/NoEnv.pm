@@ -1,15 +1,5 @@
 package HTTP::Engine::Role::RequestBuilder::NoEnv;
-use Any::Moose ();
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Role;
-        Moose::Role->import();
-    }
-    else {
-        require Mouse::Role;
-        Mouse::Role->import();        
-    }
-}
+use Any::Moose '::Role';
 
 # all of these will be passed to handle_request
 sub _build_uri             { die "explicit parameter(uri)"             }

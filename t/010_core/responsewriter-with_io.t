@@ -4,24 +4,13 @@ sub new { bless {}, shift }
 
 package DummyRW;
 use Any::Moose;
-if (Any::Moose::is_moose_loaded()) {
-    with qw(
-        HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
-        HTTP::Engine::Role::ResponseWriter::OutputBody
-        HTTP::Engine::Role::ResponseWriter::Finalize
-        HTTP::Engine::Role::ResponseWriter::ResponseLine
-        HTTP::Engine::Role::ResponseWriter
-    );
-}
-else {
-    with $_ for qw(
-        HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
-        HTTP::Engine::Role::ResponseWriter::OutputBody
-        HTTP::Engine::Role::ResponseWriter::Finalize
-        HTTP::Engine::Role::ResponseWriter::ResponseLine
-        HTTP::Engine::Role::ResponseWriter
-    );    
-}
+with $_ for qw(
+    HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
+    HTTP::Engine::Role::ResponseWriter::OutputBody
+    HTTP::Engine::Role::ResponseWriter::Finalize
+    HTTP::Engine::Role::ResponseWriter::ResponseLine
+    HTTP::Engine::Role::ResponseWriter
+);    
 
 package main;
 use Test::Base;

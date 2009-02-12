@@ -1,15 +1,5 @@
 package HTTP::Engine::Role::RequestBuilder::ParseEnv;
-use Any::Moose ();
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Role; 
-        Moose::Role->import();
-    }
-    else {
-        require Mouse::Role;
-        Mouse::Role->import();        
-    }
-}
+use Any::Moose '::Role';
 
 with 'HTTP::Engine::Role::RequestBuilder::Standard' => {
     alias => { _build_hostname => "_resolve_hostname" }, # we might be able to get it from the env

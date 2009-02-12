@@ -1,15 +1,5 @@
 package HTTP::Engine::Role::Response;
-use Any::Moose ();
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Role;
-        Moose::Role->import();
-    }
-    else {
-        require Mouse::Role;
-        Mouse::Role->import();        
-    }
-}
+use Any::Moose '::Role';
 
 requires qw(
     context

@@ -1,15 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::Finalize;
-use Any::Moose ();
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require Moose::Role;
-        Moose::Role->import();
-    }
-    else {
-        require Mouse::Role;
-        Mouse::Role->import();        
-    }
-}
+use Any::Moose '::Role';
 use Carp ();
 
 requires qw(write output_body);

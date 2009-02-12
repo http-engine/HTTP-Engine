@@ -61,6 +61,7 @@ lib/HTTP/Engine/Role/Response.pm
 lib/HTTP/Engine/Role/ResponseWriter.pm
 lib/HTTP/Engine/Role/ResponseWriter/Finalize.pm
 lib/HTTP/Engine/Role/ResponseWriter/OutputBody.pm
+lib/HTTP/Engine/Role/ResponseWriter/OutputHeader.pm
 lib/HTTP/Engine/Role/ResponseWriter/ResponseLine.pm
 lib/HTTP/Engine/Role/ResponseWriter/WriteSTDOUT.pm
 lib/HTTP/Engine/Types/Core.pm
@@ -110,12 +111,14 @@ t/010_core/responsewriter-with_io.t
 t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
 t/020_interface/poe-proxy.t
+t/020_interface/poe-uri.t
 t/020_interface/poe.t
 t/020_interface/server_simple-not-send-header-bug.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t
 t/020_interface/test.t
+t/020_interface/test_response-with_io.t
 t/020_interface/test_upload.t
 t/030_daemonize/connection_info.t
 t/030_daemonize/headers.t
@@ -126,6 +129,7 @@ t/030_daemonize/responsewriter_io.t
 t/030_daemonize/upload-methods.t
 t/030_daemonize/upload.t
 t/030_daemonize/uri.t
+t/030_daemonize/utf8flagged-uri.t
 t/040_minimal/001_simple.t
 t/FCGIUtils.pm
 t/response/TestModPerl/Basic.pm

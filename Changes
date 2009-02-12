@@ -1,5 +1,16 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.3    2009-02-12T22:02:05+09:00
+         - split to ResponseWriter::OutputHeader from ResponseWrite::Finalize
+         - Interface::ModPerl
+           cleanup to code
+         - Interface::Test
+           supported to response body in file handles
+         - Interface::POE
+           take a host/port information from the 'Host' header
+           we can avoid URI.pm's utf-8 flag related problems.
+             see also http://d.hatena.ne.jp/orangevtr/20090208/1234097762
+
 0.1.2    2009-02-10T18:47:51+09:00
          - depend to latest version(Mouse 0.16)
          - added to Middleware notice documentation

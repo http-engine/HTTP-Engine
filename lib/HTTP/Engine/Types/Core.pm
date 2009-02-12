@@ -1,17 +1,8 @@
 package HTTP::Engine::Types::Core;
-use strict;
 use Any::Moose;
-
-BEGIN {
-    if (Any::Moose::is_moose_loaded()) {
-        require MooseX::Types;
-        MooseX::Types->import(-declare => [qw/Interface Uri Header Handler/]);        
-    }
-    else {
-        require MouseX::Types; 
-        MouseX::Types->import(-declare => [qw/Interface Uri Header Handler/]);
-    }
-}
+use Any::Moose (
+    'X::Types' => [-declare => [qw/Interface Uri Header Handler/]],
+);
 
 use URI;
 use URI::WithBase;

@@ -118,6 +118,9 @@ sub _construct_writer {
     for my $before (keys %{ $args->{before} || {} }) {
         $writer->meta->add_before_method_modifier( $before => $args->{before}->{$before} );
     }
+    for my $around (keys %{ $args->{around} || {} }) {
+        $writer->meta->add_around_method_modifier( $around => $args->{around}->{$around} );
+    }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
         Mouse::Meta::Attribute->create( $writer->meta, $attribute,
             %{ $args->{attributes}->{$attribute} } );

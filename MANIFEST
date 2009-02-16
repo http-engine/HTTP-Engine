@@ -110,6 +110,7 @@ t/010_core/responsewriter-broken_io.t
 t/010_core/responsewriter-with_io.t
 t/020_interface/cgi.t
 t/020_interface/lighty-fcgi.t
+t/020_interface/modperl_wildcard_hostname.t
 t/020_interface/poe-proxy.t
 t/020_interface/poe-uri.t
 t/020_interface/poe.t

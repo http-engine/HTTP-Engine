@@ -34,8 +34,8 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Any::Moose'    => '0.03';
-requires 'Mouse'         => '0.16';
+requires 'Any::Moose'    => '0.04';
+requires 'Mouse'         => '0.17';
 requires 'MouseX::Types' => '0.01';
 requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;

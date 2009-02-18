@@ -10,6 +10,12 @@ BEGIN
         no strict 'refs';
         *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
     }
+
+    if (eval { require Moose  && Moose->VERSION('0.68') }) {
+        *HAVE_MOOSE = sub { 1 };
+    } else {
+        *HAVE_MOOSE = sub { 0 };
+    }
 }
 
 if (HAVE_MP) {
@@ -75,13 +81,25 @@ features(
     ],
 );
 
+my @tests;
 if (HAVE_MP) {
     Apache::TestMM::filter_args();
     Apache::TestMM::generate_script('t/TEST');
-    tests('t/*.t t/*/*.t t/modperl/basic.t t/modperl/whole.t');
+    @tests = qw( t/*.t t/*/*.t t/modperl/basic.t t/modperl/whole.t );
 } else {
-    tests('t/*.t t/*/*.t ');
+    @tests = qw( t/*.t t/*/*.t );
     author_tests('xt');
+}
+
+if (HAVE_MOOSE) {
+    tests(
+        join ' ', (
+            @tests,
+            map { "t_moose_$_" } @tests
+        )
+    );
+} else {
+    tests(join ' ', @tests);
 }
 
 build_requires 'YAML'; # Test::Base requires this
@@ -98,3 +116,39 @@ use_test_base;
 auto_include;
 WriteAll;
 
+# generate moose's test
+if (HAVE_MOOSE) {
+    warn "generating to Moose's test... please wait few minutes";
+    my @testfiles;
+    require File::Find;
+    require File::Path;
+    require File::Spec;
+
+    File::Path::rmtree('t_moose_t');
+
+    File::Find::find(
+        sub {
+            return if $File::Find::dir =~ /\./ || /^\./; # skip dot directory
+            return unless -f $_;
+            my $dir = 't_moose_' . $File::Find::dir;
+            push @testfiles, [ $File::Find::dir, $dir, $_ ];
+        }, 't'
+    );
+
+    for my $stuff (@testfiles) {
+        File::Path::mkpath($stuff->[1]);
+
+        my $from = File::Spec->catfile($stuff->[0], $stuff->[2]);
+        my $to   = File::Spec->catfile($stuff->[1], $stuff->[2]);
+        open my $from_fh, '<', $from;
+        open my $to_fh, '>', $to;
+        if ($to =~ /\.t$/) {
+            print $to_fh "{ package dummy_load_moose; use Moose; }\n";
+        }
+
+        while (<$from_fh>) {
+            print $to_fh $_;
+        }
+    }
+warn "... done";
+}

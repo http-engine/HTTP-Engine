@@ -11,9 +11,11 @@ BEGIN
         *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
     }
 
-    if (!$ENV{SHIPIT} && eval { require Moose  && Moose->VERSION(
-        '0.68'
-    ) }) {
+    if (!$ENV{SHIPIT} && eval {
+        require Moose  && Moose->VERSION(
+            '0.68'
+        ) && require MooseX::Types
+    }) {
         *HAVE_MOOSE = sub { 1 };
     } else {
         *HAVE_MOOSE = sub { 0 };

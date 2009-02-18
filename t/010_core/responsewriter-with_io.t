@@ -4,7 +4,7 @@ sub new { bless {}, shift }
 
 package DummyRW;
 use Any::Moose;
-with $_ for qw(
+with qw(
     HTTP::Engine::Role::ResponseWriter::WriteSTDOUT
     HTTP::Engine::Role::ResponseWriter::OutputBody
     HTTP::Engine::Role::ResponseWriter::Finalize

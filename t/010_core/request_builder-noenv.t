@@ -6,7 +6,7 @@ use Test::More tests => 3;
 {
     package t::AnonBuilder;
     use Any::Moose;
-    with $_ for (
+    with (
         'HTTP::Engine::Role::RequestBuilder::NoEnv',
         'HTTP::Engine::Role::RequestBuilder::Standard',
         'HTTP::Engine::Role::RequestBuilder::HTTPBody',

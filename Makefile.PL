@@ -92,12 +92,17 @@ if (HAVE_MP) {
 }
 
 if (HAVE_MOOSE) {
-    tests(
+    my $tests = 
         join ' ', (
             @tests,
-            map { "t_moose_$_" } @tests
-        )
-    );
+            (map {
+                my $t = $_;
+                $t =~ s/(?:basic|whole).t/*.t/;
+                $t =~ s{^t/}{t/moose/};
+                ($t eq 't/moose/*.t' || $t eq 't/moose/modperl/*.t') ? () : $t;
+            } @tests)
+        );
+    tests($tests);
 } else {
     tests(join ' ', @tests);
 }
@@ -124,14 +129,20 @@ if (HAVE_MOOSE) {
     require File::Path;
     require File::Spec;
 
-    File::Path::rmtree('t_moose_t');
+    File::Path::rmtree(File::Spec->catfile( 't', 'moose' ));
 
     File::Find::find(
         sub {
             return if $File::Find::dir =~ /\./ || /^\./; # skip dot directory
             return unless -f $_;
-            my $dir = 't_moose_' . $File::Find::dir;
-            push @testfiles, [ $File::Find::dir, $dir, $_ ];
+
+            my @dirs = File::Spec->splitpath( $File::Find::dir );
+            while (!!!$dirs[0]) {
+                shift @dirs;
+            }
+            shift @dirs;
+            push @testfiles, [ $File::Find::dir, File::Spec->catfile( 't', 'moose', @dirs ), $_ ];
+
         }, 't'
     );
 
@@ -150,5 +161,5 @@ if (HAVE_MOOSE) {
             print $to_fh $_;
         }
     }
-warn "... done";
+    warn "... done";
 }

@@ -29,3 +29,4 @@
 ^t/htdocs/.+.html$
 ^logo.jpg$
 ^\.git
+^t/moose/

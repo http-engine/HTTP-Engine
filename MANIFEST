@@ -137,6 +137,7 @@ t/response/TestModPerl/Basic.pm
 t/response/TestModPerl/Post.pm
 t/response/TestModPerl/Whole.pm
 t/Utils.pm
+t/xxx/remove_test_moose_directory.t
 TODO
 xt/97_podspell.t
 xt/98_perlcritic.t

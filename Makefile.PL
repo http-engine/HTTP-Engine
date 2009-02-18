@@ -143,8 +143,8 @@ if (HAVE_MOOSE) {
                 shift @dirs;
             }
             shift @dirs;
+            return if $dirs[0] eq 'xxx'; # skip to moose's test directory remover
             push @testfiles, [ $File::Find::dir, File::Spec->catfile( 't', 'moose', @dirs ), $_ ];
-
         }, 't'
     );
 

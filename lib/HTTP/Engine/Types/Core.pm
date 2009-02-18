@@ -12,7 +12,7 @@ use HTTP::Headers::Fast;
 do {
     role_type Interface, { role => "HTTP::Engine::Role::Interface" };
 
-    coerce Interface, from HashRef => via {
+    coerce Interface, from 'HashRef' => via {
         my $module  = $_->{module};
         my $plugins = $_->{plugins} || [];
         my $args    = $_->{args};
@@ -31,7 +31,7 @@ do {
 do {
     class_type Uri, { class => "URI::WithBase" };
 
-    coerce Uri, from Str => via {
+    coerce Uri, from 'Str' => via {
 
         # generate base uri
         my $uri  = URI->new($_);
@@ -51,13 +51,13 @@ do {
         where { $_->isa('HTTP::Headers::Fast') || $_->isa('HTTP::Headers') };
 
     coerce Header,
-        from ArrayRef => via { HTTP::Headers::Fast->new( @{$_} ) },
-        from HashRef  => via { HTTP::Headers::Fast->new( %{$_} ) };
+        from 'ArrayRef' => via { HTTP::Headers::Fast->new( @{$_} ) },
+        from 'HashRef'  => via { HTTP::Headers::Fast->new( %{$_} ) };
 };
 
 do {
     subtype Handler, as 'CodeRef';
-    coerce Handler, from Str => via { \&{$_} };
+    coerce Handler, from 'Str' => via { \&{$_} };
 };
 
 1;

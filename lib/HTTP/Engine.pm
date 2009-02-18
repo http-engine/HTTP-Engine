@@ -1,6 +1,6 @@
 package HTTP::Engine;
 use 5.00800;
-use Mouse;
+use Any::Moose;
 our $VERSION = '0.1.3';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;
@@ -14,7 +14,7 @@ has 'interface' => (
     handles => [ qw(run) ],
 );
 
-no Mouse;
+no Any::Moose;
 $_->meta->make_immutable(inline_destructor => 1) for qw(
     HTTP::Engine::Request::Upload
     HTTP::Engine::Request

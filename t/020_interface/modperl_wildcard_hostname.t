@@ -23,7 +23,10 @@ use HTTP::Engine::Interface::ModPerl;
 my $CONTEXT_KEY;
 {
     package HTTP::Engine::Interface::ModPerl;
-    use Mouse;
+    use Any::Moose;
+    HTTP::Engine::Interface::ModPerl->meta->make_mutable 
+        if Any::Moose::is_moose_loaded() 
+            && HTTP::Engine::Interface::ModPerl->meta->is_immutable; 
     before 'create_engine' => sub {
         my($class, $r, $context_key) = @_;
         $CONTEXT_KEY = $context_key;

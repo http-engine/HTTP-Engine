@@ -1,5 +1,5 @@
 package HTTP::Engine::Role::ResponseWriter::OutputHeader;
-use Mouse::Role;
+use Any::Moose '::Role';
 
 my $CRLF = "\015\012";
 

@@ -5,9 +5,8 @@ use Test::More tests => 3;
 
 {
     package t::AnonBuilder;
-    use Mouse;
-
-    with $_ for (
+    use Any::Moose;
+    with (
         'HTTP::Engine::Role::RequestBuilder::NoEnv',
         'HTTP::Engine::Role::RequestBuilder::Standard',
         'HTTP::Engine::Role::RequestBuilder::HTTPBody',

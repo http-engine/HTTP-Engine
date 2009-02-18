@@ -1,4 +1,5 @@
 package t::Utils;
+use Any::Moose;
 use HTTP::Engine;
 use HTTP::Request::AsCGI;
 use Test::TCP qw/test_tcp empty_port/;
@@ -102,7 +103,7 @@ sub daemonize_all (&$@) {
                     HTTP::Engine::Role::ResponseWriter::ResponseLine->meta->apply( $interface->response_writer->meta );
                     delete $args{interface};
 
-                    Mouse::Meta::Class
+                    any_moose('::Meta::Class')
                         ->create_anon_class(
                             superclasses => ['HTTP::Server::Simple::CGI'],
                             methods => {
@@ -157,12 +158,12 @@ sub ok_response {
 my $BUILDER = do {
     {
         package t::Utils::HTTPRequestBuilder;
-        use Mouse;
-        with $_ for qw(
+        use Any::Moose;
+        with qw(
             HTTP::Engine::Role::RequestBuilder::ParseEnv
             HTTP::Engine::Role::RequestBuilder::HTTPBody
             HTTP::Engine::Role::RequestBuilder
-        );
+        );            
     }
     t::Utils::HTTPRequestBuilder->new(
         chunk_size => 1,

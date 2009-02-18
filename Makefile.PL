@@ -11,7 +11,7 @@ BEGIN
         *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
     }
 
-    if (eval { require Moose  && Moose->VERSION(
+    if (!$ENV{SHIPIT} && eval { require Moose  && Moose->VERSION(
         '0.68'
     ) }) {
         *HAVE_MOOSE = sub { 1 };

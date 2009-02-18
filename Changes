@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.4_01 2009-02-18T19:24:39+09:00
+         - switched to Any::Moose
+         - Interface::ModPerl
+           supported to any server_name application
+
 0.1.3    2009-02-12T22:02:05+09:00
          - split to ResponseWriter::OutputHeader from ResponseWrite::Finalize
          - Interface::ModPerl

@@ -249,7 +249,9 @@ gugod
 L<HTTP::Engine::Middleware>,
 L<HTTP::Engine::Compat>,
 L<HTTPEx::Declare>,
-L<Mouse>
+L<Any::Moose>,
+L<Mouse>,
+L<Moose>
 
 =head1 REPOSITORY
 

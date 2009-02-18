@@ -5,7 +5,7 @@ use HTTP::Status ();
 use HTTP::Headers::Fast;
 use HTTP::Engine::Types::Core qw( Header );
 
-# Mouse role merging is borked with attributes
+# Mouse, Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Response);
 
 sub BUILD {

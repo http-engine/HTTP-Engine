@@ -116,7 +116,7 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
   # App.pm
   package App;
-  use Any::Moose;
+  use Mouse; # or use Moose or use Any::Moose
   use Data::Dumper;
   use HTTP::Engine;
 
@@ -149,7 +149,7 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
 
   # App/ModPerl.pm
   package App::ModPerl;
-  use Any::Moose;
+  use Mouse; # or use Moose or use Any::Moose
   extends 'HTTP::Engine::Interface::ModPerl';
   use App;
   
@@ -159,7 +159,7 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
       App->new->setup_engine({
           module => 'ModPerl',
       });
-  }
+x  }
 
 
   # in httpd.conf

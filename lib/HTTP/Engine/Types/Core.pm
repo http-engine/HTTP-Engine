@@ -70,7 +70,7 @@ HTTP::Engine::Types::Core - Core HTTP::Engine Types
 
 =head1 SYNOPSIS
 
-  use Mouse;
+  use Any::Moose;
   use HTTP::Engine::Types::Core qw( Interface );
 
   has 'interface' => (
@@ -88,6 +88,6 @@ Kazuhiro Osawa and HTTP::Engine Authors.
 
 =head1 SEE ALSO
 
-L<HTTP::Engine>, L<MouseX::Types>
+L<HTTP::Engine>, L<MouseX::Types>, L<MooseX::Types>
 
 =cut

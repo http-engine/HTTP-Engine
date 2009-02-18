@@ -5,7 +5,7 @@ use HTTP::Engine::Types::Core qw( Uri Header );
 use URI::QueryParam;
 require Carp; # Carp->import is too heavy =(
 
-# Mouse role merging is borked with attributes
+# Mouse, Moose role merging is borked with attributes
 #with qw(HTTP::Engine::Request);
 
 # this object constructs all our lazy fields for us

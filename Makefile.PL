@@ -11,7 +11,9 @@ BEGIN
         *HAVE_MP = $@ ? sub { 0 } : sub { 1 };
     }
 
-    if (eval { require Moose  && Moose->VERSION('0.68') }) {
+    if (eval { require Moose  && Moose->VERSION(
+        '0.68'
+    ) }) {
         *HAVE_MOOSE = sub { 1 };
     } else {
         *HAVE_MOOSE = sub { 0 };

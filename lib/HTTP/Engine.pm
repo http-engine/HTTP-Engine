@@ -1,6 +1,6 @@
 package HTTP::Engine;
 use 5.00800;
-use Mouse;
+use Any::Moose;
 our $VERSION = '0.1.2';
 use HTTP::Engine::Request;
 use HTTP::Engine::Request::Upload;

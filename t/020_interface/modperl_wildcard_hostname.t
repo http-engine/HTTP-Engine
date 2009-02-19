@@ -12,13 +12,16 @@ eval q{
     use Apache2::ServerRec;
     use APR::Table;
 };
-
 plan skip_all => 'this test requires mod_perl 2' if $@;
+
+eval q{
+    use HTTP::Engine::Interface::ModPerl;
+};
+plan skip_all => "Interface::ModPerl load error: $@" if $@;
 
 plan tests => 7;
 
 BEGIN { $ENV{MOD_PERL_API_VERSION} = 2 };
-use HTTP::Engine::Interface::ModPerl;
 
 my $CONTEXT_KEY;
 {

@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.4_02 2009-02-19T12:10:00+09:00
+         - fixed to some test case for moose and mod_perl
+
 0.1.4_01 2009-02-18T19:24:39+09:00
          - switched to Any::Moose
          - Interface::ModPerl

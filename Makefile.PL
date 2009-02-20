@@ -161,7 +161,7 @@ if (HAVE_MOOSE) {
         open my $from_fh, '<', $from;
         open my $to_fh, '>', $to;
         if ($to =~ /\.t$/) {
-            print $to_fh "{ package dummy_load_moose; use Moose; }\n";
+            print $to_fh "BEGIN { \$ENV{ANY_MOOSE} = 'Moose' }\n";
         }
 
         while (<$from_fh>) {

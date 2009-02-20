@@ -68,6 +68,10 @@ The specification is changed by the situation.
 
 I want to perform Async support. (AnyEvent? Danga::Socket? IO::Async?)
 
+=head3 0.1.4
+
+switched to L<Any::Moose>
+
 =head2 0.0.99_x
 
 It is an adjustment stage to the following version.

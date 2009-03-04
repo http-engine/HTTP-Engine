@@ -31,7 +31,7 @@ sub test_lighty ($&) {
     plan skip_all => 'Please set LIGHTTPD_BIN to the path to lighttpd'
         unless $lighttpd_bin && -x $lighttpd_bin;
 
-    my $tmpdir = File::Temp::tempdir();
+    my $tmpdir = File::Temp::tempdir( CLEANUP => 1 );
 
     test_tcp(
         client => sub {

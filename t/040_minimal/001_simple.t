@@ -1,5 +1,8 @@
 use strict;
 use warnings;
+BEGIN {
+    *CORE::GLOBAL::time = sub { 1234567890 };
+}
 use Test::Base;
 use HTTP::Engine::MinimalCGI;
 local *HTTP::Headers::Fast::as_string_without_sort = *HTTP::Headers::Fast::as_string;

@@ -8,10 +8,6 @@ TODO
 
 =head1 TESTERS
 
-=head2 interface tests timeout
-
-http://www.nntp.perl.org/group/perl.cpan.testers/2008/12/msg2835850.html
-
 =head2 proxy problem?
 
 http://www.nntp.perl.org/group/perl.cpan.testers/2008/12/msg2841416.html
@@ -19,10 +15,6 @@ http://www.nntp.perl.org/group/perl.cpan.testers/2008/12/msg2841416.html
 =head1 TRUNK
 
 =head2 Standalone
-
-# L<Parallel::Prefork> ?
-
-# keepalive doesn't works?
 
 remove
 

@@ -78,6 +78,13 @@ sub run {
                     )
                 },
                 net_server => sub { $self->net_server },
+                print_banner => sub {
+                    print(  __PACKAGE__
+                          . " : You can connect to your server at "
+                          . "http://localhost:"
+                          . $self->port
+                          . "/\n" );
+                },
             },
             cache => 1
         )->name->new(

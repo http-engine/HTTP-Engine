@@ -32,6 +32,7 @@ use Carp ();
 sub run {
     my ( $self, $request, %args ) = @_;
     Carp::croak('missing request object') unless $request;
+    Carp::croak('incorrect request object($request->uri() returns undef)') unless $request->uri;
 
     return $self->handle_request(
         uri        => URI::WithBase->new( $request->uri ),

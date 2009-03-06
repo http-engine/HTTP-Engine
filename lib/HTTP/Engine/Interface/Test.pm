@@ -33,6 +33,10 @@ sub run {
     my ( $self, $request, %args ) = @_;
     Carp::croak('missing request object') unless $request;
     Carp::croak('incorrect request object($request->uri() returns undef)') unless $request->uri;
+    if ($request->method eq 'POST') {
+        Carp::carp('missing content-length header') unless defined $request->content_length;
+        Carp::carp('missing content-type header') unless $request->content_type;
+    }
 
     return $self->handle_request(
         uri        => URI::WithBase->new( $request->uri ),

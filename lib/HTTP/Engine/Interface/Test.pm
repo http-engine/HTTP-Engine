@@ -27,9 +27,11 @@ use HTTP::Engine::Interface
 
 use URI::WithBase;
 use IO::Scalar;
+use Carp ();
 
 sub run {
     my ( $self, $request, %args ) = @_;
+    Carp::croak('missing request object') unless $request;
 
     return $self->handle_request(
         uri        => URI::WithBase->new( $request->uri ),

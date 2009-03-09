@@ -14,7 +14,7 @@ daemonize_all sub {
 
     my $ua = LWP::UserAgent->new(timeout => 10);
     my $res = $ua->get("http://localhost:$port/foobar?foo=bar");
-    is $res->code, 200;
+    is $res->code, 200, running_interface();
     like $res->content, qr{http://(?:localhost|\Q127.0.0.1\E):\d+/foobar\?foo=bar, http://(?:localhost|\Q127.0.0.1\E):\d+/, /foobar};
 } => <<'...';
     sub {

@@ -20,6 +20,7 @@ use HTTP::Engine::Interface
         output_header => sub {},
         write => sub {
             my($self, $buffer) = @_;
+            Carp::carp("do not pass the utf8-string as HTTP-Response: '$buffer'") if Encode::is_utf8($buffer);
             $self->output_body_buffer( $self->output_body_buffer . $buffer );
         },
     }
@@ -28,6 +29,7 @@ use HTTP::Engine::Interface
 use URI::WithBase;
 use IO::Scalar;
 use Carp ();
+use Encode ();
 
 sub run {
     my ( $self, $request, %args ) = @_;

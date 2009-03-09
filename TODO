@@ -26,4 +26,6 @@ support $r->send_fd() (suggested by kazeburo++)
 
 mod_fastcgi + apache2 test
 
+nginx support
+
 proxy_request support

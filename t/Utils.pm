@@ -12,7 +12,8 @@ use IO::Socket::INET;
 
 # XXX dirty hack section XXX
 {
-    %ENV = (); # clean up %ENV
+    local %ENV = (); # clean up %ENV
+                     # why need this??? -- 200909 - tokuhirom
 
     # set temporary directory
     no warnings 'redefine';

@@ -26,6 +26,7 @@ use HTTP::Engine::Interface
     }
 ;
 
+use HTTP::Engine::Test::Request;
 use URI::WithBase;
 use IO::Scalar;
 use Carp ();
@@ -41,24 +42,16 @@ sub run {
     }
 
     return $self->handle_request(
-        uri        => URI::WithBase->new( $request->uri ),
-        base       => do {
-            my $base = $request->uri->clone;
-            $base->path_query('/');
-            $base;
-        },
-        headers    => $request->headers,
-        method     => $request->method,
-        protocol   => $request->protocol,
-        address    => "127.0.0.1",
-        port       => "80",
-        user       => undef,
-        _https_info => undef,
-        _connection => {
-            input_handle  => IO::Scalar->new( \( $request->content ) ),
-            env           => ($args{env} || {}),
-        },
-        %args,
+        HTTP::Engine::Test::Request->build_request_args(
+            {
+                uri      => $request->uri,
+                content  => $request->content,
+                headers  => $request->headers,
+                method   => $request->method,
+                protocol => $request->protocol,
+            },
+            %args,
+        ),
     );
 }
 
@@ -91,6 +84,10 @@ HTTP::Engine::Interface::Test - HTTP::Engine Test Interface
 =head1 DESCRIPTION
 
 HTTP::Engine::Interface::Test is test engine base class
+
+=head1 SEE ALSO
+
+L<HTTP::Engine::Test::Request>
 
 =head1 AUTHOR
 

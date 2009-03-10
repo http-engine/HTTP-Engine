@@ -3,7 +3,6 @@ use 5.00800;
 use Any::Moose;
 our $VERSION = '0.1.4_03';
 use HTTP::Engine::Request;
-use HTTP::Engine::Request::Upload;
 use HTTP::Engine::Response;
 use HTTP::Engine::Types::Core qw( Interface );
 

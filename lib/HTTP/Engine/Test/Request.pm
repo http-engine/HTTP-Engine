@@ -5,6 +5,7 @@ use warnings;
 use IO::Scalar;
 use URI;
 use URI::WithBase;
+use Scalar::Util 'blessed';
 
 use HTTP::Engine::Request;
 use HTTP::Engine::RequestBuilder::NoEnv;
@@ -12,69 +13,79 @@ use HTTP::Engine::RequestBuilder::NoEnv;
 sub new {
     my $class = shift;
 
-    my $req_obj = {};
-    my %args;
     if ($_[0] && ref($_[0]) && $_[0]->isa('HTTP::Request')) {
-        my $request = shift;
-        %args       = @_;
+        # create H::E::Req from HTTP::Request
+        my $req  = shift;
+        my %args = @_;
 
-        $req_obj = {
-            uri      => $request->uri,
-            content  => $request->content,
-            headers  => $request->headers,
-            method   => $request->method,
-            protocol => $request->protocol,
-        };
+        $class->build_request(
+            $req->uri,
+            $req->content, {
+                headers  => $req->headers,
+                method   => $req->method,
+                protocol => $req->protocol,
+                %args,
+            }
+        );
     } else {
-        %args       = @_;
-        my $body = delete $args{body} || '';
-        my $uri  = delete $args{uri}  || '';
+        # create H::E::Req from hash
+        my %args = @_;
 
-        $req_obj = {
-            uri      => $uri,
-            content  => $body,
-            headers  => {},
-            method   => 'GET',
-            protocol => undef,
-        };
+        my $body   = delete $args{body} || '';
+        my $uri    = delete $args{uri}    or Carp::croak('missing uri');
+        my $method = delete $args{method} or Carp::croak('missing method');
+
+        return $class->build_request(
+            $uri,
+            $body, {
+                headers  => +{},
+                protocol => undef,
+                method   => $method,
+                %args
+            }
+        );
     }
+}
 
+sub build_request {
+    my ($class, $uri, $body, $args) = @_;
 
-    HTTP::Engine::Request->new(
+    my %req_args = $class->build_request_args(
+        $uri,
+        $body,
+        $args,
+    );
+
+    return HTTP::Engine::Request->new(
         request_builder => HTTP::Engine::RequestBuilder::NoEnv->new,
-        $class->build_request_args(
-            $req_obj,
-            %args,
-        ),
+        %req_args,
     );
 }
 
+# This method is used by Interface::Test.
 sub build_request_args {
-    my($class, $request, %args) = @_;
+    my($class, $uri, $body, $args) = @_;
 
-    unless ($request->{uri} && $request->{uri}->isa('URI')) {
-        $request->{uri} = URI->new( $request->{uri} );
+    unless (blessed($uri) && $uri->isa('URI')) {
+        $uri = URI->new( $uri );
     }
 
     return (
-        uri         => URI::WithBase->new( $request->{uri} ),
+        uri         => URI::WithBase->new( $uri ),
         base        => do {
-            my $base = $request->{uri}->clone;
+            my $base = $uri->clone;
             $base->path_query('/');
             $base;
         },
-        headers     => $request->{headers},
-        method      => $request->{method},
-        protocol    => $request->{protocol},
         address     => '127.0.0.1',
         port        => '80',
         user        => undef,
         _https_info => undef,
         _connection => {
-            input_handle  => IO::Scalar->new( \( $request->{content} ) ),
-            env           => ($args{env} || {}),
+            input_handle  => IO::Scalar->new( \( $body ) ),
+            env           => ($args->{env} || {}),
         },
-        %args,
+        %$args,
     );
 }
 

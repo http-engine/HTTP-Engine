@@ -21,14 +21,18 @@ $upload_body =~ s/\n/\r\n/g;
 
 # simple
 do {
-    my $req = HTTP::Engine::Test::Request->new;
+    my $req = HTTP::Engine::Test::Request->new(
+        uri => '/',
+        method => 'GET',
+    );
     isa_ok($req, 'HTTP::Engine::Request');
 };
 
 # query get
 do {
     my $req = HTTP::Engine::Test::Request->new(
-        uri => 'http://example.com/?foo=bar&bar=baz'
+        uri => 'http://example.com/?foo=bar&bar=baz',
+        method => 'GET',
     );
 
     is $req->method, 'GET', 'GET method';
@@ -44,6 +48,7 @@ do {
         headers => {
             'Content-Type' => 'text/plain',
         },
+        method => 'GET',
     );
     is $req->header('content-type'), 'text/plain', 'content-type';
 };
@@ -57,6 +62,7 @@ do {
             'Content-Type'   => 'multipart/form-data; boundary=----BOUNDARY',
             'Content-Length' => 149,
         },
+        method => 'GET',
     );
     my $upload = $req->upload('test_upload_file');
     is $upload->slurp, 'SHOGUN', 'upload file body';

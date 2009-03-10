@@ -41,14 +41,14 @@ sub run {
 
     return $self->handle_request(
         HTTP::Engine::Test::Request->build_request_args(
+            $request->uri,
+            $request->content,
             {
-                uri      => $request->uri,
-                content  => $request->content,
                 headers  => $request->headers,
                 method   => $request->method,
                 protocol => $request->protocol,
+                %args,
             },
-            %args,
         ),
     );
 }

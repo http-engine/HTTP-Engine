@@ -42,14 +42,14 @@ sub new {
 
     HTTP::Engine::Request->new(
         request_builder => HTTP::Engine::RequestBuilder::NoEnv->new,
-        $class->_build_request_args(
+        $class->build_request_args(
             $req_obj,
             %args,
         ),
     );
 }
 
-sub _build_request_args {
+sub build_request_args {
     my($class, $request, %args) = @_;
 
     unless ($request->{uri} && $request->{uri}->isa('URI')) {

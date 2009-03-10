@@ -4,6 +4,9 @@ use t::Utils;
 use Test::More;
 use Encode;
 
+plan skip_all => 'this test is do not work on lighty' 
+    if $ENV{TEST_LIGHTTPD};
+
 plan tests => 2*interfaces;
 
 use LWP::UserAgent;

@@ -15,12 +15,7 @@ has 'interface' => (
 );
 
 no Any::Moose;
-$_->meta->make_immutable(inline_destructor => 1) for qw(
-    HTTP::Engine::Request::Upload
-    HTTP::Engine::Request
-    HTTP::Engine::Response
-    HTTP::Engine
-);
+__PACKAGE__->meta->make_immutable(inline_destructor => 1);
 1;
 __END__
 

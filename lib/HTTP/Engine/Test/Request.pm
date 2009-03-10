@@ -80,7 +80,63 @@ sub build_request_args {
 
 1;
 
-
 __END__
 
+=encoding utf8
 
+=head1 NAME
+
+HTTP::Engine::Test::Request - HTTP::Engine request object builder for test
+
+=head1 SYNOPSIS
+
+    use HTTP::Engine::Test::Request;
+
+    # simple query
+    my $req = HTTP::Engine::Test::Request->new(
+        uri => 'http://example.com/?foo=bar&bar=baz'
+    );
+    is $req->method, 'GET', 'GET method';
+    is $req->address, '127.0.0.1', 'remote address';
+    is $req->uri, 'http://example.com/?foo=bar&bar=baz', 'uri';
+    is_deeply $req->parameters, { foo => 'bar', bar => 'baz' }, 'query params';
+
+    # use headers
+    my $req = HTTP::Engine::Test::Request->new(
+        uri     => 'http://example.com/',
+        headers => {
+            'Content-Type' => 'text/plain',
+        },
+    );
+    is $req->header('content-type'), 'text/plain', 'content-type';
+
+    # by HTTP::Request object
+    my $req = HTTP::Engine::Test::Request->new(
+        HTTP::Request->new(
+            GET => 'http://example.com/?foo=bar&bar=baz',
+            HTTP::Headers::Fast->new(
+                'Content-Type' => 'text/plain',
+            ),
+        )
+    );
+
+    is $req->method, 'GET', 'GET method';
+    is $req->address, '127.0.0.1', 'remote address';
+    is $req->uri, 'http://example.com/?foo=bar&bar=baz', 'uri';
+    is_deeply $req->parameters, { foo => 'bar', bar => 'baz' }, 'query params';
+    is $req->header('content-type'), 'text/plain', 'content-type';
+
+
+=head1 DESCRIPTION
+
+HTTP::Engine::Test::Request is HTTP::Engine request object builder.
+
+Please use in a your test.
+
+=head1 SEE ALSO
+
+L<HTTP::Engine::Request>
+
+=head1 AUTHOR
+
+Kazuhiro Osawa E<lt>ko@yappo.ne.jpE<gt>

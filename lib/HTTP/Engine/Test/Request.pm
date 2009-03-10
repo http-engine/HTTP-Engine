@@ -18,7 +18,7 @@ sub new {
         my $req  = shift;
         my %args = @_;
 
-        $class->build_request(
+        return $class->build_request(
             $req->uri,
             $req->content, {
                 headers  => $req->headers,

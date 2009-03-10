@@ -27,8 +27,6 @@ use HTTP::Engine::Interface
 ;
 
 use HTTP::Engine::Test::Request;
-use URI::WithBase;
-use IO::Scalar;
 use Carp ();
 use Encode ();
 

@@ -64,6 +64,7 @@ lib/HTTP/Engine/Role/ResponseWriter/OutputBody.pm
 lib/HTTP/Engine/Role/ResponseWriter/OutputHeader.pm
 lib/HTTP/Engine/Role/ResponseWriter/ResponseLine.pm
 lib/HTTP/Engine/Role/ResponseWriter/WriteSTDOUT.pm
+lib/HTTP/Engine/Test/Request.pm
 lib/HTTP/Engine/Types/Core.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -119,6 +120,7 @@ t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t
 t/020_interface/test-validation.t
+t/020_interface/test-warn_at_utf8.t
 t/020_interface/test.t
 t/020_interface/test_response-with_io.t
 t/020_interface/test_upload.t
@@ -133,12 +135,12 @@ t/030_daemonize/upload.t
 t/030_daemonize/uri.t
 t/030_daemonize/utf8flagged-uri.t
 t/040_minimal/001_simple.t
+t/050_tests/request.t
 t/FCGIUtils.pm
 t/response/TestModPerl/Basic.pm
 t/response/TestModPerl/Post.pm
 t/response/TestModPerl/Whole.pm
 t/Utils.pm
-t/xxx/remove_test_moose_directory.t
 TODO
 xt/97_podspell.t
 xt/98_perlcritic.t

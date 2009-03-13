@@ -1,5 +1,12 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.4_04 2009-03-13T13:23:57+09:00
+         - add HTTP::Engine::Test::Request
+         - Interface::Test
+           changed to request parameter builder by HTTP::Engine::Test::Request
+           display warnings when output flagged utf8 string
+         - fixed RT #41356
+
 0.1.4_03 2009-03-07T18:01:45+09:00
          - few update
          - tests

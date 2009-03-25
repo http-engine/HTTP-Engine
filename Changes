@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.5    2009-03-25T17:44:49+09:00
+         - Interface::ServerSimple
+           Net::Server configuration support
+           wrote of attributes documentation
+
 0.1.4_04 2009-03-13T13:23:57+09:00
          - add HTTP::Engine::Test::Request
          - Interface::Test

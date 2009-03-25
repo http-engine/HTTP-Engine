@@ -115,6 +115,7 @@ t/020_interface/modperl_wildcard_hostname.t
 t/020_interface/poe-proxy.t
 t/020_interface/poe-uri.t
 t/020_interface/poe.t
+t/020_interface/server_simple-net_server_configure.t
 t/020_interface/server_simple-not-send-header-bug.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t

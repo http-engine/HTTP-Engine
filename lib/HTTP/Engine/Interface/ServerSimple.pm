@@ -28,6 +28,12 @@ has net_server => (
     default => undef,
 );
 
+has net_server_configure => (
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
 sub run {
     my ($self, ) = @_;
 
@@ -91,7 +97,7 @@ sub run {
             $self->port
         );
     $server->host($self->host);
-    $server->run;
+    $server->run(%{ $self->net_server_configure });
 }
 
 __INTERFACE__

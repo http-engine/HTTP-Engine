@@ -124,6 +124,7 @@ build_requires 'IO::File' => 1.14;
 
 use_test_base;
 auto_include;
+auto_set_repository;
 WriteAll;
 
 # generate moose's test

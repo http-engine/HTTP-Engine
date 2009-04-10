@@ -13,7 +13,7 @@ BEGIN
 
     if (!$ENV{SHIPIT} && eval {
         require Moose  && Moose->VERSION(
-            '0.68'
+            '0.73'
         ) && require MooseX::Types
     }) {
         *HAVE_MOOSE = sub { 1 };
@@ -38,8 +38,8 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Any::Moose'    => '0.05';
-requires 'Mouse'         => '0.19';
+requires 'Any::Moose'    => '0.06';
+requires 'Mouse'         => '0.20';
 requires 'MouseX::Types' => '0.01';
 requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;

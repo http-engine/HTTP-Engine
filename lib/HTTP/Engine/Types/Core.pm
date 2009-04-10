@@ -29,7 +29,7 @@ do {
 };
 
 do {
-    class_type Uri, { class => "URI::WithBase" };
+    subtype Uri, as "URI::WithBase";
 
     coerce Uri, from 'Str' => via {
 

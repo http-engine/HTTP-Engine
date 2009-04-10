@@ -18,8 +18,10 @@ sub gen_request {
 
 sub test_req {
     my $req = shift;
+    my $request = $req->as_string;
+    $request =~ s{\nHttps?-Proxy:[^\n]+}{}sg;
     isa_ok $req, 'HTTP::Engine::Request';
-    is $req->as_string, "POST /foo
+    is $request, "POST /foo
 Content-Type: application/octet-stream
 
 foo=bar

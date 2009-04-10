@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.6    2009-04-10T18:12:55+09:00
+         - quieted warnings of newest Moose and Mouse
+         - t/010_core/request-as_string.t : showt up the proxy error
+         - use Module::Install::Repository
+
 0.1.5    2009-03-25T17:44:49+09:00
          - Interface::ServerSimple
            Net::Server configuration support

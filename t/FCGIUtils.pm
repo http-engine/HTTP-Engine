@@ -7,13 +7,11 @@ use Test::More;
 use IO::Socket;
 use File::Spec;
 use Test::TCP qw/test_tcp empty_port/;
+use base qw/Exporter/;
 
 # this file is copied from Catalyst. thanks!
 
-use Sub::Exporter -setup => {
-    exports => [qw/ test_lighty /],
-    groups  => { default => [':all'] }
-};
+our @EXPORT = qw/ test_lighty /;
 
 sub test_lighty ($&) {
     my ($fcgisrc, $callback, $port) = @_;

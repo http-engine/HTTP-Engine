@@ -6,6 +6,7 @@ use Test::TCP qw/test_tcp empty_port/;
 use HTTP::Engine::RequestBuilder::CGI;
 use HTTP::Engine::RequestBuilder::NoEnv;
 use File::Temp qw/tempdir/;
+use base qw/Exporter/;
 
 use IO::Socket::INET;
 
@@ -32,10 +33,7 @@ use IO::Socket::INET;
     };
 }
 
-use Sub::Exporter -setup => {
-    exports => [qw/ daemonize_all interfaces run_engine ok_response req running_interface/],
-    groups  => { default => [':all'] }
-};
+our @EXPORT = qw/ daemonize_all interfaces run_engine ok_response req running_interface/;
 
 my @interfaces; # memoize.
 sub interfaces() {

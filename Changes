@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.7    2009-04-13T12:55:44+09:00
+         - use Exporter instead of Sub::Exporter
+
 0.1.6    2009-04-10T18:12:55+09:00
          - quieted warnings of newest Moose and Mouse
          - t/010_core/request-as_string.t : showt up the proxy error

@@ -241,3 +241,14 @@ __END__
 --- expected: http:///
 --- expected_base: http:///
 --- expected_params: {}
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /
+  QUERY_STRING: aco=tie
+--- expected: http://example.com/?aco=tie
+--- expected_uri: http://example.com/?aco=tie
+--- expected_base: http://example.com/
+--- expected_params: { aco => 'tie' }

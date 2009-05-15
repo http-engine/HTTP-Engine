@@ -33,7 +33,7 @@ sub handle_request {
         print STDERR $e;
         $res = HTTP::Engine::Response->new(
             status => 500,
-            body   => 'internal server errror',
+            body   => 'internal server error',
         );
     }
 

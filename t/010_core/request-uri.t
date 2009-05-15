@@ -38,7 +38,7 @@ run {
 
     tie *STDERR, 'IO::Scalar', \my $out;
     $req->uri_with;
-    untie *STDOUT;
+    untie *STDERR;
     like $out, qr/No arguments passed to uri_with()/;
 };
 

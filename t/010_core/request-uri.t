@@ -156,7 +156,7 @@ __END__
   SCRIPT_NAME: /test.c
 --- expected_uri: http://example.com/test.c
 --- expected: http://example.com/test.c
---- expected_base: http://example.com/test.c/
+--- expected_base: http://example.com/
 --- expected_params: {}
 
 ===
@@ -178,7 +178,7 @@ __END__
   SCRIPT_NAME: /test
 --- expected_uri: http://example.com/redirect
 --- expected: http://example.com/redirect
---- expected_base: http://example.com/redirect/
+--- expected_base: http://example.com/
 --- expected_params: {}
 
 ===
@@ -201,7 +201,7 @@ __END__
   QUERY_STRING: dynamic=daikuma
 --- expected_uri: http://example.com/test?dynamic=daikuma
 --- expected: http://example.com/test?dynamic=daikuma
---- expected_base: http://example.com/test/
+--- expected_base: http://example.com/
 --- expected_params: { dynamic => 'daikuma' }
 
 
@@ -251,4 +251,49 @@ __END__
 --- expected: http://example.com/?aco=tie
 --- expected_uri: http://example.com/?aco=tie
 --- expected_base: http://example.com/
+--- expected_params: { aco => 'tie' }
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /foo
+  QUERY_STRING: aco=tie
+--- expected: http://example.com/foo?aco=tie
+--- expected_uri: http://example.com/foo?aco=tie
+--- expected_base: http://example.com/
+--- expected_params: { aco => 'tie' }
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /foo/
+  QUERY_STRING: aco=tie
+--- expected: http://example.com/foo/?aco=tie
+--- expected_uri: http://example.com/foo/?aco=tie
+--- expected_base: http://example.com/foo/
+--- expected_params: { aco => 'tie' }
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /foo/bar
+  QUERY_STRING: aco=tie
+--- expected: http://example.com/foo/bar?aco=tie
+--- expected_uri: http://example.com/foo/bar?aco=tie
+--- expected_base: http://example.com/foo/
+--- expected_params: { aco => 'tie' }
+
+===
+--- args
+--- add_env
+  HTTP_HOST: example.com
+  SCRIPT_NAME: /foo
+  PATH_INFO: /baz
+  QUERY_STRING: aco=tie
+--- expected: http://example.com/foo/baz?aco=tie
+--- expected_uri: http://example.com/foo/baz?aco=tie
+--- expected_base: http://example.com/foo/
 --- expected_params: { aco => 'tie' }

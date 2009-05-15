@@ -78,9 +78,15 @@ sub _build_uri  {
     # set the base URI
     # base must end in a slash
     $base_path =~ s{^/+}{};
-    $base_path .= '/' unless $base_path =~ /\/$/;
+    if (exists $env->{PATH_INFO}) {
+        # add end in a slash if exists PATH_INFO
+        $base_path .= '/' unless $base_path =~ /\/$/;
+    } elsif ($base_path !~ /\/$/) {
+        # remove last path
+        $base_path =~ s{[^/]+$}{};
+    }
     my $base = $uri->clone;
-    $base->path_query($base_path);
+    $base->path_query($base_path || '/');
 
     return URI::WithBase->new($uri, $base);
 }

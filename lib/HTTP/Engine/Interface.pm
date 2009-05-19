@@ -36,7 +36,7 @@ sub import {
 
     init_class($caller);
 
-    if (Any::Moose::is_moose_loaded()) {
+    if (Any::Moose::moose_is_preferred()) {
         Moose->import({ into_level => 1 });
     }
     else {
@@ -91,7 +91,7 @@ sub _construct_writer {
 
     {   
         $writer->meta->make_mutable 
-            if Any::Moose::is_moose_loaded() 
+            if Any::Moose::moose_is_preferred() 
             && $writer->meta->is_immutable;        
 
         my @roles;
@@ -132,7 +132,7 @@ sub _construct_writer {
         $writer->meta->add_around_method_modifier( $around => $args->{around}->{$around} );
     }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
-        if (Any::Moose::is_moose_loaded()) {
+        if (Any::Moose::moose_is_preferred()) {
             $writer->meta->add_attribute( 
                 $attribute,
                 %{ $args->{attributes}->{$attribute} }
@@ -149,7 +149,7 @@ sub _construct_writer {
 
     # FIXME
     $writer->meta->make_immutable(inline_destructor => 1)
-        unless Any::Moose::is_moose_loaded();
+        unless Any::Moose::moose_is_preferred();
 
     return $writer;
 }

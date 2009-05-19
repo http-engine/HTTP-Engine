@@ -28,7 +28,7 @@ my $CONTEXT_KEY;
     package HTTP::Engine::Interface::ModPerl;
     use Any::Moose;
     HTTP::Engine::Interface::ModPerl->meta->make_mutable 
-        if Any::Moose::is_moose_loaded() 
+        if Any::Moose::moose_is_preferred() 
             && HTTP::Engine::Interface::ModPerl->meta->is_immutable; 
     before 'create_engine' => sub {
         my($class, $r, $context_key) = @_;

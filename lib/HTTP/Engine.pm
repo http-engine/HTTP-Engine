@@ -119,13 +119,17 @@ The community can be found via:
 
   IRC: irc.perl.org#http-engine irc.freenode.net#coderepos
 
+  Mailing list: http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/http-engine
+
+  GitHub: http://github.com/http-engine/HTTP-Engine
+
+The following things are no longer used
+
   Wiki Page: http://coderepos.org/share/wiki/HTTP%3A%3AEngine
 
   SVN: http://svn.coderepos.org/share/lang/perl/HTTP-Engine  
 
   Trac: http://coderepos.org/share/browser/lang/perl/HTTP-Engine
-
-  Mailing list: http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/http-engine
 
 =head1 INTERFACES
 
@@ -259,9 +263,11 @@ L<Moose>
 
 =head1 REPOSITORY
 
-  svn co http://svn.coderepos.org/share/lang/perl/HTTP-Engine/trunk HTTP-Engine
+We moved to GitHub.
 
-HTTP::Engine's Subversion repository is hosted at L<http://coderepos.org/share/>.
+  git clone git://github.com/http-engine/HTTP-Engine.git
+
+HTTP::Engine's Git repository is hosted at L<http://github.com/http-engine/HTTP-Engine>.
 patches and collaborators are welcome.
 
 =head1 LICENSE

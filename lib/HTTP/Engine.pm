@@ -133,6 +133,10 @@ The following things are no longer used
 
   Trac: http://coderepos.org/share/browser/lang/perl/HTTP-Engine
 
+=head1 FOLLOWER DOCUMENTS
+
+L<http://en.wikibooks.org/wiki/Perl_Programming/HTTP::Engine> writing by gugod++.
+
 =head1 INTERFACES
 
 Interfaces are the actual environment-dependent components which handles

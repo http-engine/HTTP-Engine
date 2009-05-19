@@ -123,6 +123,8 @@ The community can be found via:
 
   GitHub: http://github.com/http-engine/HTTP-Engine
 
+  Twitter: http://twitter.com/httpengine
+
 The following things are no longer used
 
   Wiki Page: http://coderepos.org/share/wiki/HTTP%3A%3AEngine

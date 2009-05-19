@@ -1,5 +1,12 @@
 Revision history for Perl extension HTTP::Engine
 
+0.1.8    2009-05-19T16:26:54+09:00
+         - We moved to GitHub ( http://github.com/http-engine )
+         - fixed uri path forget bug
+         - depend to Any::Moose 0.08 ( change moose loaded check function s/is_moose_loaded/moose_is_preferred/ )
+         - Interface::ServerSimple: fixed to display correct URL in print_banner
+         - HTTP::Engine::Role::Interface: fixed typo (s/errror/error/)
+
 0.1.7    2009-04-13T12:55:44+09:00
          - use Exporter instead of Sub::Exporter
 

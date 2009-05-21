@@ -7,7 +7,7 @@ use Test::Base;
 use HTTP::Engine::MinimalCGI;
 local *HTTP::Headers::Fast::as_string_without_sort = *HTTP::Headers::Fast::as_string;
 
-plan tests => 8;
+plan tests => 9;
 
 sub crlf {
     local $_ = shift;
@@ -153,3 +153,20 @@ Status: 200
 X-Foo: bar
 
 ok
+
+=== $req->method
+--- handler
+$ENV{REQUEST_METHOD} = "POST";
+my $req = shift;
+my $res = HTTP::Engine::Response->new(
+    status => 200,
+    body   => $req->method,
+);
+$res;
+--- response
+Content-Length: 4
+Content-Type: text/html
+Status: 200
+
+POST
+

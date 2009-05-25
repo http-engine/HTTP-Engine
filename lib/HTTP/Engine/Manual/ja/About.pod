@@ -1,0 +1,35 @@
+=head1 NAME
+
+HTTP::Engine::Manual::ja::About - HTTP::Engine ってなに？
+
+=head1 DESCRIPTION
+
+この文章では、HTTP::Engine の目的などについて語りましょう。
+
+=head2 HTTP::Engine の目的
+
+HTTP::Engine の目的、それは「アプリケーションとhttpdの間のインターフェースを抽象化する」ということです。
+
+web application を書くときには、できるだけ実行環境を制限したくないです。
+しかし、実行環境にたいして、ポータブルであるためには、意外と苦労が必要だったりします。
+そのあたりの手間を一手にひきうける抽象化レイヤ。それが HTTP::Engien なのです。
+
+一般的には、Perl でかいた web application は以下のような環境で動くかとおもいますが、HTTP::Engine はこれらをすべてサポートしています。HTTP::Engine をつかって web application を書けば、実行環境に依存しないアプリケーションがかけてしまうのです(この事を我々は write once, run anywhere とよんでいます)
+
+    mod_perl on apache2
+    fastcgi
+    cgi
+    L<HTTP::Server::Simple>
+
+=head2 ウェブアプリケーションのレイヤ構造について
+
+    TODO: ここに yappo さんのスライドによくでてくるアレをはっつける
+
+Web Application Framework をつかう場合には、HTTP::Engine のことを意識する必要はありません。
+
+=head2 最後に
+
+もし、あなたがこの説明をよんで、意味がわからないのであれば、たぶんあなたはこのライブラリを必要としていません =)
+
+=cut
+

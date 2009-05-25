@@ -159,7 +159,7 @@ HTTP::Engine::Interface::ModPerl - mod_perl Adaptor for HTTP::Engine
       App->new->setup_engine({
           module => 'ModPerl',
       });
-x  }
+  }
 
 
   # in httpd.conf

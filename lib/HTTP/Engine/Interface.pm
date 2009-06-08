@@ -127,19 +127,10 @@ sub _construct_writer {
         $writer->meta->add_around_method_modifier( $around => $args->{around}->{$around} );
     }
     for my $attribute (keys %{ $args->{attributes} || {} }) {
-        if (Any::Moose::moose_is_preferred()) {
-            $writer->meta->add_attribute( 
-                $attribute,
-                %{ $args->{attributes}->{$attribute} }
-            )
-        }
-        else {
-            Mouse::Meta::Attribute->create( 
-                $writer->meta, 
-                $attribute,
-                %{ $args->{attributes}->{$attribute} } 
-            );
-        }
+        $writer->meta->add_attribute( 
+            $attribute,
+            %{ $args->{attributes}->{$attribute} }
+        )
     }
 
     # FIXME

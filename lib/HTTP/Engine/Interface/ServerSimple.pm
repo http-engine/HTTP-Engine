@@ -87,7 +87,7 @@ sub run {
                 print_banner => sub {
                     print(  __PACKAGE__
                           . " : You can connect to your server at "
-                          . "http://" . $self->host . ":"
+                          . "http://" . ($self->host || 'localhost') . ":"
                           . $self->port
                           . "/\n" );
                 },

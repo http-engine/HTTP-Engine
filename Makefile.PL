@@ -39,7 +39,7 @@ name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
 requires 'Any::Moose'    => '0.08';
-requires 'Mouse'         => '0.21';
+requires 'Mouse'         => '0.23';
 requires 'MouseX::Types' => '0.01';
 requires 'Class::Method::Modifiers' => 0; # for 'before / after method modifiers'
 requires 'Scalar::Util'  => 1.19;
@@ -49,7 +49,7 @@ requires 'File::Spec::Unix' => 3.2701;
 
 requires 'CGI::Simple::Cookie' => 1.103;
 requires 'HTTP::Body'          => '1.05';
-requires 'HTTP::Headers::Fast' => 0.09;
+requires 'HTTP::Headers::Fast' => 0.11;
 requires 'URI'                 => 1.36;
 
 # prevent tests from failing with HTTP::Server::Simple is present, but

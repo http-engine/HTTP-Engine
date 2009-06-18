@@ -165,6 +165,24 @@ __END__
 
 HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 
+=head1 SYSNOPSIS
+
+    #!/usr/bin/perl
+    use HTTP::Engine;
+
+    HTTP::Engine->new(
+        interface => {
+          module => 'FCGI',
+          args   => {
+          },
+          request_handler => 'main::handle_request',# or CODE ref
+        },
+    )->run();
+
+    sub handle_request {
+        HTTP::Engine::Response->new( body => 'hello, world!' );
+    }
+
 =head1 ATTRIBUTES
 
 =over 4

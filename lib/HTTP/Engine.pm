@@ -50,7 +50,7 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 =head1 MILESTONE
 
-=head2 0.x.x
+=head2 0.02xxx
 
 A substantial document. (A tutorial, the Cookbook and hacking HowTo)
 
@@ -117,7 +117,7 @@ available.
 
 The community can be found via:
 
-  IRC: irc.perl.org#http-engine irc.freenode.net#coderepos
+  IRC: irc.perl.org#http-engine
 
   Mailing list: http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/http-engine
 
@@ -126,6 +126,8 @@ The community can be found via:
   Twitter: http://twitter.com/httpengine
 
 The following things are no longer used
+
+  IRC: irc.freenode.net#coderepos
 
   Wiki Page: http://coderepos.org/share/wiki/HTTP%3A%3AEngine
 
@@ -257,6 +259,8 @@ stevan
 hirose31
 
 fujiwara
+
+miyagawa
 
 =head1 SEE ALSO
 

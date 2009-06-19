@@ -17,7 +17,9 @@ sub finalize {
         # get the length from a filehandle
         if ((Scalar::Util::blessed($res->body) && $res->body->can('read')) || (ref($res->body) eq 'GLOB')) {
             my $st_size = 7; # see perldoc -f stat
-            if (my $size = eval { (stat($res->body))[$st_size] }) {
+            my $size = eval { (stat($res->body))[$st_size];
+                          };
+            if (defined $size) {
                 $res->content_length($size);
             } else {
                 die "Serving filehandle without a content-length($@)";

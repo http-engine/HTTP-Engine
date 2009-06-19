@@ -140,6 +140,41 @@ Status: 200
 
 ".('dummy'x5000)
 
+=== zero size
+--- input
+use t::Utils;
+
+my $writer = DummyRW->new();
+
+my $ftmp = File::Temp->new(UNLINK => 1);
+$ftmp->write('');
+$ftmp->flush();
+$ftmp->seek(0, File::Temp::SEEK_SET);
+
+open my $tmp, '<', $ftmp->filename or die $!;
+tie *STDOUT, 'IO::Scalar', \my $out;
+
+my $req = req(
+    protocol => 'HTTP/1.1',
+    method => 'GET',
+);
+my $res = HTTP::Engine::Response->new(body => $tmp, status => 200);
+HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+$writer->finalize($req, $res);
+
+untie *STDOUT;
+
+$out;
+
+--- expected eval
+"HTTP/1.1 200 OK
+Connection: close
+Content-Length: 0
+Content-Type: text/html
+Status: 200
+
+"
+
 === no io
 --- input
 use t::Utils;

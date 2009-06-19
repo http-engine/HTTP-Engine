@@ -1,5 +1,17 @@
 Revision history for Perl extension HTTP::Engine
 
+0.02001  2009-06-19T19:31:21+09:00
+         - core
+           latest Mouse has a compatible interface with Moose (tokuhirom)
+           fixed to The bug which does not work when response body is IOHandle and file size is 0 (yappo)
+         - MinimalCGI
+           fixed using %ENV missing param by Request->method (fujiwara)
+         - Interface::ServerSimple
+           host=0 mans ANY, so just use localhost in the banner (miyagawa)
+         - add more documents
+           Interface::FCGI (tokuhirom)
+           Interface::POE (tokuhirom)
+
 0.1.8    2009-05-19T16:26:54+09:00
          - We moved to GitHub ( http://github.com/http-engine )
          - fixed uri path forget bug

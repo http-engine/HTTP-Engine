@@ -189,7 +189,10 @@ HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 
 =item leave_umask
 
+
 =item keep_stderr
+
+send STDERR to stdout (a logfile)
 
 =item nointr
 
@@ -202,6 +205,8 @@ HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 =item pidfile
 
 =item listen
+
+Pathname of socket or colon followed by local tcp port.
 
 =back
 

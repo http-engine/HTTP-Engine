@@ -117,7 +117,7 @@ available.
 
 The community can be found via:
 
-  IRC: irc.perl.org#http-engine irc.freenode.net#coderepos
+  IRC: irc.perl.org#http-engine
 
   Mailing list: http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/http-engine
 
@@ -126,6 +126,8 @@ The community can be found via:
   Twitter: http://twitter.com/httpengine
 
 The following things are no longer used
+
+  IRC: irc.freenode.net#coderepos
 
   Wiki Page: http://coderepos.org/share/wiki/HTTP%3A%3AEngine
 

@@ -50,7 +50,7 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers (Yet 
 
 =head1 MILESTONE
 
-=head2 0.x.x
+=head2 0.02xxx
 
 A substantial document. (A tutorial, the Cookbook and hacking HowTo)
 

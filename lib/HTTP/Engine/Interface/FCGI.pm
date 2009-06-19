@@ -165,7 +165,7 @@ __END__
 
 HTTP::Engine::Interface::FCGI - FastCGI interface for HTTP::Engine
 
-=head1 SYSNOPSIS
+=head1 SYNOPSIS
 
     #!/usr/bin/perl
     use HTTP::Engine;

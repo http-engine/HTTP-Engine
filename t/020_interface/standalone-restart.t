@@ -5,7 +5,7 @@ use Test::TCP;
 use LWP::UserAgent;
 use Test::More;
 
-plan skip_all => 'Interface::Standalone will be remove';
+plan skip_all => 'Interface::Standalone will be removed';
 plan tests => 1;
 
 test_tcp(

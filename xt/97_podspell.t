@@ -31,7 +31,7 @@ STDOUT
 TODO
 XXX
 dann
-handler's
+handler
 hidek
 webapp
 typester
@@ -60,3 +60,9 @@ GitHub
 XXX
 xxx
 miyagawa
+STDERR
+STDOUT
+TCP
+stdout
+tcp
+Shawn

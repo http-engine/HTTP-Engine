@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.02002  2009-06-29T13:01:17+09:00
+         - Interface::ModPerl: fixed to the weaken arg to "has" is weak_ref not is_weak (Shawn M Moore)
+
 0.02001  2009-06-19T19:31:21+09:00
          - core
            latest Mouse has a compatible interface with Moose (tokuhirom)

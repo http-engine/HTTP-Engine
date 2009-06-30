@@ -129,7 +129,8 @@ WriteAll;
 
 # generate moose's test
 if (HAVE_MOOSE) {
-    warn "generating to Moose's test... please wait few minutes";
+    $| = 1;
+    print "Generating tests with Moose: this could take up to minutes ";
     my @testfiles;
     require File::Find;
     require File::Path;
@@ -170,5 +171,5 @@ if (HAVE_MOOSE) {
             print $to_fh $_;
         }
     }
-    warn "... done";
+    print "... done\n";
 }

@@ -1,7 +1,7 @@
 package HTTP::Engine;
 use 5.00800;
 use Any::Moose;
-our $VERSION = '0.02002';
+our $VERSION = '0.02003';
 use HTTP::Engine::Request;
 use HTTP::Engine::Response;
 use HTTP::Engine::Types::Core qw( Interface );

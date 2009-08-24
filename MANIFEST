@@ -14,6 +14,7 @@ inc/IO/Scalar.pm
 inc/IO/Socket.pm
 inc/IO/Socket/INET.pm
 inc/Module/Install.pm
+inc/Module/Install/AuthorRequires.pm
 inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm

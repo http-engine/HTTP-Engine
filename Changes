@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.02004  2009-08-19T21:36:42+09:00
+         - Makefile.PL: do not die when MooseX::Types is not installed (tokuhirom)
+
 0.02003  2009-08-17T08:38:34+09:00
          - HTTP::Engine: some rewrites and reorganizations of POD docs (miyagawa)
          - Makefile.PL

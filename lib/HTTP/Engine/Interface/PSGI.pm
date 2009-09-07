@@ -23,7 +23,7 @@ sub run {
 sub handler {
     my($self, $env) = @_;
 
-    my $res = $self->handle_request(
+    $self->handle_request(
         _connection => {
             env           => $env,
             input_handle  => $env->{'psgi.input'},

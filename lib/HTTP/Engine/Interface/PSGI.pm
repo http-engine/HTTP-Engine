@@ -48,6 +48,25 @@ __END__
 
 HTTP::Engine::Interface::PSGI - PSGI interface for HTTP::Engine
 
+=head1 SYNOPSIS
+
+  my $plack = Plack::Impl::ServerSimple->new($port);
+  my $engine = HTTP::Engine->new(
+      interface => {
+          module => 'PSGI',
+          args => {
+              psgi_setup => sub {
+                  my $he_handler = shift;
+                  $plack->psgi_app($he_handler);
+                  $plack->run;
+              },
+          },
+          request_handler => sub {
+              HTTP::Engine::Response->new( body => 'ok' );
+          },
+      },
+  )->run;
+
 =head1 AUTHOR
 
 yappo

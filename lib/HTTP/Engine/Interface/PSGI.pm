@@ -43,6 +43,9 @@ HTTP::Engine::Interface::PSGI - PSGI interface for HTTP::Engine
 
 =head1 SYNOPSIS
 
+use Plack for PSGI Impl
+  use HTTP::Engine;
+  use Plack::Loader;
   my $engine = HTTP::Engine->new(
       interface => {
           module => 'PSGI',
@@ -52,9 +55,7 @@ HTTP::Engine::Interface::PSGI - PSGI interface for HTTP::Engine
       },
   );
   my $app = sub { $engine->run(@_ };
-  Plack::Impl::ServerSimple->new(port => 801)->run($app); # see L<Plack::Impl::ServerSimple>
-  # or
-  Plack::Loader->auto->run($app); # Impl auto detect see L<Plack::Loader>
+  Plack::Loader->load('ServerSimple', port => 801)->run($app); # see L<Plack::Impl::ServerSimple> and  L<Plack::Loader>
 
 =head1 AUTHOR
 

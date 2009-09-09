@@ -6,13 +6,12 @@ use Test::TCP;
 
 eval "use Plack";
 plan skip_all => 'this test requires Plack' if $@;
-eval "use Plack::Impl::ServerSimple";
-plan skip_all => 'this test requires Plack::Impl::ServerSimple' if $@;
+eval "use Plack::Loader";
+plan skip_all => 'this test requires Plack::Loader' if $@;
 plan tests => 1;
 
 use LWP::UserAgent;
 use HTTP::Engine;
-
 
 test_tcp(
     client => sub {
@@ -32,6 +31,6 @@ test_tcp(
             },
         );
 
-        Plack::Impl::ServerSimple->new(port => $port)->run(sub { $engine->run(@_) });
+        Plack::Loader->load('ServerSimple', port => $port)->run(sub { $engine->run(@_) });
     },
 );

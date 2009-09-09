@@ -52,11 +52,17 @@ HTTP::Engine::Interface::PSGI - PSGI interface for HTTP::Engine
       },
   );
   my $app = sub { $engine->run(@_ };
-  my $plack = Plack::Impl::ServerSimple->new(port => 801)->run($app);
+  Plack::Impl::ServerSimple->new(port => 801)->run($app); # see L<Plack::Impl::ServerSimple>
+  # or
+  Plack::Loader->auto->run($app); # Impl auto detect see L<Plack::Loader>
 
 =head1 AUTHOR
 
 yappo
+
+=head1 SEE ALSO
+
+L<PSGI>
 
 =head1 LICENSE
 

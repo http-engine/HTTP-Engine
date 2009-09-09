@@ -8,19 +8,7 @@ use HTTP::Engine::Interface
     },
 ;
 
-has psgi_setup => (
-    is       => 'ro',
-    isa      => 'CodeRef',
-    required => 1,
-);
-
-use Data::Dumper;
 sub run {
-    my ($self) = @_;
-    $self->psgi_setup->(sub { $self->handler(@_) });
-}
-
-sub handler {
     my($self, $env) = @_;
 
     $self->handle_request(

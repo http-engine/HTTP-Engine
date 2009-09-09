@@ -23,21 +23,15 @@ test_tcp(
     },
     server => sub {
         my $port = shift;
-        my $plack = Plack::Impl::ServerSimple->new($port);
-        HTTP::Engine->new(
+        my $engine = HTTP::Engine->new(
             interface => {
                 module => 'PSGI',
-                args => {
-                    psgi_setup => sub {
-                        my $he_handler = shift;
-                        $plack->psgi_app($he_handler);
-                        $plack->run;
-                    },
-                },
                 request_handler => sub {
                     HTTP::Engine::Response->new( body => 'ok' );
                 },
             },
-        )->run;
+        );
+
+        Plack::Impl::ServerSimple->new(port => $port)->run(sub { $engine->run(@_) });
     },
 );

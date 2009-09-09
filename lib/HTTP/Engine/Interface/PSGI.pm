@@ -26,7 +26,9 @@ sub run {
 sub _finalize {
     my($next, $writer, $req, $res) = @_;
     my @headers = %{ $res->headers };
-    [ $res->code, \@headers, [ $res->body ] ];
+    my $body = $res->body;
+    $body = [ $body ] unless ref($body);
+    [ $res->code, \@headers, $body ];
 }
 
 __INTERFACE__

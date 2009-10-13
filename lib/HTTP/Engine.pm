@@ -28,32 +28,6 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers
 
 =head1 SYNOPSIS
 
-=head2 PSGI style for 0.03
-
-use FastCGI
-
-  use HTTP::Engine;
-  use Plack::Impl::FastCGI;
-  my $engine = HTTP::Engine->new(
-      request_handler => \&request_handler
-  );
-  Plack::Impl::FastCGI->new(@ARGV)->run(sub {
-      $engine->run_psgi(shift);
-  });
-
-use CGI
-
-  use HTTP::Engine;
-  use Plack::Impl::CGI;
-  my $engine = HTTP::Engine->new(
-      request_handler => \&request_handler
-  );
-  PSGI::Impl::CGI->run(sub {
-      $engine->run_psgi(shift);
-  });
-
-=head2 old style
-
   use HTTP::Engine;
   my $engine = HTTP::Engine->new(
       interface => {

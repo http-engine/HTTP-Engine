@@ -21,6 +21,6 @@ my $he2    = HTTP::Engine->new(
     },
 );
 
-Plack::Loader->load('AnyEvent', port => 18081)->run(sub { $he1->run(@_) });
-Plack::Loader->load('AnyEvent', port => 18082)->run(sub { $he2->run(@_) });
+Plack::Loader->load('AnyEvent', port => 18081)->register_service(sub { $he1->run(@_) });
+Plack::Loader->load('AnyEvent', port => 18082)->register_service(sub { $he2->run(@_) });
 AnyEvent->condvar->recv;

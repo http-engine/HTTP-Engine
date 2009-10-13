@@ -1,5 +1,8 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03     2009-10-13T18:00:00+09:00
+         - added Interface::PSGI
+
 0.02004  2009-08-19T21:36:42+09:00
          - Makefile.PL: do not die when MooseX::Types is not installed (tokuhirom)
 

@@ -31,6 +31,6 @@ test_tcp(
             },
         );
 
-        Plack::Loader->load('ServerSimple', port => $port)->run(sub { $engine->run(@_) });
+        Plack::Loader->load('Standalone', port => $port)->run(sub { $engine->run(@_) });
     },
 );

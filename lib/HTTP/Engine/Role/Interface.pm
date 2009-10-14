@@ -14,7 +14,7 @@ has request_handler => (
 
 # for PSGI streaming response
 # using HTTP::Engine::ResponseFinalizer
-sub can_streaming_response { 0 }
+sub can_has_streaming { 0 }
 
 sub handle_request {
     my ($self, %args) = @_;

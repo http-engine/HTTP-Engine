@@ -23,7 +23,7 @@ sub finalize {
             my $size = eval { (stat($res->body))[$st_size] };
             if (defined $size) {
                 $res->content_length($size);
-            } elsif (!$interface->can_streaming_response) { # can_streaming_response for PSGI streaming response
+            } elsif (!$interface->can_has_streaming) { # can_has_streaming for PSGI streaming response
                 die "Serving filehandle without a content-length($@)";
             }
         } else {

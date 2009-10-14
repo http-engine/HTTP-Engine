@@ -9,7 +9,7 @@ sub read {}
 
 package DummyInterface;
 
-sub can_streaming_response { 0 }
+sub can_has_streaming { 0 }
 
 package main;
 use Test::More tests => 1;

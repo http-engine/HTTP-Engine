@@ -8,7 +8,7 @@ use HTTP::Engine::Interface
     },
 ;
 
-sub can_streaming_response { 1 }
+sub can_has_streaming { 1 }
 
 sub run {
     my($self, $env) = @_;

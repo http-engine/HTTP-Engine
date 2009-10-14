@@ -68,7 +68,7 @@ sub daemonize_all (&$@) {
     my @interfaces = interfaces;
     for my $interface (@interfaces) {
         $running_interface = $interface;
-        my $client_cb = sub { $client->(@_, $interface) };
+        my $client_cb = sub { my $port = shift; $client->($port, $interface) };
         if ($interface eq 'FCGI') {
             require t::FCGIUtils;
             t::FCGIUtils->import;

@@ -9,7 +9,7 @@ plan skip_all => "this test requires POE" if $@;
 eval "use POE::Component::Client::HTTP;";
 plan skip_all => "this test requires POE::Component::Client::HTTP" if $@;
 
-plan tests => 7;
+plan tests => 5;
 
 use_ok 'HTTP::Engine::Interface::POE';
 

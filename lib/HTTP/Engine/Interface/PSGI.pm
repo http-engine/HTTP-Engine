@@ -8,6 +8,8 @@ use HTTP::Engine::Interface
     },
 ;
 
+sub can_streaming_response { 1 }
+
 sub run {
     my($self, $env) = @_;
 
@@ -44,6 +46,7 @@ HTTP::Engine::Interface::PSGI - PSGI interface for HTTP::Engine
 =head1 SYNOPSIS
 
 use L<Plack> for L<PSGI> Impl
+
   use HTTP::Engine;
   use Plack::Loader;
   my $engine = HTTP::Engine->new(
@@ -56,6 +59,24 @@ use L<Plack> for L<PSGI> Impl
   );
   my $app = sub { $engine->run(@_) };
   Plack::Loader->load('Standalone', port => 801)->run($app); # see L<Plack::Server::Standalone> and  L<Plack::Loader>
+
+if you want streaming response
+
+  use HTTP::Engine;
+  use IO::Handle::Util qw(io_from_getline); # see L<IO::Handle::Util>
+  use Plack::Loader;
+  my $count = 1;
+  my $engine = HTTP::Engine->new(
+      interface => {
+          module => 'PSGI',
+          request_handler => sub {
+              HTTP::Engine::Response->new( body => io_from_getline { return "count: " . $count++ } );
+          },
+      },
+  );
+  my $app = sub { $engine->run(@_) };
+  Plack::Loader->load('AnyEvent', port => 801)->run($app); # see L<Plack::Server::AnyEvent>
+
 
 =head1 AUTHOR
 

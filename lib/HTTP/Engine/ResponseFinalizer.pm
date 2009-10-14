@@ -6,7 +6,7 @@ use Carp                ();
 use CGI::Simple::Cookie;
 
 sub finalize {
-    my ($class, $req, $res) = @_;
+    my ($class, $req, $res, $interface) = @_;
     Carp::confess 'argument missing: $res' unless $res;
 
     # protocol
@@ -15,13 +15,15 @@ sub finalize {
     # Content-Length
     if ($res->body) {
         # get the length from a filehandle
-        if ((Scalar::Util::blessed($res->body) && $res->body->can('read')) || (ref($res->body) eq 'GLOB')) {
+        if (
+            ref($res->body) eq 'GLOB' ||
+            ( Scalar::Util::blessed($res->body) && ($res->body->can('getline') || $res->body->can('read')) )
+        ) {
             my $st_size = 7; # see perldoc -f stat
-            my $size = eval { (stat($res->body))[$st_size];
-                          };
+            my $size = eval { (stat($res->body))[$st_size] };
             if (defined $size) {
                 $res->content_length($size);
-            } else {
+            } elsif (!$interface->can_streaming_response) { # can_streaming_response for PSGI streaming response
                 die "Serving filehandle without a content-length($@)";
             }
         } else {

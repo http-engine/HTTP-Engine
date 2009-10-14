@@ -7,6 +7,10 @@ use overload qq{""} => sub { 'foo' };
 sub new { bless {}, shift }
 sub read {}
 
+package DummyInterface;
+
+sub can_streaming_response { 0 }
+
 package main;
 use Test::More tests => 1;
 
@@ -24,6 +28,6 @@ my $res = HTTP::Engine::Response->new(
    status => 200,
 );
 eval {
-    HTTP::Engine::ResponseFinalizer->finalize( $req, $res );
+    HTTP::Engine::ResponseFinalizer->finalize( $req, $res, 'DummyInterface' );
 };
 like $@, qr/^Serving filehandle without a content-length/;

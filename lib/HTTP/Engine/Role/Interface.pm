@@ -12,6 +12,10 @@ has request_handler => (
     required => 1,
 );
 
+# for PSGI streaming response
+# using HTTP::Engine::ResponseFinalizer
+sub can_streaming_response { 0 }
+
 sub handle_request {
     my ($self, %args) = @_;
 
@@ -37,7 +41,7 @@ sub handle_request {
         );
     }
 
-    HTTP::Engine::ResponseFinalizer->finalize( $req => $res );
+    HTTP::Engine::ResponseFinalizer->finalize( $req => $res => $self );
 
     return $self->response_writer->finalize( $req => $res );
 }

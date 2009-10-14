@@ -127,6 +127,7 @@ t/020_interface/server_simple-not-send-header-bug.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t
+t/020_interface/streaming_response.t
 t/020_interface/test-validation.t
 t/020_interface/test-warn_at_utf8.t
 t/020_interface/test.t

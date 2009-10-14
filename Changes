@@ -1,5 +1,11 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03001  2009-10-14T20:23:58+09:00
+         - added streaming response support (for Interface::PSGI)
+         - tests: latest Test::TCP was fixed some bugs
+         - Interface::POE
+           remove failing test case.because latest POE doesn't deny HTTP/0.9's POST request (tokuhirom)
+
 0.03     2009-10-13T18:00:00+09:00
          - added Interface::PSGI
 

@@ -13,6 +13,9 @@ plan tests => 7;
 
 use_ok 'HTTP::Engine::Interface::POE';
 
+note "POE: $POE::VERSION";
+note "PoCo::C::HTTP: $POE::Component::Client::HTTP::VERSION";
+
 my $port = empty_port;
 my $port2 = empty_port($port);
 
@@ -44,11 +47,6 @@ POE::Component::Client::HTTP->spawn(
 );
 
 my %case = (
-    'HTTP/0.9' => sub {
-        my($req, $res) = @_;
-        is $res->code, 400;
-        like $res->content, qr{POST request detected in an HTTP 0.9 transaction};
-    },
     'HTTP/1.0' => sub {
         my($req, $res) = @_;
         is $res->code, 200;

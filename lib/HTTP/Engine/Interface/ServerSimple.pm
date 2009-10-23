@@ -34,6 +34,20 @@ has net_server_configure => (
     default => sub { +{} },
 );
 
+has print_banner => (
+    is       => 'ro',
+    isa      => 'CodeRef',
+    required => 1,
+    default  => sub { sub {
+        my $self = shift;
+        print(  __PACKAGE__
+              . " : You can connect to your server at "
+              . "http://" . ($self->host || 'localhost') . ":"
+              . $self->port
+              . "/\n" );
+    } }
+);
+
 sub run {
     my ($self, ) = @_;
 
@@ -84,13 +98,7 @@ sub run {
                     )
                 },
                 net_server => sub { $self->net_server },
-                print_banner => sub {
-                    print(  __PACKAGE__
-                          . " : You can connect to your server at "
-                          . "http://" . ($self->host || 'localhost') . ":"
-                          . $self->port
-                          . "/\n" );
-                },
+                print_banner => sub { $self->print_banner->($self) },
             },
             cache => 1
         )->name->new(

@@ -115,7 +115,6 @@ build_requires 'IO::Scalar';
 build_requires 'File::Temp' => '0.20';
 build_requires 'HTTP::Request::AsCGI';
 build_requires 'Test::TCP' => 0.11;
-build_requires 'Test::SharedFork' => 0.04;
 build_requires 'IO::Socket' => 1.30;
 build_requires 'IO::Socket::INET';
 build_requires 'IO::File' => 1.14;
@@ -126,6 +125,7 @@ author_requires 'Moose';
 author_requires 'MooseX::Types';
 
 use_test_base;
+include_deps 'Test::TCP';
 auto_include;
 auto_set_repository;
 WriteAll;

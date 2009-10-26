@@ -34,6 +34,9 @@ inc/Test/Builder.pm
 inc/Test/Builder/Module.pm
 inc/Test/More.pm
 inc/Test/SharedFork.pm
+inc/Test/SharedFork/Array.pm
+inc/Test/SharedFork/Scalar.pm
+inc/Test/SharedFork/Store.pm
 inc/Test/TCP.pm
 inc/YAML.pm
 lib/HTTP/Engine.pm
@@ -124,6 +127,7 @@ t/020_interface/psgi-with_plack.t
 t/020_interface/psgi.t
 t/020_interface/server_simple-net_server_configure.t
 t/020_interface/server_simple-not-send-header-bug.t
+t/020_interface/server_simple-print_banner.t
 t/020_interface/server_simple.t
 t/020_interface/standalone-keep_alive.t
 t/020_interface/standalone-restart.t

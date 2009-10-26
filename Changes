@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03002  2009-10-26T17:08:54+09:00
+         - fixed module include bug
+         - Interface::ServerSimple
+           added overwritable print_banner
+
 0.03001  2009-10-14T20:23:58+09:00
          - added streaming response support (for Interface::PSGI)
          - tests: latest Test::TCP was fixed some bugs

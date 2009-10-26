@@ -1,5 +1,5 @@
 package HTTP::Engine;
-use 5.00800;
+use 5.008;
 use Any::Moose;
 our $VERSION = '0.03001';
 use HTTP::Engine::Request;

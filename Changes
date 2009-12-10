@@ -1,5 +1,10 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03003  2009-12-10T11:48:30+09:00
+         - Interface::Standalone
+           all test is skiped
+         - required current version of Test::SharedFork 0.09 and Test::TCP 0.15
+
 0.03002  2009-10-26T17:08:54+09:00
          - fixed module include bug
          - Interface::ServerSimple

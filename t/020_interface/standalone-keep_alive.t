@@ -6,6 +6,8 @@ use LWP::UserAgent;
 use Test::More;
 use Net::HTTP;
 
+plan skip_all => 'Interface::Standalone will be removed';
+
 my $SESSION = 10;
 my $TRY = 30;
 

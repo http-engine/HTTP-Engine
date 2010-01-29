@@ -10,11 +10,14 @@ my $engine = HTTP::Engine->new(
         request_handler => sub {
             my $req = shift;
             is($req->content_type, 'application/x-test-req', 'request env');
-            HTTP::Engine::Response->new(
+            my $res = HTTP::Engine::Response->new(
                 status  => 403,
                 body    => 'RET',
                 headers => { 'Content-Type' => 'application/x-test-ret' },
             );
+            $res->headers->push_header('X-Foo' => 1);
+            $res->headers->push_header('X-Foo' => 2);
+            $res;
         },
     },
 );
@@ -26,9 +29,11 @@ my $res = $engine->run({
 is_deeply($res, [
     403,
     [
-        'content-type'   => 'application/x-test-ret',
-        'status'         => 403,
-        'content-length' => 3,
+        'Content-Length' => 3,
+        'Content-Type'   => 'application/x-test-ret',
+        'Status'         => 403,
+        'X-Foo'          => 1,
+        'X-Foo'          => 2,
     ],
     [ 'RET' ],
 ], 'response');

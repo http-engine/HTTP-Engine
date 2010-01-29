@@ -27,7 +27,7 @@ sub run {
 # hack to HTTP::Engine::Role::ResponseWriter::Finalize
 sub _finalize {
     my($next, $writer, $req, $res) = @_;
-    my @headers = %{ $res->headers };
+    my @headers; $res->headers->scan(sub { push @headers, @_ });
     my $body = $res->body;
     $body = [ $body ] unless ref($body);
     [ $res->code, \@headers, $body ];

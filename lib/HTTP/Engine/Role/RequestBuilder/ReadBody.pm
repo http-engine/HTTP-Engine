@@ -23,12 +23,12 @@ sub _read_start {
 }
 
 sub _read_to_end {
-    my ( $self, $state, @args ) = @_;
+    my ( $self, $state, $req ) = @_;
 
     my $content_length = $state->{content_length};
 
     if ($content_length > 0) {
-        $self->_read_all($state, @args);
+        $self->_read_all($state, $req);
 
         # paranoia against wrong Content-Length header
         my $diff = $state->{content_length} - $state->{read_position};
@@ -44,10 +44,10 @@ sub _read_to_end {
 }
 
 sub _read_all {
-    my ( $self, $state ) = @_;
+    my ( $self, $state, $req ) = @_;
 
     while (my $buffer = $self->_read($state) ) {
-        $self->_handle_read_chunk($state, $buffer);
+        $self->_handle_read_chunk($state, $buffer, $req);
     }
 }
 

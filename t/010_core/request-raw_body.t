@@ -6,7 +6,7 @@ use t::Utils;
 
 eval "use HTTP::Request::AsCGI;use HTTP::Request;";
 plan skip_all => "this test requires HTTP::Request::AsCGI" if $@;
-plan tests => 1;
+plan tests => 2;
 
 my $content = "Your base are belongs to us.";
 
@@ -25,3 +25,12 @@ my $req = req();
 is $req->raw_body, $content;
 
 $c->restore();
+
+# disable raw_body
+my $c2 = HTTP::Request::AsCGI->new($r)->setup;
+
+my $req2 = req();
+$req2->builder_options->{disable_raw_body} = 1;
+is $req2->raw_body, '';
+
+$c2->restore();

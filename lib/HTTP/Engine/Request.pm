@@ -131,6 +131,16 @@ sub _build_uri {
     $self->request_builder->_build_uri($self);
 }
 
+has builder_options => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub {
+        +{
+            disable_raw_body => 0,
+        },
+    },
+);
+
 has raw_body => (
     is      => 'rw',
     isa     => 'Str',
@@ -403,6 +413,33 @@ L<HTTP::Engine::RequestBuilder::CGI> or L<HTTP::Engine::RequestBuilder::NoEnv>.
 =head1 ATTRIBUTES
 
 =over 4
+
+=item builder_options
+
+configuration for control of HTTP::Engine::RequestBuilder.
+
+=over 4
+
+=item disable_raw_body
+
+$req->raw_body is not saved.
+
+When receiving upload of a big file, it uses in order to prevent raw_body becoming large.
+
+raw_body is enabled by the default. because of back compatibility.
+
+  $req->upload('file1');
+  is $req->raw_body, '...some contents...';
+
+  $req->builder_options->{disable_raw_body} = 1;
+  $req->upload('file2');
+  is $req->raw_body, '';
+
+  $req->builder_options->{disable_raw_body} = 0;
+  $req->upload('file1');
+  is $req->raw_body, '...some contents...';
+
+=back
 
 =item address
 

@@ -23,7 +23,7 @@ has chunk_size => (
 sub _build_http_body {
     my ( $self, $req ) = @_;
 
-    $self->_read_to_end($req->_read_state);
+    $self->_read_to_end($req->_read_state, $req);
 
     return delete $req->_read_state->{data}{http_body};
 }
@@ -31,7 +31,7 @@ sub _build_http_body {
 sub _build_raw_body {
     my ( $self, $req ) = @_;
 
-    $self->_read_to_end($req->_read_state);
+    $self->_read_to_end($req->_read_state, $req);
 
     return delete $req->_read_state->{data}{raw_body};
 }
@@ -58,11 +58,11 @@ sub _build_read_state {
 }
 
 sub _handle_read_chunk {
-    my ( $self, $state, $chunk ) = @_;
+    my ( $self, $state, $chunk, $req ) = @_;
 
     my $d = $state->{data};
 
-    $d->{raw_body} .= $chunk;
+    $d->{raw_body} .= $chunk unless $req->{builder_options}->{disable_raw_body};
     $d->{http_body}->add($chunk);
 }
 

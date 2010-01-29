@@ -137,6 +137,7 @@ has builder_options => (
     default => sub {
         +{
             disable_raw_body => 0,
+            upload_tmp       => undef,
         },
     },
 );
@@ -438,6 +439,21 @@ raw_body is enabled by the default. because of back compatibility.
   $req->builder_options->{disable_raw_body} = 0;
   $req->upload('file1');
   is $req->raw_body, '...some contents...';
+
+=item upload_tmp
+
+change temporarily directory to store upload file.
+It changes of default temporarily directory by L<HTTP::Body>.
+
+generally use L<File::Temp>.
+
+  $req->builder_options->{upload_tmp} = File::Temp->newdir;
+
+for lazy make directory
+
+  $req->builder_options->{upload_tmp} = sub { File::Temp->newdir };
+
+In these examples, if request processing finishes, upload files will be deleted.
 
 =back
 

@@ -44,7 +44,11 @@ sub _build_read_state {
     my $type   = $req->header('Content-Type');
 
     my $body = HTTP::Body->new($type, $length);
-    $body->tmpdir( $self->upload_tmp) if $self->upload_tmp;
+    if (my $upload_tmp = $req->{builder_options}->{upload_tmp}) {
+        $body->tmpdir(ref($upload_tmp) eq 'CODE' ? $upload_tmp->() : $upload_tmp);
+    } elsif ($self->upload_tmp) {
+        $body->tmpdir($self->upload_tmp);
+    }
 
     return $self->_read_init({
         input_handle   => $req->_connection->{input_handle},

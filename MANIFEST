@@ -79,6 +79,7 @@ MANIFEST			This list of files
 META.yml
 README
 t/00_compile.t
+t/010_core/builder_options-upload_tmp.t
 t/010_core/interface-require.t
 t/010_core/interface.t
 t/010_core/load_requestbuilder_cgi.t

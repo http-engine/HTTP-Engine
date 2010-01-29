@@ -1,5 +1,14 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03004  2010-01-29T18:23:01+09:00
+         - core
+            added builder_options in HTTP::Engine::Request
+              $req->builder_options->{disable_raw_body}
+              $req->builder_options->{upload_tmp}
+              see L<HTTP::Engine::Request> ATTRIBUTES section.
+         - Interface::PSGI
+            Fixed multiple header bug, spotted by pdcawley++ (miyagawa)
+
 0.03003  2009-12-10T11:48:30+09:00
          - Interface::Standalone
            all test is skiped

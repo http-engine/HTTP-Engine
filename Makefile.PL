@@ -37,9 +37,9 @@ if (HAVE_MP) {
 name 'HTTP-Engine';
 all_from 'lib/HTTP/Engine.pm';
 
-requires 'Any::Moose'    => '0.09';
-requires 'Mouse'         => '0.39';
-requires 'MouseX::Types' => '0.01';
+requires 'Any::Moose'    => '0.13';
+requires 'Mouse'         => '0.62';
+requires 'MouseX::Types' => '0.05';
 requires 'Scalar::Util'  => 1.19;
 
 requires 'File::Copy'       => 0;

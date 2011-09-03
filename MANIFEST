@@ -8,12 +8,6 @@ examples/plusplus.pl
 examples/poe-dumper.pl
 examples/psgi_anyevent.pl
 examples/yamlconfig-dumper.pl
-inc/File/Temp.pm
-inc/HTTP/Request/AsCGI.pm
-inc/IO/File.pm
-inc/IO/Scalar.pm
-inc/IO/Socket.pm
-inc/IO/Socket/INET.pm
 inc/Module/Install.pm
 inc/Module/Install/AuthorRequires.pm
 inc/Module/Install/AuthorTests.pm
@@ -38,7 +32,6 @@ inc/Test/SharedFork/Array.pm
 inc/Test/SharedFork/Scalar.pm
 inc/Test/SharedFork/Store.pm
 inc/Test/TCP.pm
-inc/YAML.pm
 lib/HTTP/Engine.pm
 lib/HTTP/Engine/Cookbook.pod
 lib/HTTP/Engine/Interface.pm

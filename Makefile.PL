@@ -109,16 +109,16 @@ if (HAVE_MOOSE) {
     tests(join ' ', @tests);
 }
 
-build_requires 'YAML'; # Test::Base requires this
-build_requires 'Test::More';
-build_requires 'IO::Scalar';
-build_requires 'File::Temp' => '0.20';
-build_requires 'HTTP::Request::AsCGI';
-build_requires 'Test::SharedFork' => 0.11;
-build_requires 'Test::TCP' => 0.16;
-build_requires 'IO::Socket' => 1.30;
-build_requires 'IO::Socket::INET';
-build_requires 'IO::File' => 1.14;
+test_requires 'YAML'; # Test::Base requires this
+test_requires 'Test::More';
+test_requires 'IO::Scalar';
+test_requires 'File::Temp' => '0.20';
+test_requires 'HTTP::Request::AsCGI';
+test_requires 'Test::SharedFork' => 0.11;
+test_requires 'Test::TCP' => 0.16;
+test_requires 'IO::Socket' => 1.30;
+test_requires 'IO::Socket::INET';
+test_requires 'IO::File' => 1.14;
 
 author_requires 'POE';
 author_requires 'Net::Server::Single';
@@ -127,7 +127,6 @@ author_requires 'MooseX::Types';
 
 use_test_base;
 include_deps 'Test::TCP';
-auto_include;
 auto_set_repository;
 WriteAll;
 

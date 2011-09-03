@@ -2,7 +2,7 @@ package HTTP::Engine::Role::RequestBuilder::ParseEnv;
 use Any::Moose '::Role';
 
 with 'HTTP::Engine::Role::RequestBuilder::Standard' => {
-    alias => { _build_hostname => "_resolve_hostname" }, # we might be able to get it from the env
+    -alias => { _build_hostname => "_resolve_hostname" }, # we might be able to get it from the env
 };
 
 sub _build_connection_info {

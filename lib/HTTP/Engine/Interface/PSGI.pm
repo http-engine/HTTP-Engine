@@ -27,7 +27,15 @@ sub run {
 # hack to HTTP::Engine::Role::ResponseWriter::Finalize
 sub _finalize {
     my($next, $writer, $req, $res) = @_;
-    my @headers; $res->headers->scan(sub { push @headers, @_ });
+    my @headers; $res->headers->scan(sub {
+        my ($k, $v) = @_;
+        # PSGI spec says "The header MUST NOT contain a Status key".
+        if ($k eq 'Status') {
+            return if $res->code eq $v;
+            die "Do not set Status header with HTTP::Engine::Interface::PSGI.";
+        }
+        push @headers, $k, $v;
+    });
     my $body = $res->body;
     $body = [ $body ] unless ref($body);
     [ $res->code, \@headers, $body ];

@@ -31,7 +31,8 @@ is_deeply($res, [
     [
         'Content-Length' => 3,
         'Content-Type'   => 'application/x-test-ret',
-        'Status'         => 403,
+# PSGI spec says "The header MUST NOT contain a Status key".
+#       'Status'         => 403,
         'X-Foo'          => 1,
         'X-Foo'          => 2,
     ],

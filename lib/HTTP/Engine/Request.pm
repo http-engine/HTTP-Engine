@@ -18,7 +18,7 @@ has request_builder => (
 sub BUILD {
     my ( $self, $param ) = @_;
 
-    foreach my $field qw(base path) {
+    foreach my $field (qw/base path/) {
         if ( my $val = $param->{$field} ) {
             $self->$field($val);
         }
@@ -63,7 +63,7 @@ sub _build_cookies {
     $self->request_builder->_build_cookies($self);
 }
 
-foreach my $attr qw(address method protocol user port _https_info request_uri) {
+foreach my $attr (qw/address method protocol user port _https_info request_uri/) {
     has $attr => (
         is => 'rw',
         # isa => "Str",

@@ -9,7 +9,7 @@ requires "_handle_read_chunk";
 sub _read_init {
     my ( $self, $read_state ) = @_;
 
-    foreach my $key qw(input_handle content_length) {
+    foreach my $key (qw/input_handle content_length/) {
         Carp::confess "read initialization must set $key"
             unless defined $read_state->{$key};
     }

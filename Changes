@@ -1,6 +1,6 @@
 Revision history for Perl extension HTTP::Engine
 
-0.03005  
+0.03005  2011-10-04T13:25:39+09:00
          - modernize Makefile.PL (tokuhirom)
          - core
             fixed to Moose syntax (tokuhirom)

@@ -24,7 +24,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers
+HTTP::Engine - (DEPRECATED)
 
 =head1 SYNOPSIS
 
@@ -47,6 +47,8 @@ HTTP::Engine - Web Server Gateway Interface and HTTP Server Engine Drivers
   }
 
 =head1 DESCRIPTION
+
+B<THIS MODULE WAS DEPRECATED. USE Plack INSTEAD>
 
 HTTP::Engine abstracts handling the input and output of various web
 server environments, including CGI, mod_perl and FastCGI. Most of the

@@ -41,7 +41,7 @@ sub _build_read_state {
     my($self, $req) = @_;
 
     my $length = $req->content_length || 0;
-    my $type   = $req->header('Content-Type');
+    my $type   = $req->header('Content-Type') || '';
 
     my $body = HTTP::Body->new($type, $length);
     if (my $upload_tmp = $req->{builder_options}->{upload_tmp}) {

@@ -1,5 +1,14 @@
 Revision history for Perl extension HTTP::Engine
 
+0.03005  
+         - modernize Makefile.PL (tokuhirom)
+         - core
+            fixed to Moose syntax (tokuhirom)
+            fixed to Use of qw(...) as parentheses is deprecated (yappo)
+         - Interface::PSGI
+            PSGI spec based on - "The header MUST NOT contain a Status key" (tokuhirom)
+
+
 0.03004  2010-01-29T18:23:01+09:00
          - core
             added builder_options in HTTP::Engine::Request
